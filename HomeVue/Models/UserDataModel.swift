@@ -15,7 +15,7 @@ struct User {
     var password: String
     var dateOfBirth: Date?
     var phoneNumber: String?
-    var profilePictureURL: String?
+    var profilePicture: UIImage?
     var createdDate: Date
     var isVerified: Bool
     private(set) var roomsByCategory: [RoomCategoryType: [RoomModel]]
@@ -65,3 +65,6 @@ class UserDetails {
     }
 }
 
+
+
+var User1 = User(id:UUID(), name: "Tim Cook", email: "cookedtim@apple.com", password: "54321", dateOfBirth: Date(), phoneNumber: "0911911911", profilePicture: UIImage(named: "profileImage"), createdDate: Date(), isVerified: true, roomsByCategory: [:])

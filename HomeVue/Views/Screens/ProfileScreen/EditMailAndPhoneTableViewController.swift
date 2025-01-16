@@ -23,13 +23,11 @@ class EditMailAndPhoneTableViewController: UITableViewController {
        override func viewDidLoad() {
            super.viewDidLoad()
 
-           EmailTextField.text = User1.UserEmail
-           PhoneTextField.text = User1.mobile
+           EmailTextField.text = User1.email
+           PhoneTextField.text = User1.phoneNumber
            
            // Apply gradient background
-           applyGradientBackground(to: self.view,
-                                   startColor: .gradientStartColor,
-                                   endColor: .gradientEndColor)
+           self.view.applyGradientBackground()
        }
        
        // MARK: - Table View Data Source

@@ -33,9 +33,9 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
         override func viewDidLoad() {
             super.viewDidLoad()
             setupView()
-            profileView.image = User1.UserProfilePhoto
-            personName.text = User1.UserName
-            personEmail.text = User1.UserEmail
+            profileView.image = User1.profilePicture
+            personName.text = User1.name
+            personEmail.text = User1.email
             lastBackgroundView.addRoundedCornersWithCutout(cornerRadius: 36, cutoutRadius: 80, cutoutCenter: CGPoint(x: lastBackgroundView.bounds.width / 2, y: 0))
             
             applyShadow(to: lastBackgroundView)

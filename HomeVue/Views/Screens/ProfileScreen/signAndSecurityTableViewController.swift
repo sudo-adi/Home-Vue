@@ -39,14 +39,10 @@ class signAndSecurityTableViewController: UITableViewController {
         view.backgroundColor = .solidBackgroundColor
         EditEmailOrPhoneButton.addTarget(self, action: #selector(handleButtonTap(_:)), for: .touchUpInside)
         ChangePassword.addTarget(self, action: #selector(handleButtonTap(_:)), for: .touchUpInside)
-        MobileNumberLabel.text = User1.mobile
-        EmailLAbel.text = User1.UserEmail
-        
-        
-        
-        applyGradientBackground(to: self.view,
-                                    startColor: .gradientStartColor,
-                                    endColor: .gradientEndColor)
+        MobileNumberLabel.text = User1.phoneNumber
+        EmailLAbel.text = User1.email
+
+        self.view.applyGradientBackground()
         
        
     }
@@ -83,7 +79,7 @@ class signAndSecurityTableViewController: UITableViewController {
                 textField.placeholder = "Current Password"
                 textField.isSecureTextEntry = true
             }
-        let UserPassword = User1.UserPassword
+        let UserPassword = User1.password
  
             let verifyAction = UIAlertAction(title: "Verify", style: .default) { _ in
                 if let password = alertController.textFields?.first?.text, password == UserPassword {
