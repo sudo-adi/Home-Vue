@@ -15,25 +15,12 @@ class ChangePasswordTableViewController: UITableViewController {
         if let navigationBar = self.navigationController?.navigationBar {
             navigationBar.titleTextAttributes = [ .foregroundColor: UIColor.gradientEndColor]
             navigationBar.tintColor = UIColor.gradientEndColor
-                
         }
         
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
-        applyGradientBackground(to: self.view,
-                                    startColor: .gradientStartColor,
-                                    endColor: .gradientEndColor)
+        self.view.applyGradientBackground()
     }
-
-    
-    
-    
-    
-    
-
 }

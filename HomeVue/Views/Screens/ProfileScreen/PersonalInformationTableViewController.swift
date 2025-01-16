@@ -68,11 +68,11 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
         ProfileImage?.addCornerRadius()
         view.backgroundColor = .solidBackgroundColor
 
-        ProfileImage.image = User1.UserProfilePhoto
-        NameLabel.text = User1.UserName
-        setDateLabel(with: User1.DOB)
+        ProfileImage.image = User1.profilePicture
+        NameLabel.text = User1.name
+        setDateLabel(with: User1.dateOfBirth!)
         
-        applyGradientBackground(to: self.view, startColor: .gradientStartColor, endColor: .gradientEndColor)
+        self.view.applyGradientBackground()
     }
     
     
