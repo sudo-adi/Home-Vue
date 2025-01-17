@@ -66,7 +66,7 @@ struct FurnitureItem {
     let model3D: String
     var brandName: String
     var description: String
-    var imageUrl: String
+    var image: UIImage
     var availableColors: [String]
     var dimensions: Dimension
     var providers: [Provider]
@@ -75,8 +75,8 @@ struct FurnitureItem {
 
 // MARK: - FurnitureItemManager
 class FurnitureItemManager {
-    static func createFurnitureItem(name: String, model3D: String, brandName: String, description: String, imageUrl: String, availableColors: [String], dimensions: Dimension, providers: [Provider]) -> FurnitureItem {
-        return FurnitureItem(id: UUID(), name: name, model3D: model3D, brandName: brandName, description: description, imageUrl: imageUrl, availableColors: availableColors, dimensions: dimensions, providers: providers)}
+    static func createFurnitureItem(name: String, model3D: String, brandName: String, description: String, image: UIImage, availableColors: [String], dimensions: Dimension, providers: [Provider]) -> FurnitureItem {
+        return FurnitureItem(id: UUID(), name: name, model3D: model3D, brandName: brandName, description: description, image: image, availableColors: availableColors, dimensions: dimensions, providers: providers)}
 }
 
 // MARK: - FurnitureDataProvider
@@ -90,23 +90,23 @@ class FurnitureDataProvider {
                 category: .tablesAndChairs,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
-                        name: "Dining Table",
-                        model3D: "dining_table_3d_model",
+                        name: "Office Table",
+                        model3D: "3D Models/Table.usdz",
                         brandName: "Ikea",
-                        description: "A modern dining table for 6 people.",
-                        imageUrl: "https://example.com/dining_table.jpg",
-                        availableColors: ["Wood", "Black", "White"],
-                        dimensions: Dimension(length: 200, width: 100, height: 75),
+                        description: "Material: MDF with laminate finish\nSturdy metal legs for durability\nSpacious surface for a laptop and documents\nModern design, perfect for office or study",
+                        image: UIImage(named: "Furniture/TableImg.jpg")!,
+                        availableColors: ["Black", "White"],
+                        dimensions: Dimension(length: 160, width: 80, height: 75),
                         providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
                     ),
                     FurnitureItemManager.createFurnitureItem(
-                        name: "Office Chair",
-                        model3D: "office_chair_3d_model",
+                        name: "Gaming Chair",
+                        model3D: "3D Models/Chair.usdz",
                         brandName: "Herman Miller",
-                        description: "An ergonomic office chair for all-day comfort.",
-                        imageUrl: "https://example.com/office_chair.jpg",
-                        availableColors: ["Black", "Grey", "Blue"],
-                        dimensions: Dimension(length: 60, width: 60, height: 120),
+                        description: "Material: Premium leather and breathable mesh\nErgonomic design for all-day comfort\nAdjustable armrests and lumbar support\nHeight and tilt adjustable for personalized comfort\nPerfect for gaming or long office hours",
+                        image: UIImage(named: "Furniture/ChairImg.jpg")!,
+                        availableColors: ["Purple", "Grey", "Blue"],
+                        dimensions: Dimension(length: 65, width: 65, height: 125),
                         providers: [Provider(name: "Herman Miller")]
                     )
                 ]
@@ -115,24 +115,14 @@ class FurnitureDataProvider {
                 category: .seatingFurniture,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
-                        name: "Sofa",
-                        model3D: "sofa_3d_model",
+                        name: "Single Seater",
+                        model3D: "3D Models/SeatingFurniture.usdz",
                         brandName: "Ashley",
-                        description: "A comfortable sectional sofa for living rooms.",
-                        imageUrl: "https://example.com/sofa.jpg",
-                        availableColors: ["Gray", "Beige", "Dark Blue"],
-                        dimensions: Dimension(length: 250, width: 90, height: 85),
+                        description: "Material: Soft cushions with premium fabric upholstery\nWooden frame for added strength and durability\nIdeal for living rooms",
+                        image: UIImage(named: "Furniture/SeatingFurnitureImg.jpg")!,
+                        availableColors: ["White", "Beige", "Dark Blue"],
+                        dimensions: Dimension(length: 85, width: 90, height: 85),
                         providers: [Provider(name: "Ashley Furniture"), Provider(name: "Amazon")]
-                    ),
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Armchair",
-                        model3D: "armchair_3d_model",
-                        brandName: "La-Z-Boy",
-                        description: "A recliner armchair for ultimate relaxation.",
-                        imageUrl: "https://example.com/armchair.jpg",
-                        availableColors: ["Brown", "Black", "Red"],
-                        dimensions: Dimension(length: 85, width: 85, height: 100),
-                        providers: [Provider(name: "La-Z-Boy")]
                     )
                 ]
             ),
@@ -140,24 +130,14 @@ class FurnitureDataProvider {
                 category: .kitchenFurniture,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
-                        name: "Kitchen Island",
-                        model3D: "kitchen_island_3d_model",
+                        name: "Kitchen Sink",
+                        model3D: "3D Models/KitchenFurniture.usdz",
                         brandName: "Home Depot",
-                        description: "A central kitchen island with ample storage.",
-                        imageUrl: "https://example.com/kitchen_island.jpg",
-                        availableColors: ["Wood", "White", "Gray"],
-                        dimensions: Dimension(length: 180, width: 90, height: 95),
+                        description: "Material: Stainless steel sink with wooden cabinetry\nGranite countertop for durability and elegance\nAmple storage space with soft-close drawers\nPerfect for central kitchen islands\nModern, sleek design that complements any kitchen",
+                        image: UIImage(named: "Furniture/KitchenFurnitureImg.jpg")!,
+                        availableColors: ["Black", "White"],
+                        dimensions: Dimension(length: 220, width: 90, height: 100),
                         providers: [Provider(name: "Home Depot")]
-                    ),
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Bar Stool",
-                        model3D: "bar_stool_3d_model",
-                        brandName: "Wayfair",
-                        description: "Adjustable bar stool for kitchen islands or counters.",
-                        imageUrl: "https://example.com/bar_stool.jpg",
-                        availableColors: ["Black", "Chrome", "Wood"],
-                        dimensions: Dimension(length: 35, width: 35, height: 75),
-                        providers: [Provider(name: "Wayfair")]
                     )
                 ]
             ),
@@ -166,23 +146,13 @@ class FurnitureDataProvider {
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
                         name: "Queen Bed",
-                        model3D: "queen_bed_3d_model",
+                        model3D: "3D Models/Bed.usdz",
                         brandName: "Tempur-Pedic",
-                        description: "A premium queen-sized bed with memory foam.",
-                        imageUrl: "https://example.com/queen_bed.jpg",
-                        availableColors: ["White", "Gray", "Beige"],
-                        dimensions: Dimension(length: 200, width: 160, height: 30),
+                        description: "Material: High-quality wooden frame with memory foam mattress\nSoft, breathable linen cover for ultimate comfort\nMemory foam provides pressure relief for better sleep\nElegant, neutral-colored fabric to complement any room\nPerfect for couples or individuals who need extra comfort",
+                        image: UIImage(named: "Furniture/BedImg.jpg")!,
+                        availableColors: ["Brown", "Beige"],
+                        dimensions: Dimension(length: 210, width: 160, height: 35),
                         providers: [Provider(name: "Tempur-Pedic"), Provider(name: "Amazon")]
-                    ),
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Bunk Bed",
-                        model3D: "bunk_bed_3d_model",
-                        brandName: "Ikea",
-                        description: "Space-saving bunk bed with ladder and safety rails.",
-                        imageUrl: "https://example.com/bunk_bed.jpg",
-                        availableColors: ["White", "Wood"],
-                        dimensions: Dimension(length: 200, width: 90, height: 160),
-                        providers: [Provider(name: "Ikea")]
                     )
                 ]
             ),
@@ -190,24 +160,14 @@ class FurnitureDataProvider {
                 category: .decoration,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
-                        name: "Vase",
-                        model3D: "vase_3d_model",
+                        name: "Flower Pot",
+                        model3D: "Material: Ceramic with intricate designs\nPerfect for displaying fresh flowers or plants\nAvailable in multiple sizes for different uses\nElegant and decorative for home or office spaces\nAdds a touch of nature to any room",
                         brandName: "Target",
                         description: "A beautiful ceramic vase perfect for flowers.",
-                        imageUrl: "https://example.com/vase.jpg",
+                        image: UIImage(named: "Furniture/DecorImg.jpg")!,
                         availableColors: ["White", "Blue", "Green"],
-                        dimensions: Dimension(length: 20, width: 20, height: 40),
+                        dimensions: Dimension(length: 25, width: 25, height: 50),
                         providers: [Provider(name: "Target")]
-                    ),
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Wall Art",
-                        model3D: "wall_art_3d_model",
-                        brandName: "Society6",
-                        description: "A stunning piece of wall art to add color to your home.",
-                        imageUrl: "https://example.com/wall_art.jpg",
-                        availableColors: ["Multicolor", "Black and White", "Gold"],
-                        dimensions: Dimension(length: 80, width: 2, height: 60),
-                        providers: [Provider(name: "Society6")]
                     )
                 ]
             ),
@@ -215,24 +175,14 @@ class FurnitureDataProvider {
                 category: .cabinetAndShelves,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
-                        name: "Bookshelf",
-                        model3D: "bookshelf_3d_model",
+                        name: "Long Cabinet",
+                        model3D: "3D Models/Cabinets.usdz",
                         brandName: "Wayfair",
-                        description: "A sturdy bookshelf with ample storage for books.",
-                        imageUrl: "https://example.com/bookshelf.jpg",
+                        description: "Material: Solid oak wood with smooth matte finish\nFive spacious shelves for ample storage\nSturdy construction, perfect for books or decorative items\nMinimalist design fits seamlessly in modern spaces\nAvailable in multiple colors to suit your home",
+                        image: UIImage(named: "Furniture/CabinetsAndShelvesImg.jpg")!,
                         availableColors: ["Wood", "Black", "White"],
-                        dimensions: Dimension(length: 100, width: 30, height: 180),
+                        dimensions: Dimension(length: 120, width: 35, height: 180),
                         providers: [Provider(name: "Wayfair")]
-                    ),
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Wardrobe",
-                        model3D: "wardrobe_3d_model",
-                        brandName: "Ikea",
-                        description: "A spacious wardrobe with hanging and shelf space.",
-                        imageUrl: "https://example.com/wardrobe.jpg",
-                        availableColors: ["White", "Oak", "Grey"],
-                        dimensions: Dimension(length: 120, width: 60, height: 200),
-                        providers: [Provider(name: "Ikea")]
                     )
                 ]
             ),
@@ -240,27 +190,18 @@ class FurnitureDataProvider {
                 category: .dining,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
-                        name: "Dining Set",
-                        model3D: "dining_set_3d_model",
-                        brandName: "Crate & Barrel",
-                        description: "A stylish dining set with a table and chairs.",
-                        imageUrl: "https://example.com/dining_set.jpg",
+                        name: "Dining Table",
+                        model3D:"3D Models/Dining.usdz",
+                        brandName: "Ikea",
+                        description: "Material: Solid wood with a durable finish\nSimple, modern design that fits any dining room\nComfortable for up to four people\nEasy to clean surface for everyday use\nAvailable in various colors to suit your decor",
+                        image: UIImage(named: "Furniture/DiningImg.jpg")!,
                         availableColors: ["Wood", "Black", "White"],
                         dimensions: Dimension(length: 200, width: 100, height: 75),
-                        providers: [Provider(name: "Crate & Barrel")]
-                    ),
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Sideboard",
-                        model3D: "sideboard_3d_model",
-                        brandName: "West Elm",
-                        description: "A sleek sideboard perfect for dining rooms.",
-                        imageUrl: "https://example.com/sideboard.jpg",
-                        availableColors: ["Wood", "Grey"],
-                        dimensions: Dimension(length: 160, width: 45, height: 90),
-                        providers: [Provider(name: "West Elm")]
+                        providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
                     )
                 ]
             )
         ]
     }
 }
+
