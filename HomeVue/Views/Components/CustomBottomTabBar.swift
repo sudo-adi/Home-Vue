@@ -63,7 +63,7 @@ class CustomTabBarController: UITabBarController {
         )
 
         // Third View Controller (Profile)
-        let profileVC = ProfileViewController()
+        let profileVC = UIViewController()
         profileVC.tabBarItem = UITabBarItem(
             title: "Profile", // Empty string to ensure no label is shown
             image: UIImage(systemName: "person"), // Outlined icon
