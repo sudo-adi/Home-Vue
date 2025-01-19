@@ -59,12 +59,13 @@ class HomeViewController: UIViewController {
 
     // Sample data for "My Spaces" section
     private var mySpacesItems: [GridItem] = [
-        GridItem(id: "1", title: "Other Rooms", image: UIImage(named: "OtherRoom"), description: ""),
+       
         GridItem(id: "2", title: "Living Room", image: UIImage(named: "LivingRoom"), description: ""),
         GridItem(id: "3", title: "Bed Room", image: UIImage(named: "BedRoom"), description: ""),
         GridItem(id: "4", title: "Gym", image: UIImage(named: "Gym"), description: ""),
         GridItem(id: "5", title: "Bath Room", image: UIImage(named: "BathRoom"), description: ""),
-        GridItem(id: "6", title: "Kitchen", image: UIImage(named: "Kitchen"), description: "")
+        GridItem(id: "6", title: "Kitchen", image: UIImage(named: "Kitchen"), description: ""),
+        GridItem(id: "1", title: "Other Rooms", image: UIImage(named: "OtherRoom"), description: ""),
     ]
 
     // Sample data for "Catalogue" section
@@ -79,12 +80,11 @@ class HomeViewController: UIViewController {
         GridItem(id: "8", title: "Tables & Chairs", image: UIImage(named: "TablesAndChair"), description: "")
     ]
 
-    // Sample data for horizontal cards
+    // Sample data for horizontal cards (only 3 cards)
     private var horizontalCardItems: [HorizontalCardItem] = [
         HorizontalCardItem(title: "Sofa", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
         HorizontalCardItem(title: "Bed", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
-        HorizontalCardItem(title: "Chair", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
-        HorizontalCardItem(title: "Dadi ji", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8))
+        HorizontalCardItem(title: "Chair", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8))
     ]
 
     override func viewDidLoad() {
@@ -122,7 +122,6 @@ class HomeViewController: UIViewController {
         horizontalScrollView.isHidden = false
     }
 
-    // MARK: - App Bar Setup
     private func setupAppBar() {
         appBarStackView.axis = .vertical
         appBarStackView.alignment = .leading
@@ -131,9 +130,14 @@ class HomeViewController: UIViewController {
         view.addSubview(appBarStackView)
 
         // Avatar setup
-        avatarImageView.image = UIImage(systemName: "person.circle")
+        avatarImageView.image = UIImage(named: "ProfileImage") // Set image to "ProfileImage"
         avatarImageView.tintColor = .white
-        avatarImageView.contentMode = .scaleAspectFit
+        avatarImageView.contentMode = .scaleAspectFill // Use scaleAspectFill to fill the rounded view
+        avatarImageView.clipsToBounds = true // Ensure the image stays within the rounded bounds
+        avatarImageView.layer.cornerRadius = 25 // Half of the height to make it rounded
+        avatarImageView.layer.masksToBounds = true // Apply corner radius to the image
+
+        // Set a smaller size for the avatar image view
         avatarImageView.widthAnchor.constraint(equalToConstant: 50).isActive = true
         avatarImageView.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
@@ -147,7 +151,7 @@ class HomeViewController: UIViewController {
         )
         
         attributedUserName.append(NSAttributedString(
-            string: "Aman",
+            string: "Cook",
             attributes: [
                 .font: UIFont.systemFont(ofSize: 32, weight: .bold),
                 .foregroundColor: UIColor.white
@@ -183,8 +187,8 @@ class HomeViewController: UIViewController {
         horizontalScrollView.addSubview(horizontalStackView)
 
         // Create and add card views
-        for item in horizontalCardItems {
-            let cardView = createHorizontalCardView(item: item)
+        for (index, item) in horizontalCardItems.enumerated() {
+            let cardView = createHorizontalCardView(item: item, backgroundImageName: "HeroBg\(index + 1)", labelText: ["Office Table", "Chair", "Dining Table"][index])
             horizontalStackView.addArrangedSubview(cardView)
         }
 
@@ -202,41 +206,69 @@ class HomeViewController: UIViewController {
     }
     
     // MARK: - Create Horizontal Card View
-    private func createHorizontalCardView(item: HorizontalCardItem) -> UIView {
+    private func createHorizontalCardView(item: HorizontalCardItem, backgroundImageName: String, labelText: String) -> UIView {
         let cardView = UIView()
-        cardView.backgroundColor = item.color
         cardView.layer.cornerRadius = 40
+        cardView.clipsToBounds = true
         cardView.translatesAutoresizingMaskIntoConstraints = false
 
-        let titleLabel = UILabel()
-        titleLabel.text = item.title
-        titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        titleLabel.textColor = .white
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        // Add background image
+        let backgroundImageView = UIImageView(image: UIImage(named: backgroundImageName))
+        backgroundImageView.contentMode = .scaleAspectFill
+        backgroundImageView.clipsToBounds = true
+        backgroundImageView.layer.cornerRadius = 40
+        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundImageView.alpha = 0.90 // Set opacity to 75%
+        cardView.addSubview(backgroundImageView)
 
-        let subtitleLabel = UILabel()
-        subtitleLabel.text = item.subtitle
-        subtitleLabel.font = UIFont.systemFont(ofSize: 14, weight: .light)
-        subtitleLabel.textColor = .white
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        // Add text label at the bottom left
+        let textLabel = UILabel()
+        textLabel.text = labelText
+        textLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        textLabel.textColor = .black // Set text color to black
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
+        cardView.addSubview(textLabel)
 
-        cardView.addSubview(titleLabel)
-        cardView.addSubview(subtitleLabel)
+        // Add image button at the top left corner
+        let imageButton = UIButton(type: .custom)
+        imageButton.translatesAutoresizingMaskIntoConstraints = false
+
+        // Configure the button using UIButtonConfiguration
+        var config = UIButton.Configuration.plain()
+        config.image = UIImage(systemName: "cube.transparent")?.withTintColor(.white.withAlphaComponent(0.95), renderingMode: .alwaysOriginal)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8) // Add padding inside the button
+        imageButton.configuration = config
+
+        // Set button background and corner radius
+        imageButton.backgroundColor = UIColor.white.withAlphaComponent(0.5) // 50% opacity white background
+        imageButton.layer.cornerRadius = 20 // Half of the height to make it rounded
+        imageButton.clipsToBounds = true
+
+        cardView.addSubview(imageButton)
 
         NSLayoutConstraint.activate([
             cardView.widthAnchor.constraint(equalToConstant: 285),
             cardView.heightAnchor.constraint(equalToConstant: 190),
 
-            titleLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 30),
-            titleLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+            // Background image constraints
+            backgroundImageView.topAnchor.constraint(equalTo: cardView.topAnchor),
+            backgroundImageView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            backgroundImageView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            backgroundImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
 
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            subtitleLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16)
+            // Text label constraints
+            textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
+
+            // Image button constraints
+            imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
+            imageButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+            imageButton.widthAnchor.constraint(equalToConstant: 40), // Set button size
+            imageButton.heightAnchor.constraint(equalToConstant: 40) // Set button size
         ])
 
         return cardView
     }
-
     // MARK: - Bottom Sheet Setup
     private func setupBottomSheet() {
         // Set the background color of the bottom sheet to #D9D9D9
@@ -362,7 +394,7 @@ class HomeViewController: UIViewController {
             )
             
             userNameText.append(NSAttributedString(
-                string: "Aman",
+                string: "Cook",
                 attributes: [
                     .font: isExpanded
                         ? UIFont.systemFont(ofSize: 16, weight: .semibold) // Smaller font when expanded
@@ -491,6 +523,7 @@ class RoomCardCell: UICollectionViewCell {
     }
 }
 
+// MARK: - Custom Catalogue Card Cell
 class CatalogueCardCell: UICollectionViewCell {
     static let reuseIdentifier = "CatalogueCardCell"
 
