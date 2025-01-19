@@ -57,13 +57,30 @@ class HomeViewController: UIViewController {
     private let collapsedHeight: CGFloat = 100
     private let expandedHeightMultiplier: CGFloat = 0.85
 
-    // Sample data for grid
-    private var gridItems: [String] = Array(repeating: "Item", count: 20)
-    
+    // Sample data for "My Spaces" section
+    private var mySpacesItems: [GridItem] = [
+        GridItem(id: "1", title: "Other Rooms", image: UIImage(named: "OtherRoom"), description: ""),
+        GridItem(id: "2", title: "Living Room", image: UIImage(named: "LivingRoom"), description: ""),
+        GridItem(id: "3", title: "Bed Room", image: UIImage(named: "BedRoom"), description: ""),
+        GridItem(id: "4", title: "Gym", image: UIImage(named: "Gym"), description: ""),
+        GridItem(id: "5", title: "Bath Room", image: UIImage(named: "BathRoom"), description: ""),
+        GridItem(id: "6", title: "Kitchen", image: UIImage(named: "Kitchen"), description: "")
+    ]
+
+    // Sample data for "Catalogue" section
+    private var catalogueItems: [GridItem] = [
+        GridItem(id: "1", title: "Sofa", image: UIImage(named: "Sofa"), description: ""),
+        GridItem(id: "2", title: "Bed", image: UIImage(named: "Bed"), description: ""),
+        GridItem(id: "3", title: "Chair", image: UIImage(named: "Chair"), description: ""),
+        GridItem(id: "4", title: "Table", image: UIImage(named: "Table"), description: ""),
+        GridItem(id: "5", title: "Lamp", image: UIImage(named: "Lamp"), description: ""),
+        GridItem(id: "6", title: "Cabinet", image: UIImage(named: "Cabinet"), description: "")
+    ]
+
     // Sample data for horizontal cards
     private var horizontalCardItems: [HorizontalCardItem] = [
         HorizontalCardItem(title: "Sofa", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
-        HorizontalCardItem(title: "Bed", subtitle: "", color:UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
+        HorizontalCardItem(title: "Bed", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
         HorizontalCardItem(title: "Chair", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
         HorizontalCardItem(title: "Dadi ji", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8))
     ]
@@ -76,7 +93,7 @@ class HomeViewController: UIViewController {
         // Set the gradient colors
         gradientLayer.colors = [
             UIColor(red: 135/255.0, green: 122/255.0, blue: 120/255.0, alpha: 1.0).cgColor,
-            UIColor(red: 57/255.0, green:50/255.0, blue: 49/255.0, alpha: 1.0).cgColor,
+            UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0).cgColor,
         ]
         
         // Set the gradient locations (optional)
@@ -97,6 +114,7 @@ class HomeViewController: UIViewController {
         setupBottomSheet()
         setupPanGesture()
         setupGridCollectionView()
+        setupSegmentedControl()
 
         // Ensure horizontal scroll view is initially visible
         horizontalScrollView.isHidden = false
@@ -270,7 +288,8 @@ class HomeViewController: UIViewController {
         bottomSheetView.addSubview(gridCollectionView)
 
         // Register cell
-        gridCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "GridCell")
+        gridCollectionView.register(RoomCardCell.self, forCellWithReuseIdentifier: RoomCardCell.reuseIdentifier)
+        gridCollectionView.register(CatalogueCardCell.self, forCellWithReuseIdentifier: CatalogueCardCell.reuseIdentifier)
         
         // Set delegate and data source
         gridCollectionView.delegate = self
@@ -278,8 +297,8 @@ class HomeViewController: UIViewController {
 
         NSLayoutConstraint.activate([
             gridCollectionView.topAnchor.constraint(equalTo: topSegmentedControl.bottomAnchor, constant: 16),
-            gridCollectionView.leadingAnchor.constraint(equalTo: bottomSheetView.leadingAnchor, constant: 16),
-            gridCollectionView.trailingAnchor.constraint(equalTo: bottomSheetView.trailingAnchor, constant: -16),
+            gridCollectionView.leadingAnchor.constraint(equalTo: bottomSheetView.leadingAnchor, constant: 8), // Reduced leading space
+            gridCollectionView.trailingAnchor.constraint(equalTo: bottomSheetView.trailingAnchor, constant: -8), // Reduced trailing space
             gridCollectionView.bottomAnchor.constraint(equalTo: bottomSheetView.bottomAnchor, constant: -16)
         ])
     }
@@ -360,33 +379,152 @@ class HomeViewController: UIViewController {
             self.horizontalScrollView.isHidden = isExpanded
         }
     }
+
+    // MARK: - Segmented Control Setup
+    private func setupSegmentedControl() {
+        topSegmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
+    }
+
+    @objc private func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        let direction: CATransitionSubtype = sender.selectedSegmentIndex == 0 ? .fromLeft : .fromRight
+        let transition = CATransition()
+        transition.type = .push
+        transition.subtype = direction
+        transition.duration = 0.3
+        gridCollectionView.layer.add(transition, forKey: nil)
+        gridCollectionView.reloadData()
+    }
 }
 
 // MARK: - UICollectionView Delegate & Data Source
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return gridItems.count
+        return topSegmentedControl.selectedSegmentIndex == 0 ? mySpacesItems.count : catalogueItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GridCell", for: indexPath)
-        cell.backgroundColor = .systemBrown.withAlphaComponent(0.2)
-        cell.layer.cornerRadius = 10
-        
-        return cell
+        if topSegmentedControl.selectedSegmentIndex == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RoomCardCell.reuseIdentifier, for: indexPath) as! RoomCardCell
+            cell.configure(with: mySpacesItems[indexPath.item])
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CatalogueCardCell.reuseIdentifier, for: indexPath) as! CatalogueCardCell
+            cell.configure(with: catalogueItems[indexPath.item])
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (collectionView.bounds.width - 32) / 1.9 // 2 columns with some spacing
-        return CGSize(width: width, height: width) // Rectangular cells
+        let spacing: CGFloat = 8 // Minimal horizontal and vertical spacing
+        let numberOfColumns: CGFloat = 2 // Two columns for both sections
+        let totalSpacing = (numberOfColumns - 1) * spacing
+        let width = (collectionView.bounds.width - totalSpacing - 16) / numberOfColumns // Adjusted for leading/trailing padding
+        return CGSize(width: width, height: width) // Square cards
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 2 // Horizontal spacing between items
+        return 8 // Minimal horizontal spacing between items
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 16 // Vertical spacing between rows
+        return 8 // Minimal vertical spacing between rows
     }
 }
 
+// MARK: - Custom Room Card Cell
+class RoomCardCell: UICollectionViewCell {
+    static let reuseIdentifier = "RoomCardCell"
+
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10
+        imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner] // All corners rounded
+        return imageView
+    }()
+
+    private let roomNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupViews() {
+        // Add image view
+        addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
+        // Add room name label
+        addSubview(roomNameLabel)
+        roomNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            roomNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            roomNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            roomNameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+        ])
+    }
+
+    func configure(with room: GridItem) {
+        imageView.image = room.image
+        roomNameLabel.text = room.title
+    }
+}
+
+// MARK: - Custom Catalogue Card Cell
+class CatalogueCardCell: UICollectionViewCell {
+    static let reuseIdentifier = "CatalogueCardCell"
+
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.textColor = UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0) // #393231
+        label.textAlignment = .center
+        return label
+    }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupViews() {
+        // Add title label
+        addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
+        ])
+
+        // Add border and rounded corners
+        layer.borderWidth = 1
+        layer.borderColor = UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0).cgColor // #393231
+        layer.cornerRadius = 10
+    }
+
+    func configure(with item: GridItem) {
+        titleLabel.text = item.title
+    }
+}
