@@ -69,12 +69,14 @@ class HomeViewController: UIViewController {
 
     // Sample data for "Catalogue" section
     private var catalogueItems: [GridItem] = [
-        GridItem(id: "1", title: "Sofa", image: UIImage(named: "Sofa"), description: ""),
-        GridItem(id: "2", title: "Bed", image: UIImage(named: "Bed"), description: ""),
-        GridItem(id: "3", title: "Chair", image: UIImage(named: "Chair"), description: ""),
-        GridItem(id: "4", title: "Table", image: UIImage(named: "Table"), description: ""),
-        GridItem(id: "5", title: "Lamp", image: UIImage(named: "Lamp"), description: ""),
-        GridItem(id: "6", title: "Cabinet", image: UIImage(named: "Cabinet"), description: "")
+        GridItem(id: "1", title: "Bed", image: UIImage(named: "Bed"), description: ""),
+        GridItem(id: "2", title: "Cabinets & Shelves", image: UIImage(named: "CabinetsAndShelves"), description: ""),
+        GridItem(id: "3", title: "Decor", image: UIImage(named: "Decor"), description: ""),
+        GridItem(id: "4", title: "Dining", image: UIImage(named: "Dining"), description: ""),
+        GridItem(id: "5", title: "Kitchen Furniture", image: UIImage(named: "KitchenFurniture"), description: ""),
+        GridItem(id: "6", title: "Others", image: UIImage(named: "Others"), description: ""),
+        GridItem(id: "7", title: "Seating Furniture", image: UIImage(named: "SeatingFurniture"), description: ""),
+        GridItem(id: "8", title: "Tables & Chairs", image: UIImage(named: "TablesAndChair"), description: "")
     ]
 
     // Sample data for horizontal cards
@@ -237,7 +239,8 @@ class HomeViewController: UIViewController {
 
     // MARK: - Bottom Sheet Setup
     private func setupBottomSheet() {
-        bottomSheetView.backgroundColor = .white
+        // Set the background color of the bottom sheet to #D9D9D9
+        bottomSheetView.backgroundColor = UIColor(red: 217/255.0, green: 217/255.0, blue: 217/255.0, alpha: 1.0) // #D9D9D9
         bottomSheetView.layer.cornerRadius = 40
         bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         bottomSheetView.translatesAutoresizingMaskIntoConstraints = false
@@ -488,9 +491,17 @@ class RoomCardCell: UICollectionViewCell {
     }
 }
 
-// MARK: - Custom Catalogue Card Cell
 class CatalogueCardCell: UICollectionViewCell {
     static let reuseIdentifier = "CatalogueCardCell"
+
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit // Changed to scaleAspectFit
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10
+        imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] // Only top corners rounded
+        return imageView
+    }()
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -510,21 +521,34 @@ class CatalogueCardCell: UICollectionViewCell {
     }
 
     private func setupViews() {
+        // Set background color of the cell to white
+        backgroundColor = .white
+        layer.cornerRadius = 10
+        layer.masksToBounds = true
+
+        // Add image view
+        addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 8), // Add padding on top
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8), // Add padding on leading
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8), // Add padding on trailing
+            imageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.6) // Image takes 60% of the cell height
+        ])
+
         // Add title label
         addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8), // Add padding between image and label
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8) // Add padding on bottom
         ])
-
-        // Add border and rounded corners
-        layer.borderWidth = 1
-        layer.borderColor = UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0).cgColor // #393231
-        layer.cornerRadius = 10
     }
 
     func configure(with item: GridItem) {
+        imageView.image = item.image
         titleLabel.text = item.title
     }
 }
