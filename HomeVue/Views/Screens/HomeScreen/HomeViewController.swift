@@ -5,6 +5,7 @@ struct GridItem {
     let title: String
     let image: UIImage?
     let description: String
+    let category: Any?
 }
 
 struct HorizontalCardItem {
@@ -57,28 +58,32 @@ class HomeViewController: UIViewController {
     private let collapsedHeight: CGFloat = 100
     private let expandedHeightMultiplier: CGFloat = 0.85
 
-    // Sample data for "My Spaces" section
-    private var mySpacesItems: [GridItem] = [
+    var roomCategories:[RoomCategory] = RoomDataProvider.shared.roomCategories
+    // MARK: - MySpacesItems
+    private lazy var mySpacesItems: [GridItem] = [
        
-        GridItem(id: "2", title: "Living Room", image: UIImage(named: "LivingRoom"), description: ""),
-        GridItem(id: "3", title: "Bed Room", image: UIImage(named: "BedRoom"), description: ""),
-        GridItem(id: "4", title: "Gym", image: UIImage(named: "Gym"), description: ""),
-        GridItem(id: "5", title: "Bath Room", image: UIImage(named: "BathRoom"), description: ""),
-        GridItem(id: "6", title: "Kitchen", image: UIImage(named: "Kitchen"), description: ""),
-        GridItem(id: "1", title: "Other Rooms", image: UIImage(named: "OtherRoom"), description: ""),
+        GridItem(id: "2", title: "Living Room", image: UIImage(named: "livingroom"), description: "",category: nil),
+        GridItem(id: "3", title: "Bedroom", image: UIImage(named: "bedroom"), description: "",category: nil),
+        GridItem(id: "4", title: "Bathroom", image: UIImage(named: "bathroom"), description: "",category: nil),
+        GridItem(id: "5", title: "Kitchen", image: UIImage(named: "kitchen"), description: "",category: nil),
+        GridItem(id: "1", title: "Others", image: UIImage(named: "OtherRoom"), description: "",category: nil )
+    ]
+    
+    //
+    var furnitureCategory :[FurnitureCategory] =  FurnitureDataProvider.shared.getFurnitureCategories()
+
+    // MARK: - CatalougeItems
+    private lazy var catalogueItems: [GridItem] = [
+        GridItem(id: "1", title: "Bed", image: UIImage(named: "Bed"), description: "",category: furnitureCategory[3]),
+        GridItem(id: "2", title: "Cabinets and Shelves", image: UIImage(named: "CabinetsAndShelves"), description: "", category: furnitureCategory[5]),
+        GridItem(id: "3", title: "Decoration", image: UIImage(named: "Decor"), description: "",category: furnitureCategory[4]),
+        GridItem(id: "4", title: "Dining", image: UIImage(named: "Dining"), description: "",category: furnitureCategory[6]),
+        GridItem(id: "5", title: "Kitchen Furniture", image: UIImage(named: "KitchenFurniture"), description: "",category: furnitureCategory[2]),
+//        GridItem(id: "6", title: "Others", image: UIImage(named: "Others"), description: "",category: furnitureCategory[]),
+        GridItem(id: "7", title: "Seating Furniture", image: UIImage(named: "SeatingFurniture"), description: "",category: furnitureCategory[1]),
+        GridItem(id: "8", title: "Tables and Chairs", image: UIImage(named: "TablesAndChair"), description: "",category: furnitureCategory[0])
     ]
 
-    // Sample data for "Catalogue" section
-    private var catalogueItems: [GridItem] = [
-        GridItem(id: "1", title: "Bed", image: UIImage(named: "Bed"), description: ""),
-        GridItem(id: "2", title: "Cabinets & Shelves", image: UIImage(named: "CabinetsAndShelves"), description: ""),
-        GridItem(id: "3", title: "Decor", image: UIImage(named: "Decor"), description: ""),
-        GridItem(id: "4", title: "Dining", image: UIImage(named: "Dining"), description: ""),
-        GridItem(id: "5", title: "Kitchen Furniture", image: UIImage(named: "KitchenFurniture"), description: ""),
-        GridItem(id: "6", title: "Others", image: UIImage(named: "Others"), description: ""),
-        GridItem(id: "7", title: "Seating Furniture", image: UIImage(named: "SeatingFurniture"), description: ""),
-        GridItem(id: "8", title: "Tables & Chairs", image: UIImage(named: "TablesAndChair"), description: "")
-    ]
 
     // Sample data for horizontal cards (only 3 cards)
     private var horizontalCardItems: [HorizontalCardItem] = [
@@ -120,6 +125,10 @@ class HomeViewController: UIViewController {
 
         // Ensure horizontal scroll view is initially visible
         horizontalScrollView.isHidden = false
+        
+        //navigation
+        
+
     }
 
     private func setupAppBar() {
@@ -458,11 +467,25 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 8 // Minimal horizontal spacing between items
+        return 4 // Minimal horizontal spacing between items
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 8 // Minimal vertical spacing between rows
+        return 4 // Minimal vertical spacing between rows
+    }
+    // MARK: - Selection Item
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if topSegmentedControl.selectedSegmentIndex == 1 {
+            let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
+            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
+                let selectedItem = catalogueItems[indexPath.item]
+                if let furnitureCategory = selectedItem.category as? FurnitureCategory {
+                    destinationVC.furnitureCategory = furnitureCategory  // Pass data
+                }
+                navigationController?.pushViewController(destinationVC, animated: true)
+                present(destinationVC, animated: true, completion: nil)
+            }
+        }
     }
 }
 

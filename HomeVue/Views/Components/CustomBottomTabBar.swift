@@ -44,7 +44,7 @@ class CustomTabBarController: UITabBarController {
             height: tabBar.frame.height + 20 // Include extra height for rounded corners
         )
     }
-
+//MARK:
     private func setupViewControllers() {
         // First View Controller (Home)
         let homeVC = HomeViewController()
@@ -63,7 +63,7 @@ class CustomTabBarController: UITabBarController {
         )
 
         // Third View Controller (Profile)
-        let profileVC = UIViewController()
+        let profileVC = LoginMainPageViewController()
         profileVC.tabBarItem = UITabBarItem(
             title: "Profile", // Empty string to ensure no label is shown
             image: UIImage(systemName: "person"), // Outlined icon

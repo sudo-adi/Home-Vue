@@ -220,7 +220,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="KOM-5d-z3F">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <rect key="frame" x="0.0" y="0.0" width="394" height="852"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HOMEVUE" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qpG-9j-SVt">
                                 <rect key="frame" x="40.000000000000014" y="102.99999999999999" width="212.33333333333337" height="52.333333333333329"/>
@@ -235,10 +235,10 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="29" translatesAutoresizingMaskIntoConstraints="NO" id="WCG-ud-J1m">
-                                <rect key="frame" x="37" y="477" width="319" height="169"/>
+                                <rect key="frame" x="37" y="477" width="320" height="169"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="isf-NV-O2I">
-                                        <rect key="frame" x="0.0" y="0.0" width="319" height="70"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="70" id="EeP-bg-sWR"/>
                                             <constraint firstAttribute="width" constant="320" id="WhO-cu-PHY"/>
@@ -255,7 +255,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fGF-XV-IsC">
-                                        <rect key="frame" x="0.0" y="99" width="319" height="70"/>
+                                        <rect key="frame" x="0.0" y="99" width="320" height="70"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="320" id="a0w-Tk-aOa"/>
                                             <constraint firstAttribute="height" constant="70" id="vfu-WO-Cox"/>
@@ -270,7 +270,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="____________________________________________________" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IQm-Qj-X5d">
-                                <rect key="frame" x="37" y="142" width="315" height="13.333333333333343"/>
+                                <rect key="frame" x="37" y="142" width="316" height="13.333333333333343"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                 <color key="textColor" systemColor="tertiarySystemBackgroundColor"/>
                                 <nil key="highlightedColor"/>
