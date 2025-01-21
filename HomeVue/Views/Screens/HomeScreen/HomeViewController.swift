@@ -485,7 +485,14 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
                 navigationController?.pushViewController(destinationVC, animated: true)
                 present(destinationVC, animated: true, completion: nil)
             }
+        }else{
+            let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
+            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
+//                let selectedItem = mySpacesItems[indexPath.item]
+                present(destinationVC, animated: true, completion: nil)
+            }
         }
+
     }
 }
 
