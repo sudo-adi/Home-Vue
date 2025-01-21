@@ -7,6 +7,15 @@
 
 import UIKit
 
+extension LoginMainPageViewController: PersonalInformationDelegate {
+    func didUpdatePersonalInformation(profileImage: UIImage?, name: String, dateOfBirth: Date) {
+        // Update the UI with the new values
+        profileView.image = profileImage
+        personName.text = name
+        // Optionally update other UI components like the date of birth
+    }
+}
+
 class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var profileSectionTableView: UITableView!
@@ -59,12 +68,12 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
 
             
             // Profile outline
-            outlineForProfile.addCornerRadius(outlineForProfile.frame.width / 2)
+            outlineForProfile.addCornerRadius(70)
             outlineForProfile.layer.borderWidth = 4
             outlineForProfile.layer.borderColor = UIColor.solidBackgroundColor.cgColor
             outlineForProfile.backgroundColor = .clear
-
-            // Profile image
+//
+//            // Profile image
             profileView.addCornerRadius(profileView.frame.width / 2)
 
             // Background view
@@ -117,38 +126,67 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
         }
 
         // MARK: - UITableView Delegate
-         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            let selectedItem = tableData[indexPath.section].rows[indexPath.row].title
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+       let selectedItem = tableData[indexPath.section].rows[indexPath.row].title
 
-            // Map actions to segues or functions
-            let segueMap: [String: String] = [
-                "Personal Information": "PersonalInformation",
-                "Sign-in and Security": "SignInAndSecurity"
-            ]
+       // Map actions to segues or functions
+       let segueMap: [String: String] = [
+           "Personal Information": "PersonalInformation",
+           "Sign-in and Security": "SignInAndSecurity"
+       ]
 
-            if let segueIdentifier = segueMap[selectedItem] {
-                performSegue(withIdentifier: segueIdentifier, sender: nil)
-            } else if selectedItem == "Log out" {
-                handleLogout()
-            } else {
-                print("No segue found for \(selectedItem)")
-            }
+       if let segueIdentifier = segueMap[selectedItem] {
+           //performSegue(withIdentifier: segueIdentifier, sender: nil)
+           if segueIdentifier == "PersonalInformation" {
+               // When navigating to PersonalInformationTableViewController, set the delegate
+               if let personalInfoVC = storyboard?.instantiateViewController(withIdentifier: "PersonalInfo") as? PersonalInformationTableViewController {
+                   personalInfoVC.delegate = self // Set the delegate here
+                   navigationController?.pushViewController(personalInfoVC, animated: true)
+               }
+           } else {
+               performSegue(withIdentifier: segueIdentifier, sender: nil)
+           }
+       } else if selectedItem == "Log out" {
+           handleLogout()
+       } else {
+           print("No segue found for \(selectedItem)")
+       }
 
-            tableView.deselectRow(at: indexPath, animated: true)
+       tableView.deselectRow(at: indexPath, animated: true)
+   }
+
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let headerView = view as? UITableViewHeaderFooterView {
+            headerView.textLabel?.textColor = .gradientStartColor
+            headerView.textLabel?.font = UIFont.headerFont()
         }
-
-         func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-            if let headerView = view as? UITableViewHeaderFooterView {
-                headerView.textLabel?.textColor = .gradientStartColor
-                headerView.textLabel?.font = UIFont.headerFont()
-            }
-        }
+    }
 
         // MARK: - Helper Functions
-        private func handleLogout() {
-            print("Logout functionality to be implemented here.")
-            // Add logout logic, e.g., clearing user data or navigating to login screen
+    private func handleLogout() {
+        // Debugging message
+        print("Logging out...")
+
+        // Instantiate HomeVueViewController using its Storyboard ID
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let homeVueVC = storyboard.instantiateViewController(withIdentifier: "HomeVueViewController") as? homeVueViewController else {
+            print("Failed to instantiate HomeVueViewController")
+            return
         }
+
+        // Set HomeVueViewController as the root view controller
+        if let window = UIApplication.shared.windows.first {
+            let navigationController = UINavigationController(rootViewController: homeVueVC)
+            window.rootViewController = navigationController
+            window.makeKeyAndVisible()
+
+            // Optionally, add a transition animation
+            UIView.transition(with: window, duration: 0.5, options: .allowAnimatedContent, animations: nil, completion: nil)
+        }
+    }
+
+    
+
     
     
     func applyShadow(to view: UIView,
@@ -163,6 +201,19 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
         view.layer.shadowRadius = radius
         view.layer.cornerRadius = cornerRadius
     }
+    
+//    @IBAction func unwindToLoginMainPage(_ segue: UIStoryboardSegue) {
+//        // Update the main page UI if needed
+//        personEmail.text = User1.email
+////        personPhone.text = User1.phoneNumber
+//    }
 
+    @IBAction func unwindToLoginMainPage(_ segue: UIStoryboardSegue) {
+        // Update the main page UI if needed
+        personEmail.text = User1.email
+//        personPhone.text = User1.phoneNumber
+    }
+
+    
     
 }
