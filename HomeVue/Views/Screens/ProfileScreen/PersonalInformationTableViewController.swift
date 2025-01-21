@@ -7,8 +7,15 @@
 
 import UIKit
 
-class PersonalInformationTableViewController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+// In PersonalInformationTableViewController.swift
+protocol PersonalInformationDelegate: AnyObject {
+    func didUpdatePersonalInformation(profileImage: UIImage?, name: String, dateOfBirth: Date)
+}
 
+class PersonalInformationTableViewController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    weak var delegate: PersonalInformationDelegate?
+    
     @IBOutlet weak var ProfileImage: UIImageView!
     @IBOutlet weak var NameLabel: UITextField!
     @IBOutlet weak var DateLabel: UILabel!
@@ -61,6 +68,7 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.hidesBottomBarWhenPushed = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showDatePicker))
         DateLabel.isUserInteractionEnabled = true
         DateLabel.addGestureRecognizer(tapGesture)
@@ -87,12 +95,12 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
     @objc func showDatePicker() {
         datePickerContainer.frame = view.bounds
         datePickerContainer.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        datePicker.frame = CGRect(x: 0, y: view.bounds.height - 100, width: view.bounds.width, height: 100)
+        datePicker.frame = CGRect(x: 0, y: view.bounds.height - 180, width: view.bounds.width, height: 100)
         datePicker.backgroundColor = .white
         datePicker.datePickerMode = .date
         datePicker.contentHorizontalAlignment = .center
         datePicker.contentVerticalAlignment = .center
-        let toolbar = UIToolbar(frame: CGRect(x: 0, y: view.bounds.height - 150, width: view.bounds.width, height: 50))
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: view.bounds.height - 230, width: view.bounds.width, height: 50))
         toolbar.items = [
                UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(dismissDatePicker)),
                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
@@ -125,5 +133,54 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
     }
     
     
+
     
+    @IBAction func SaveButtonTap(_ sender: UIBarButtonItem) {
+//        if let newName = NameLabel.text, !newName.isEmpty {
+//            User1.name = newName
+//            print("Name updated to \(newName)")
+//        }
+//        
+//        // Update the date of birth
+//        if let dateText = DateLabel.text, let date = convertDateStringToDate(dateText) {
+//            User1.dateOfBirth = date
+//            print("Date of Birth updated to \(date)")
+//        }
+//        
+//        // Update the profile picture
+//        if let updatedImage = ProfileImage.image {
+//            User1.profilePicture = updatedImage
+//            print("Profile picture updated")
+//        }
+        
+        if let newName = NameLabel.text, !newName.isEmpty {
+            User1.name = newName
+        }
+        
+        // Update the date of birth
+        if let dateText = DateLabel.text, let date = convertDateStringToDate(dateText) {
+            User1.dateOfBirth = date
+        }
+        
+        // Update the profile picture
+        if let updatedImage = ProfileImage.image {
+            User1.profilePicture = updatedImage
+        }
+        
+        // Notify the delegate of the changes
+        delegate?.didUpdatePersonalInformation(profileImage: ProfileImage.image, name: NameLabel.text ?? "", dateOfBirth: User1.dateOfBirth ?? Date())
+        
+        // Pop the view controller to go back to the previous screen
+        navigationController?.popViewController(animated: true)
+    }
+
+    private func convertDateStringToDate(_ dateString: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        return dateFormatter.date(from: dateString)
+    }
 }
+
+
+

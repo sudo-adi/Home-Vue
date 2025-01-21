@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol EditMailAndPhoneDelegate: AnyObject {
+    func didUpdateEmailAndPhone(email: String, phone: String)
+}
+
 class EditMailAndPhoneTableViewController: UITableViewController {
 
+    weak var delegate: EditMailAndPhoneDelegate?
+    
     @IBOutlet weak var EmailTextField: UITextField!
     @IBOutlet weak var PhoneTextField: UITextField!
     override func viewWillAppear(_ animated: Bool) {
@@ -56,4 +62,13 @@ class EditMailAndPhoneTableViewController: UITableViewController {
            }
        }
 
+    @IBAction func saveButtonTapped(_ sender: UIBarButtonItem) {
+        // Save the changes to the user object
+        if let updatedEmail = EmailTextField.text, let updatedPhone = PhoneTextField.text {
+            // Pass data to the delegate
+            delegate?.didUpdateEmailAndPhone(email: updatedEmail, phone: updatedPhone)
+        }
+        // Go back to the previous screen
+        navigationController?.popViewController(animated: true)
+    }
 }
