@@ -238,14 +238,14 @@ class HomeViewController: UIViewController {
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(textLabel)
 
-        // Add image button at the top left corner
+        
         let imageButton = UIButton(type: .custom)
         imageButton.translatesAutoresizingMaskIntoConstraints = false
 
-        // Configure the button using UIButtonConfiguration
+        
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "cube.transparent")?.withTintColor(.white.withAlphaComponent(0.95), renderingMode: .alwaysOriginal)
-        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8) // Add padding inside the button
+        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8) 
         imageButton.configuration = config
 
         // Set button background and corner radius
