@@ -185,7 +185,7 @@ class HomeViewController: UIViewController {
         backgroundImageView.alpha = 0.90 // Set opacity to 75%
         cardView.addSubview(backgroundImageView)
 
-        // Add text label at the bottom left
+        // Add text label at the bottom right
         let textLabel = UILabel()
         textLabel.text = labelText
         textLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
@@ -220,9 +220,9 @@ class HomeViewController: UIViewController {
             backgroundImageView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
             backgroundImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
 
-            // Text label constraints
-            textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
+            // Text label constraints (updated for right alignment)
+            textLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16), // Right-aligned with 16-point margin
+            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16), // Bottom-aligned with 16-point margin
 
             // Image button constraints
             imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
