@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VerifyViewController: UIViewController, UITextFieldDelegate{
+class VerifyViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var otpTextField1: UITextField!
     @IBOutlet weak var otpTextField2: UITextField!
@@ -16,48 +16,42 @@ class VerifyViewController: UIViewController, UITextFieldDelegate{
     @IBOutlet weak var verifyButton: UIButton!
     @IBOutlet weak var resendOTPButton: UIButton!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        verifyButton.addCornerRadius()
-        resendOTPButton.addCornerRadius()
-        otpTextField1.removeCursor()
-        otpTextField2.removeCursor()
-        otpTextField3.removeCursor()
-        otpTextField4.removeCursor()
         
+        // Setup UI
+        setupUI()
         
-        otpTextField1.delegate = self
-        otpTextField2.delegate = self
-        otpTextField3.delegate = self
-        otpTextField4.delegate = self
+        // Set delegates for OTP text fields
+        [otpTextField1, otpTextField2, otpTextField3, otpTextField4].forEach {
+            $0?.delegate = self
+            $0?.keyboardType = .numberPad
+            $0?.textAlignment = .center
+            $0?.setPadding(left: 5, right: 5)
+            $0?.removeCursor()
+        }
         
-        otpTextField1.setPadding(left: 5, right: 5)
-        otpTextField2.setPadding(left: 5, right: 5)
-        otpTextField3.setPadding(left: 5, right: 5)
-        otpTextField4.setPadding(left: 5, right: 5)
-        
-        
-           // Set a default style if needed
-           [otpTextField1, otpTextField2, otpTextField3, otpTextField4].forEach {
-               $0?.keyboardType = .numberPad
-               $0?.textAlignment = .center
-           }
-        
+        // Add tap gesture to dismiss keyboard
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-            view.addGestureRecognizer(tapGesture)
+        view.addGestureRecognizer(tapGesture)
     }
     
+    // MARK: - UI Setup
+    private func setupUI() {
+        verifyButton.addCornerRadius()
+        resendOTPButton.addCornerRadius()
+    }
+    
+    // MARK: - Dismiss Keyboard
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
     
+    // MARK: - UITextFieldDelegate
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Ensure only one character is entered
         guard string.count <= 1 else { return false }
         
-        
-
         // If a character is entered, move to the next field
         if !string.isEmpty {
             let nextTag = textField.tag + 1
@@ -66,7 +60,7 @@ class VerifyViewController: UIViewController, UITextFieldDelegate{
             } else {
                 textField.resignFirstResponder() // Close keyboard if it's the last field
             }
-
+            
             textField.text = string // Set the entered character
             return false // Prevent adding the character twice
         } else {
@@ -80,32 +74,44 @@ class VerifyViewController: UIViewController, UITextFieldDelegate{
         }
     }
     
+    // MARK: - Get OTP
     func getOTP() -> String {
         return "\(otpTextField1.text ?? "")\(otpTextField2.text ?? "")\(otpTextField3.text ?? "")\(otpTextField4.text ?? "")"
     }
     
+    // MARK: - Verify Button Action
     @IBAction func verifyButtonTapped(_ sender: Any) {
         let otp = getOTP()
         if otp.count == 4 {
-           print("Entered OTP: \(otp)")
+            print("Entered OTP: \(otp)")
+            
+            // Instantiate the CustomTabBarController programmatically
+            let tabBarController = CustomTabBarController()
+            tabBarController.selectedIndex = 0 // Select the first tab (Home)
+            
+            // Set the CustomTabBarController as the root view controller of the window
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                // Add slide-in animation
+                let transition = CATransition()
+                transition.duration = 0.5
+                transition.type = CATransitionType.push
+                transition.subtype = CATransitionSubtype.fromRight
+                transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+                
+                window.layer.add(transition, forKey: kCATransition)
+                window.rootViewController = tabBarController
+                window.makeKeyAndVisible()
+            }
         } else {
-           showAlert(message: "Please enter a 4-digit OTP.")
+            showAlert(message: "Please enter a 4-digit OTP.")
         }
     }
-    func showAlert(message: String) {
-           let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-           alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-           present(alert, animated: true, completion: nil)
-       }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    // MARK: - Show Alert
+    func showAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
-    */
-
 }
