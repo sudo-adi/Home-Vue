@@ -16,7 +16,17 @@ enum RoomCategoryType: String, CaseIterable {
     case bedroom = "Bedroom"
     case kitchen = "Kitchen"
     case bathroom = "Bathroom"
-    case others = "Others"
+    case others = "Other Rooms"
+    
+    var thumbnail: String {
+        switch self {
+        case .livingRoom: return "Living Room"
+        case .bedroom: return "Bedroom"
+        case .kitchen: return "Kitchen"
+        case .bathroom: return "Bathroom"
+        case .others: return "Other"
+        }
+    }
 }
 
 // MARK: - RoomCategory

@@ -44,16 +44,18 @@ class CustomTabBarController: UITabBarController {
             height: tabBar.frame.height + 20 // Include extra height for rounded corners
         )
     }
-//MARK:
+
     private func setupViewControllers() {
         // First View Controller (Home)
         let homeVC = HomeViewController()
+        let nvc = UINavigationController(rootViewController: homeVC)
+        
         homeVC.tabBarItem = UITabBarItem(
-            title: "Home", // Empty string to ensure no label is shown
-            image: UIImage(systemName: "house"), // Outlined icon
-            selectedImage: UIImage(systemName: "house.fill") // Filled icon for active state
+            title: "Home",
+            image: UIImage(systemName: "house"),
+            selectedImage: UIImage(systemName: "house.fill")
         )
-
+        
         // Second View Controller (Camera)
         let cameraVC = UIViewController() // Placeholder, not used directly
         cameraVC.tabBarItem = UITabBarItem(
@@ -63,15 +65,24 @@ class CustomTabBarController: UITabBarController {
         )
 
         // Third View Controller (Profile)
-        let profileVC = LoginMainPageViewController()
-        profileVC.tabBarItem = UITabBarItem(
-            title: "Profile", // Empty string to ensure no label is shown
-            image: UIImage(systemName: "person"), // Outlined icon
-            selectedImage: UIImage(systemName: "person.fill") // Filled icon for active state
-        )
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
 
-        // Set the view controllers for the tab bar
-        viewControllers = [homeVC, cameraVC, profileVC]
+        // Instantiate the navigation controller from the storyboard
+        if let profileNavigationController = storyboard.instantiateViewController(withIdentifier: "profileNavigationController") as? UINavigationController,
+           let profileVC = profileNavigationController.viewControllers.first as? LoginMainPageViewController {
+           
+            // Configure the tab bar item for the profile navigation controller
+            profileNavigationController.tabBarItem = UITabBarItem(
+                title: "Profile",
+                image: UIImage(systemName: "person"), // Outlined icon
+                selectedImage: UIImage(systemName: "person.fill") // Filled icon for active state
+            )
+            
+            // Assuming `homeVC` and `cameraVC` are similarly instantiated or created
+            viewControllers = [nvc, cameraVC, profileNavigationController]
+        } else {
+            print("Error: Could not instantiate profileNavigationController or LoginMainPageViewController")
+        }
     }
 
     // Show custom alert when the Camera tab is clicked
@@ -190,7 +201,6 @@ class CustomTabBarController: UITabBarController {
     }
 
     @objc private func showRoomTypePicker() {
-        let roomTypes = ["Living Room", "Bedroom", "Kitchen", "Bathroom", "Dining Room"]
         let pickerAlert = UIAlertController(title: "Select Room Type", message: nil, preferredStyle: .actionSheet)
 
         // Set background color for the action sheet
@@ -213,11 +223,11 @@ class CustomTabBarController: UITabBarController {
         )
 
         // Set text color for all actions
-        for roomType in roomTypes {
-            let action = UIAlertAction(title: roomType, style: .default) { _ in
+        for roomType in RoomCategoryType.allCases {
+            let action = UIAlertAction(title: roomType.rawValue, style: .default) { _ in
                 if let alertView = self.view.subviews.last?.subviews.first as? UIView,
                    let roomTypeButton = alertView.subviews.compactMap({ $0 as? UIButton }).first(where: { $0.titleLabel?.text == "Select Room Type" }) {
-                    roomTypeButton.setTitle(roomType, for: .normal)
+                    roomTypeButton.setTitle(roomType.rawValue, for: .normal)
                 }
             }
             action.setValue(UIColor(red: 57/255, green: 50/255, blue: 49/255, alpha: 1.0), forKey: "titleTextColor") // 393231

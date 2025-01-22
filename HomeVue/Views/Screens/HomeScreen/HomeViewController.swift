@@ -122,15 +122,11 @@ class HomeViewController: UIViewController {
         setupPanGesture()
         setupGridCollectionView()
         setupSegmentedControl()
-
+        
         // Ensure horizontal scroll view is initially visible
         horizontalScrollView.isHidden = false
-        
-        //navigation
-        
-
+        topSegmentedControl.selectedSegmentIndex = 0
     }
-
     private func setupAppBar() {
         appBarStackView.axis = .vertical
         appBarStackView.alignment = .leading
@@ -475,6 +471,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     // MARK: - Selection Item
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        
         if topSegmentedControl.selectedSegmentIndex == 1 {
             let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
@@ -483,17 +481,21 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
                     destinationVC.furnitureCategory = furnitureCategory  // Pass data
                 }
                 navigationController?.pushViewController(destinationVC, animated: true)
-                present(destinationVC, animated: true, completion: nil)
             }
-        }else{
-            let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
-            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
-//                let selectedItem = mySpacesItems[indexPath.item]
-                present(destinationVC, animated: true, completion: nil)
+        }   else{
+                print("Item selected at indexPath: \(indexPath)")
+                let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
+                if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
+                    let selectedItem = mySpacesItems[indexPath.item]
+                    if let roomCategory = selectedItem.category as? RoomCategory {
+                        destinationVC.roomCategory = roomCategory // Pass data
+                        print(roomCategory)
+                    }
+                    navigationController?.pushViewController(destinationVC, animated: true)
+                }
             }
-        }
-
-    }
+}
+    
 }
 
 // MARK: - Custom Room Card Cell
