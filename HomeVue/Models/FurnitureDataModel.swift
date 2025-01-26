@@ -220,6 +220,10 @@ class FurnitureDataProvider {
             )
         ]
     }
+    func fetchFurnitureItems(for categoryType: FurnitureCategoryType) -> [FurnitureItem] {
+        let allCategories = getFurnitureCategories()
+        return allCategories.first(where: { $0.category == categoryType })?.furnitureItems ?? []
+    }
 }
 
 // MARK: - Ad Section

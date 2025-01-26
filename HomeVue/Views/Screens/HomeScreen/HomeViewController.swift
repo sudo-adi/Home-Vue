@@ -1,19 +1,5 @@
 import UIKit
 
-struct GridItem {
-    let id: String
-    let title: String
-    let image: UIImage?
-    let description: String
-    let category: Any?
-}
-
-struct HorizontalCardItem {
-    let title: String
-    let subtitle: String
-    let color: UIColor
-}
-
 class HomeViewController: UIViewController {
     private let bottomSheetView = UIView()
     private let dragHandle = UIView()
@@ -21,6 +7,9 @@ class HomeViewController: UIViewController {
     private let avatarImageView = UIImageView()
     private let userNameLabel = UILabel()
     private let exploreLabel = UILabel()
+    
+    private let roomCategories = RoomCategoryType.allCases
+    private let furnitureCategories = FurnitureCategoryType.allCases
     
     // Horizontal Scroll View
     private let horizontalScrollView: UIScrollView = {
@@ -58,40 +47,6 @@ class HomeViewController: UIViewController {
     private let collapsedHeight: CGFloat = 100
     private let expandedHeightMultiplier: CGFloat = 0.85
 
-    var roomCategories:[RoomCategory] = RoomDataProvider.shared.roomCategories
-    // MARK: - MySpacesItems
-    private lazy var mySpacesItems: [GridItem] = [
-       
-        GridItem(id: "2", title: "Living Room", image: UIImage(named: "livingroom"), description: "",category: nil),
-        GridItem(id: "3", title: "Bedroom", image: UIImage(named: "bedroom"), description: "",category: nil),
-        GridItem(id: "4", title: "Bathroom", image: UIImage(named: "bathroom"), description: "",category: nil),
-        GridItem(id: "5", title: "Kitchen", image: UIImage(named: "kitchen"), description: "",category: nil),
-        GridItem(id: "1", title: "Others", image: UIImage(named: "OtherRoom"), description: "",category: nil )
-    ]
-    
-    //
-    var furnitureCategory :[FurnitureCategory] =  FurnitureDataProvider.shared.getFurnitureCategories()
-
-    // MARK: - CatalougeItems
-    private lazy var catalogueItems: [GridItem] = [
-        GridItem(id: "1", title: "Bed", image: UIImage(named: "Bed"), description: "",category: furnitureCategory[3]),
-        GridItem(id: "2", title: "Cabinets and Shelves", image: UIImage(named: "CabinetsAndShelves"), description: "", category: furnitureCategory[5]),
-        GridItem(id: "3", title: "Decoration", image: UIImage(named: "Decor"), description: "",category: furnitureCategory[4]),
-        GridItem(id: "4", title: "Dining", image: UIImage(named: "Dining"), description: "",category: furnitureCategory[6]),
-        GridItem(id: "5", title: "Kitchen Furniture", image: UIImage(named: "KitchenFurniture"), description: "",category: furnitureCategory[2]),
-//        GridItem(id: "6", title: "Others", image: UIImage(named: "Others"), description: "",category: furnitureCategory[]),
-        GridItem(id: "7", title: "Seating Furniture", image: UIImage(named: "SeatingFurniture"), description: "",category: furnitureCategory[1]),
-        GridItem(id: "8", title: "Tables and Chairs", image: UIImage(named: "TablesAndChair"), description: "",category: furnitureCategory[0])
-    ]
-
-
-    // Sample data for horizontal cards (only 3 cards)
-    private var horizontalCardItems: [HorizontalCardItem] = [
-        HorizontalCardItem(title: "Sofa", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
-        HorizontalCardItem(title: "Bed", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8)),
-        HorizontalCardItem(title: "Chair", subtitle: "", color: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 0.8))
-    ]
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // Create the gradient layer
@@ -122,11 +77,32 @@ class HomeViewController: UIViewController {
         setupPanGesture()
         setupGridCollectionView()
         setupSegmentedControl()
-        
+
         // Ensure horizontal scroll view is initially visible
         horizontalScrollView.isHidden = false
-        topSegmentedControl.selectedSegmentIndex = 0
+        
+        navigationController?.navigationBar.isTranslucent = false
+           self.edgesForExtendedLayout = []
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Hide the navigation bar for this view
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        // Ensure proper layout by removing extra space
+        navigationController?.navigationBar.isTranslucent = false
+        self.extendedLayoutIncludesOpaqueBars = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Restore the navigation bar for other views
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+
+
     private func setupAppBar() {
         appBarStackView.axis = .vertical
         appBarStackView.alignment = .leading
@@ -143,8 +119,8 @@ class HomeViewController: UIViewController {
         avatarImageView.layer.masksToBounds = true // Apply corner radius to the image
 
         // Set a smaller size for the avatar image view
-        avatarImageView.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        avatarImageView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        avatarImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        avatarImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
         // Create attributed text for userName
         let attributedUserName = NSMutableAttributedString(
@@ -156,7 +132,7 @@ class HomeViewController: UIViewController {
         )
         
         attributedUserName.append(NSAttributedString(
-            string: "Cook",
+            string: User1.name,
             attributes: [
                 .font: UIFont.systemFont(ofSize: 32, weight: .bold),
                 .foregroundColor: UIColor.white
@@ -180,9 +156,9 @@ class HomeViewController: UIViewController {
         appBarStackView.addArrangedSubview(exploreLabel)
 
         NSLayoutConstraint.activate([
-            appBarStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            appBarStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
             appBarStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            appBarStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            appBarStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60)
         ])
     }
 
@@ -192,8 +168,12 @@ class HomeViewController: UIViewController {
         horizontalScrollView.addSubview(horizontalStackView)
 
         // Create and add card views
-        for (index, item) in horizontalCardItems.enumerated() {
-            let cardView = createHorizontalCardView(item: item, backgroundImageName: "HeroBg\(index + 1)", labelText: ["Office Table", "Chair", "Dining Table"][index])
+//        for (index, item) in adCards.enumerated() {
+//            let cardView = createHorizontalCardView(item: item, backgroundImageName: "HeroBg\(index + 1)", labelText: ["Office Table", "Chair", "Dining Table"][index])
+//            horizontalStackView.addArrangedSubview(cardView)
+//        }
+        for (index, item) in adCards.enumerated() {
+            let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index + 1)", labelText: item.name)
             horizontalStackView.addArrangedSubview(cardView)
         }
 
@@ -211,7 +191,7 @@ class HomeViewController: UIViewController {
     }
     
     // MARK: - Create Horizontal Card View
-    private func createHorizontalCardView(item: HorizontalCardItem, backgroundImageName: String, labelText: String) -> UIView {
+    private func createHorizontalCardView(item: FurnitureItem, backgroundImageName: String, labelText: String) -> UIView {
         let cardView = UIView()
         cardView.layer.cornerRadius = 40
         cardView.clipsToBounds = true
@@ -226,7 +206,7 @@ class HomeViewController: UIViewController {
         backgroundImageView.alpha = 0.90 // Set opacity to 75%
         cardView.addSubview(backgroundImageView)
 
-        // Add text label at the bottom left
+        // Add text label at the bottom right
         let textLabel = UILabel()
         textLabel.text = labelText
         textLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
@@ -234,14 +214,14 @@ class HomeViewController: UIViewController {
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(textLabel)
 
-        
+        // Add image button at the top left corner
         let imageButton = UIButton(type: .custom)
         imageButton.translatesAutoresizingMaskIntoConstraints = false
 
-        
+        // Configure the button using UIButtonConfiguration
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "cube.transparent")?.withTintColor(.white.withAlphaComponent(0.95), renderingMode: .alwaysOriginal)
-        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8) 
+        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8) // Add padding inside the button
         imageButton.configuration = config
 
         // Set button background and corner radius
@@ -261,9 +241,9 @@ class HomeViewController: UIViewController {
             backgroundImageView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
             backgroundImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
 
-            // Text label constraints
-            textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
+            // Text label constraints (updated for right alignment)
+            textLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16), // Right-aligned with 16-point margin
+            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16), // Bottom-aligned with 16-point margin
 
             // Image button constraints
             imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
@@ -303,7 +283,7 @@ class HomeViewController: UIViewController {
         topSegmentedControl.setTitleTextAttributes(activeAttribute, for: .selected)
         bottomSheetView.addSubview(topSegmentedControl)
 
-        bottomSheetTopConstraint = bottomSheetView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -view.frame.height / 1.95)
+        bottomSheetTopConstraint = bottomSheetView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -view.frame.height / 2.2)
 
         NSLayoutConstraint.activate([
             bottomSheetTopConstraint,
@@ -399,7 +379,7 @@ class HomeViewController: UIViewController {
             )
             
             userNameText.append(NSAttributedString(
-                string: "Cook",
+                string: User1.name,
                 attributes: [
                     .font: isExpanded
                         ? UIFont.systemFont(ofSize: 16, weight: .semibold) // Smaller font when expanded
@@ -439,64 +419,64 @@ class HomeViewController: UIViewController {
 // MARK: - UICollectionView Delegate & Data Source
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return topSegmentedControl.selectedSegmentIndex == 0 ? mySpacesItems.count : catalogueItems.count
+        return topSegmentedControl.selectedSegmentIndex == 0 ? roomCategories.count : furnitureCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if topSegmentedControl.selectedSegmentIndex == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RoomCardCell.reuseIdentifier, for: indexPath) as! RoomCardCell
-            cell.configure(with: mySpacesItems[indexPath.item])
+            cell.configure(with: roomCategories[indexPath.item])
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CatalogueCardCell.reuseIdentifier, for: indexPath) as! CatalogueCardCell
-            cell.configure(with: catalogueItems[indexPath.item])
+            cell.configure(with: furnitureCategories[indexPath.item])
             return cell
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let spacing: CGFloat = 8 // Minimal horizontal and vertical spacing
+        let spacing: CGFloat = 10 // Minimal horizontal and vertical spacing
         let numberOfColumns: CGFloat = 2 // Two columns for both sections
         let totalSpacing = (numberOfColumns - 1) * spacing
-        let width = (collectionView.bounds.width - totalSpacing - 16) / numberOfColumns // Adjusted for leading/trailing padding
+        let width = (collectionView.bounds.width - totalSpacing) / numberOfColumns // Adjusted for leading/trailing padding
         return CGSize(width: width, height: width) // Square cards
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 4 // Minimal horizontal spacing between items
+        return 10 // Minimal horizontal spacing between items
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 4 // Minimal vertical spacing between rows
+        return 10 // Minimal vertical spacing between rows
     }
-    // MARK: - Selection Item
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         
         if topSegmentedControl.selectedSegmentIndex == 1 {
             let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
-            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
-                let selectedItem = catalogueItems[indexPath.item]
-                if let furnitureCategory = selectedItem.category as? FurnitureCategory {
-                    destinationVC.furnitureCategory = furnitureCategory  // Pass data
-                }
-                navigationController?.pushViewController(destinationVC, animated: true)
-            }
-        }   else{
-                print("Item selected at indexPath: \(indexPath)")
-                let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
-                if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
-                    let selectedItem = mySpacesItems[indexPath.item]
-                    if let roomCategory = selectedItem.category as? RoomCategory {
-                        destinationVC.roomCategory = roomCategory // Pass data
-                        print(roomCategory)
-                    }
+                if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
+                    let selectedCategoryType = furnitureCategories[indexPath.item] // FurnitureCategoryType
+                    
+                    // Create a FurnitureCategory object with the selected category type
+                    let furnitureItems = FurnitureDataProvider.shared.fetchFurnitureItems(for: selectedCategoryType)
+                    let furnitureCategory = FurnitureCategory(category: selectedCategoryType, furnitureItems: furnitureItems)
+                    
+                    // Assign the created FurnitureCategory to the destination VC
+                    destinationVC.furnitureCategory = furnitureCategory
+                    
                     navigationController?.pushViewController(destinationVC, animated: true)
                 }
-            }
-}
-    
-}
+        }else{  print("Item selected at indexPath: \(indexPath)")
+            let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
+            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
+                let selectedItem = roomCategories[indexPath.item]
+                if let roomCategory = selectedItem as? RoomCategory {
+                    destinationVC.roomCategory = roomCategory // Pass data
+                    print(roomCategory)}
+                navigationController?.pushViewController(destinationVC, animated: true)}
+        }
+        
+    }}
 
 // MARK: - Custom Room Card Cell
 class RoomCardCell: UICollectionViewCell {
@@ -549,9 +529,9 @@ class RoomCardCell: UICollectionViewCell {
         ])
     }
 
-    func configure(with room: GridItem) {
-        imageView.image = room.image
-        roomNameLabel.text = room.title
+    func configure(with category: RoomCategoryType) {
+        imageView.image = UIImage(named: category.thumbnail)
+        roomNameLabel.text = category.rawValue
     }
 }
 
@@ -612,8 +592,8 @@ class CatalogueCardCell: UICollectionViewCell {
         ])
     }
 
-    func configure(with item: GridItem) {
-        imageView.image = item.image
-        titleLabel.text = item.title
+    func configure(with category: FurnitureCategoryType) {
+        imageView.image = UIImage(named: category.thumbnail)
+        titleLabel.text = category.rawValue
     }
 }
