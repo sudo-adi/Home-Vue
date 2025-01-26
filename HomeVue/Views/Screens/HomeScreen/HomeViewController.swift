@@ -449,19 +449,33 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 10 // Minimal vertical spacing between rows
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if(topSegmentedControl.selectedSegmentIndex==0){
-        print("Item selected at indexPath: \(indexPath)")
-        let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
-        if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
-        let selectedItem = roomCategories[indexPath.item]
-        if let roomCategory = selectedItem as? RoomCategory {
-        destinationVC.roomCategory = roomCategory // Pass data
-        print(roomCategory)}
-        navigationController?.pushViewController(destinationVC, animated: true)}
+            print("Item selected at indexPath: \(indexPath)")
+            let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
+            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
+                let selectedItem = roomCategories[indexPath.item]
+                if let roomCategory = selectedItem as? RoomCategory {
+                    destinationVC.roomCategory = roomCategory // Pass data
+                    print(roomCategory)}
+                navigationController?.pushViewController(destinationVC, animated: true)}
+        }else{
+            let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
+            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
+                let selectedCategoryType = furnitureCategories[indexPath.item] // FurnitureCategoryType
+                
+                // Create a FurnitureCategory object with the selected category type
+                let furnitureItems = FurnitureDataProvider.shared.fetchFurnitureItems(for: selectedCategoryType)
+                let furnitureCategory = FurnitureCategory(category: selectedCategoryType, furnitureItems: furnitureItems)
+                
+                // Assign the created FurnitureCategory to the destination VC
+                destinationVC.furnitureCategory = furnitureCategory
+                
+                navigationController?.pushViewController(destinationVC, animated: true)}
         }
-    }}
+    }
+}
 
 // MARK: - Custom Room Card Cell
 class RoomCardCell: UICollectionViewCell {
