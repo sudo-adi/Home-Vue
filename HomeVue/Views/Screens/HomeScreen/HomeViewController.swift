@@ -464,14 +464,9 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
                 let selectedCategoryType = furnitureCategories[indexPath.item] // FurnitureCategoryType
-                
-                // Create a FurnitureCategory object with the selected category type
                 let furnitureItems = FurnitureDataProvider.shared.fetchFurnitureItems(for: selectedCategoryType)
                 let furnitureCategory = FurnitureCategory(category: selectedCategoryType, furnitureItems: furnitureItems)
-                
-                // Assign the created FurnitureCategory to the destination VC
                 destinationVC.furnitureCategory = furnitureCategory
-                
                 navigationController?.pushViewController(destinationVC, animated: true)}
         }
     }
