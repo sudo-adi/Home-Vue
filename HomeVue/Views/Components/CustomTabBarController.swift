@@ -48,6 +48,7 @@ class CustomTabBarController: UITabBarController {
     private func setupViewControllers() {
         // First View Controller (Home)
         let homeVC = HomeViewController()
+        let nvc = UINavigationController(rootViewController: homeVC)
         homeVC.tabBarItem = UITabBarItem(
             title: "Home", // Empty string to ensure no label is shown
             image: UIImage(systemName: "house"), // Outlined icon
@@ -77,7 +78,7 @@ class CustomTabBarController: UITabBarController {
             )
             
             // Assuming `homeVC` and `cameraVC` are similarly instantiated or created
-            viewControllers = [homeVC, cameraVC, profileNavigationController]
+            viewControllers = [nvc,homeVC, cameraVC, profileNavigationController]
         } else {
             print("Error: Could not instantiate profileNavigationController or LoginMainPageViewController")
         }
