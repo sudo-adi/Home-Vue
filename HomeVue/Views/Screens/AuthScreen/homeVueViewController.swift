@@ -16,6 +16,7 @@ class homeVueViewController: UIViewController {
         googleButton.addCornerRadius()
         emailPhoneButton.addCornerRadius()
     }
+
     
 
     /*
