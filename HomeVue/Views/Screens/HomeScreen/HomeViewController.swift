@@ -80,7 +80,28 @@ class HomeViewController: UIViewController {
 
         // Ensure horizontal scroll view is initially visible
         horizontalScrollView.isHidden = false
+        
+        navigationController?.navigationBar.isTranslucent = false
+           self.edgesForExtendedLayout = []
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Hide the navigation bar for this view
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        // Ensure proper layout by removing extra space
+        navigationController?.navigationBar.isTranslucent = false
+        self.extendedLayoutIncludesOpaqueBars = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Restore the navigation bar for other views
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+
 
     private func setupAppBar() {
         appBarStackView.axis = .vertical
@@ -98,8 +119,8 @@ class HomeViewController: UIViewController {
         avatarImageView.layer.masksToBounds = true // Apply corner radius to the image
 
         // Set a smaller size for the avatar image view
-        avatarImageView.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        avatarImageView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        avatarImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        avatarImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
         // Create attributed text for userName
         let attributedUserName = NSMutableAttributedString(
@@ -135,9 +156,9 @@ class HomeViewController: UIViewController {
         appBarStackView.addArrangedSubview(exploreLabel)
 
         NSLayoutConstraint.activate([
-            appBarStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            appBarStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
             appBarStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            appBarStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            appBarStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60)
         ])
     }
 
@@ -262,7 +283,7 @@ class HomeViewController: UIViewController {
         topSegmentedControl.setTitleTextAttributes(activeAttribute, for: .selected)
         bottomSheetView.addSubview(topSegmentedControl)
 
-        bottomSheetTopConstraint = bottomSheetView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -view.frame.height / 1.95)
+        bottomSheetTopConstraint = bottomSheetView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -view.frame.height / 2.2)
 
         NSLayoutConstraint.activate([
             bottomSheetTopConstraint,
@@ -428,7 +449,11 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 10 // Minimal vertical spacing between rows
     }
-}
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if(topSegmentedControl.selectedSegmentIndex==0){
+            print("Item selected at indexPath: \(indexPath)")        }
+    }}
 
 // MARK: - Custom Room Card Cell
 class RoomCardCell: UICollectionViewCell {

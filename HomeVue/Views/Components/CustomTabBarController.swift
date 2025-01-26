@@ -49,10 +49,11 @@ class CustomTabBarController: UITabBarController {
         // First View Controller (Home)
         let homeVC = HomeViewController()
         let nvc = UINavigationController(rootViewController: homeVC)
+    
         homeVC.tabBarItem = UITabBarItem(
-            title: "Home", // Empty string to ensure no label is shown
-            image: UIImage(systemName: "house"), // Outlined icon
-            selectedImage: UIImage(systemName: "house.fill") // Filled icon for active state
+            title: "Home",
+            image: UIImage(systemName: "house"),
+            selectedImage: UIImage(systemName: "house.fill")
         )
         
         // Second View Controller (Camera)
@@ -78,13 +79,10 @@ class CustomTabBarController: UITabBarController {
             )
             
             // Assuming `homeVC` and `cameraVC` are similarly instantiated or created
-            viewControllers = [nvc,homeVC, cameraVC, profileNavigationController]
+            viewControllers = [nvc, cameraVC, profileNavigationController]
         } else {
             print("Error: Could not instantiate profileNavigationController or LoginMainPageViewController")
         }
-
-        // Set the view controllers for the tab bar
-//        viewControllers = [homeVC, cameraVC, profileVC]
     }
 
     // Show custom alert when the Camera tab is clicked
