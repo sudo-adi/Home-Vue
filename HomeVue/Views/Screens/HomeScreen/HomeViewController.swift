@@ -7,10 +7,10 @@ class HomeViewController: UIViewController {
     private let avatarImageView = UIImageView()
     private let userNameLabel = UILabel()
     private let exploreLabel = UILabel()
-    
+
     private let roomCategories = RoomCategoryType.allCases
     private let furnitureCategories = FurnitureCategoryType.allCases
-    
+
     // Horizontal Scroll View
     private let horizontalScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
-    
+
     private let horizontalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -26,7 +26,7 @@ class HomeViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-    
+
     // New collection view and segmented controls
     private let topSegmentedControl = UISegmentedControl(items: ["My Spaces", "Catalogue"])
     private let gridCollectionView: UICollectionView = {
@@ -51,26 +51,26 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         // Create the gradient layer
         let gradientLayer = CAGradientLayer()
-        
+
         // Set the gradient colors
         gradientLayer.colors = [
             UIColor(red: 135/255.0, green: 122/255.0, blue: 120/255.0, alpha: 1.0).cgColor,
             UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0).cgColor,
         ]
-        
+
         // Set the gradient locations (optional)
         gradientLayer.locations = [0.0, 1.0] // Start and end points (0% to 100%)
-        
+
         // Set the start and end points for gradient direction
         gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0) // Top-left
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0) // Bottom-right
-        
+
         // Set the frame of the gradient to match the view
         gradientLayer.frame = view.bounds
-        
+
         // Add the gradient layer to the view's layer
         view.layer.insertSublayer(gradientLayer, at: 0)
-        
+
         setupAppBar()
         setupHorizontalScrollView()
         setupBottomSheet()
@@ -80,16 +80,16 @@ class HomeViewController: UIViewController {
 
         // Ensure horizontal scroll view is initially visible
         horizontalScrollView.isHidden = false
-        
+
         navigationController?.navigationBar.isTranslucent = false
            self.edgesForExtendedLayout = []
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         // Hide the navigation bar for this view
         navigationController?.setNavigationBarHidden(true, animated: false)
-        
+
         // Ensure proper layout by removing extra space
         navigationController?.navigationBar.isTranslucent = false
         self.extendedLayoutIncludesOpaqueBars = true
@@ -97,7 +97,7 @@ class HomeViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         // Restore the navigation bar for other views
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
@@ -130,7 +130,7 @@ class HomeViewController: UIViewController {
                 .foregroundColor: UIColor.white
             ]
         )
-        
+
         attributedUserName.append(NSAttributedString(
             string: User1.name,
             attributes: [
@@ -189,7 +189,7 @@ class HomeViewController: UIViewController {
             horizontalStackView.bottomAnchor.constraint(equalTo: horizontalScrollView.bottomAnchor)
         ])
     }
-    
+
     // MARK: - Create Horizontal Card View
     private func createHorizontalCardView(item: FurnitureItem, backgroundImageName: String, labelText: String) -> UIView {
         let cardView = UIView()
@@ -203,14 +203,27 @@ class HomeViewController: UIViewController {
         backgroundImageView.clipsToBounds = true
         backgroundImageView.layer.cornerRadius = 40
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
-        backgroundImageView.alpha = 0.90 // Set opacity to 75%
+        backgroundImageView.alpha = 0.90 // Set opacity to 90%
         cardView.addSubview(backgroundImageView)
+
+        // Add semi-transparent black overlay
+        let overlayView = UIView()
+        overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        cardView.addSubview(overlayView)
+
+        // Add furniture image
+        let furnitureImageView = UIImageView(image: item.image)
+        furnitureImageView.contentMode = .scaleAspectFit
+        furnitureImageView.clipsToBounds = true
+        furnitureImageView.translatesAutoresizingMaskIntoConstraints = false
+        cardView.addSubview(furnitureImageView)
 
         // Add text label at the bottom right
         let textLabel = UILabel()
         textLabel.text = labelText
         textLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        textLabel.textColor = .black // Set text color to black
+        textLabel.textColor = .white // Changed to white for better visibility
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(textLabel)
 
@@ -221,12 +234,11 @@ class HomeViewController: UIViewController {
         // Configure the button using UIButtonConfiguration
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "cube.transparent")?.withTintColor(.white.withAlphaComponent(0.95), renderingMode: .alwaysOriginal)
-        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8) // Add padding inside the button
+        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         imageButton.configuration = config
 
-        // Set button background and corner radius
-        imageButton.backgroundColor = UIColor.white.withAlphaComponent(0.5) // 50% opacity white background
-        imageButton.layer.cornerRadius = 20 // Half of the height to make it rounded
+        imageButton.backgroundColor = UIColor.white.withAlphaComponent(0.5)
+        imageButton.layer.cornerRadius = 20
         imageButton.clipsToBounds = true
 
         cardView.addSubview(imageButton)
@@ -241,15 +253,27 @@ class HomeViewController: UIViewController {
             backgroundImageView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
             backgroundImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
 
-            // Text label constraints (updated for right alignment)
-            textLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16), // Right-aligned with 16-point margin
-            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16), // Bottom-aligned with 16-point margin
+            // Overlay constraints
+            overlayView.topAnchor.constraint(equalTo: cardView.topAnchor),
+            overlayView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
+
+            // Furniture image constraints - larger size and overflow effect
+            furnitureImageView.centerXAnchor.constraint(equalTo: cardView.centerXAnchor),
+            furnitureImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
+            furnitureImageView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 1.1), // 110% of card width
+            furnitureImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 1.1), // 110% of card height
+
+            // Text label constraints
+            textLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
 
             // Image button constraints
             imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
             imageButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            imageButton.widthAnchor.constraint(equalToConstant: 40), // Set button size
-            imageButton.heightAnchor.constraint(equalToConstant: 40) // Set button size
+            imageButton.widthAnchor.constraint(equalToConstant: 40),
+            imageButton.heightAnchor.constraint(equalToConstant: 40)
         ])
 
         return cardView
@@ -310,7 +334,7 @@ class HomeViewController: UIViewController {
         // Register cell
         gridCollectionView.register(RoomCardCell.self, forCellWithReuseIdentifier: RoomCardCell.reuseIdentifier)
         gridCollectionView.register(CatalogueCardCell.self, forCellWithReuseIdentifier: CatalogueCardCell.reuseIdentifier)
-        
+
         // Set delegate and data source
         gridCollectionView.delegate = self
         gridCollectionView.dataSource = self
@@ -322,7 +346,7 @@ class HomeViewController: UIViewController {
             gridCollectionView.bottomAnchor.constraint(equalTo: bottomSheetView.bottomAnchor, constant: -16)
         ])
     }
-    
+
     private func setupPanGesture() {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
         bottomSheetView.addGestureRecognizer(panGesture)
@@ -366,7 +390,7 @@ class HomeViewController: UIViewController {
             self.appBarStackView.axis = isExpanded ? .horizontal : .vertical
             self.appBarStackView.spacing = isExpanded ? 16 : 8
             self.appBarStackView.alignment = isExpanded ? .fill : .leading
-            
+
             // Update font sizes for expanded/collapsed states
             let userNameText = NSMutableAttributedString(
                 string: "Hi ",
@@ -377,7 +401,7 @@ class HomeViewController: UIViewController {
                     .foregroundColor: UIColor.white
                 ]
             )
-            
+
             userNameText.append(NSAttributedString(
                 string: User1.name,
                 attributes: [
@@ -387,9 +411,9 @@ class HomeViewController: UIViewController {
                     .foregroundColor: UIColor.white
                 ]
             ))
-            
+
             self.userNameLabel.attributedText = userNameText
-            
+
             // Update explore label font
             self.exploreLabel.font = isExpanded
                 ? UIFont.systemFont(ofSize: 16, weight: .thin) // Smaller font when expanded
@@ -421,7 +445,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return topSegmentedControl.selectedSegmentIndex == 0 ? roomCategories.count : furnitureCategories.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if topSegmentedControl.selectedSegmentIndex == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RoomCardCell.reuseIdentifier, for: indexPath) as! RoomCardCell
@@ -433,7 +457,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return cell
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let spacing: CGFloat = 10 // Minimal horizontal and vertical spacing
         let numberOfColumns: CGFloat = 2 // Two columns for both sections
@@ -441,15 +465,15 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let width = (collectionView.bounds.width - totalSpacing) / numberOfColumns // Adjusted for leading/trailing padding
         return CGSize(width: width, height: width) // Square cards
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 10 // Minimal horizontal spacing between items
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 10 // Minimal vertical spacing between rows
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if(topSegmentedControl.selectedSegmentIndex==0){
             print("Item selected at indexPath: \(indexPath)")
