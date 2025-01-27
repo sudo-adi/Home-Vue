@@ -265,7 +265,7 @@ class CustomTabBarController: UITabBarController {
         }
 
         // Open CaptureViewController
-        let captureVC = CaptureViewController()
+        let captureVC = Room3DViewController()
         captureVC.modalPresentationStyle = .fullScreen
         self.present(captureVC, animated: true, completion: nil)
     }
