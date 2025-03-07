@@ -2,14 +2,12 @@ import UIKit
 
 class CustomTabBarController: UITabBarController {
 
-//    static let identifier = "CustomTabBarController"
     private let customTabBarBackground = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
         setupViewControllers()
-//        self.restorationIdentifier = "CustomTabBarController"
         self.delegate = self // Set the delegate to handle tab selection
     }
 
@@ -255,7 +253,6 @@ class CustomTabBarController: UITabBarController {
             })
         }
     }
-
     @objc private func createButtonTapped() {
         // Dismiss the custom alert with animation
         if let containerView = view.subviews.last {
@@ -266,11 +263,14 @@ class CustomTabBarController: UITabBarController {
             })
         }
 
-        // Open CaptureViewController
-        let captureVC = Room3DViewController()
-        captureVC.modalPresentationStyle = .fullScreen
-        self.present(captureVC, animated: true, completion: nil)
+        // Open CaptureViewController using the correct storyboard
+        let storyboard = UIStoryboard(name: "RoomCaptureView", bundle: nil)
+        if let captureVC = storyboard.instantiateViewController(withIdentifier: "RoomCaptureViewNavigationController") as? UINavigationController {
+            captureVC.modalPresentationStyle = .fullScreen
+            self.present(captureVC, animated: true, completion: nil)
+        }
     }
+
 }
 
 // MARK: - UITabBarControllerDelegate
