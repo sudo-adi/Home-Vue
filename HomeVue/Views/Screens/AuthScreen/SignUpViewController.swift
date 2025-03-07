@@ -12,6 +12,7 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var continueButton: UIButton!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var reEnterPasswordTextField: UITextField!
     @IBOutlet weak var signUpView: UIView!
     @IBOutlet weak var phoneTextField: UITextField!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
@@ -33,10 +34,16 @@ class SignUpViewController: UIViewController {
         emailTextField.setPadding(left: 10, right: 10)
         emailTextField.addCornerRadius(17)
         passwordTextField.configureText(
-            placeholder: "Password",
+            placeholder: "Enter Password",
             placeholderColor: UIColor.lightGray)
         passwordTextField.setPadding(left: 10, right: 10)
         passwordTextField.addCornerRadius()
+        
+        reEnterPasswordTextField.configureText(
+            placeholder: "Re-enter Password",
+            placeholderColor: UIColor.lightGray)
+        reEnterPasswordTextField.setPadding(left: 10, right: 10)
+        reEnterPasswordTextField.addCornerRadius()
         
         backNavigationItem.titleView?.tintColor = UIColor.white
         continueButton.addCornerRadius()
@@ -50,36 +57,43 @@ class SignUpViewController: UIViewController {
        
     }
     @IBAction func changeSegment(_ sender: UISegmentedControl) {
-        sender.updateUI(emailTextField: emailTextField, passwordTextField: passwordTextField, phoneTextField: phoneTextField, parentView: self.view)
+        sender.updateUI(emailTextField: emailTextField, passwordTextField: passwordTextField, reEnterTextField: reEnterPasswordTextField, phoneTextField: phoneTextField, parentView: self.view)
     }
     func configureUI() {
-            segmentedControl.selectedSegmentIndex = 0
-            segmentedControl.updateUI(emailTextField: emailTextField, passwordTextField: passwordTextField, phoneTextField: phoneTextField, parentView: self.view)
-        }
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.updateUI(emailTextField: emailTextField, passwordTextField: passwordTextField, phoneTextField: phoneTextField, parentView: self.view)
+    }
     
 
-    @IBAction func continueButtonTapped(_ sender: Any) {
+    @IBAction func continueButtonTapped(_ sender: Any)  {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            handleEmailLogin(
-            email: emailTextField.text,
-            password: passwordTextField.text)
+            // Email Sign-In Validation
+            guard let password = passwordTextField.text, !password.isEmpty,
+                  let reEnterPassword = reEnterPasswordTextField.text, !reEnterPassword.isEmpty else {
+                showAlert(on: self, message: "Please fill in both password fields.")
+                return
+            }
+
+            guard password == reEnterPassword else {
+                showAlert(on: self, message: "Passwords do not match.")
+                return
+            }
+
+            // Proceed if passwords are valid
+            handleEmailLogin(from: self, email: emailTextField.text, password: password)
+
         case 1:
-            handlePhoneLogin(
-            phone: phoneTextField.text)
+            // Phone Sign-In
+            handlePhoneLogin(from: self, phone: phoneTextField.text)
+        
         default:
             break
         }
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    @IBAction func loginButtonTapped(_ sender: Any) {
+        navigationController?.popViewController(animated: true)
     }
-    */
-
 }

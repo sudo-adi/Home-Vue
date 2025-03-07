@@ -58,7 +58,10 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
 
         override func viewWillDisappear(_ animated: Bool) {
             super.viewWillDisappear(animated)
-            resetNavigationBarAppearance()
+                resetNavigationBarAppearance()
+                
+                // Hide the tab bar when navigating away from this screen
+                self.tabBarController?.tabBar.isHidden = true
         }
 
         // MARK: - Setup Methods
@@ -122,6 +125,8 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             cell.imageView?.tintColor = rowData.isRed ? .red : .systemGray
             cell.accessoryType = .disclosureIndicator
 
+             cell.accessoryType = rowData.title == "Log out" ? .none : .disclosureIndicator
+
             return cell
         }
 
@@ -164,28 +169,38 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
 
         // MARK: - Helper Functions
     private func handleLogout() {
-        // Debugging message
+        let alertController = UIAlertController(title: "Log Out",
+                                            message: "Are you sure you want to log out?",
+                                            preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let logoutAction = UIAlertAction(title: "Log Out", style: .destructive) { _ in
+            self.performLogout()
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(logoutAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+
+    private func performLogout() {
         print("Logging out...")
 
-        // Instantiate HomeVueViewController using its Storyboard ID
+        // Instantiate HomeVueViewController from storyboard
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         guard let homeVueVC = storyboard.instantiateViewController(withIdentifier: "HomeVueViewController") as? homeVueViewController else {
             print("Failed to instantiate HomeVueViewController")
             return
         }
-
-        // Set HomeVueViewController as the root view controller
+        
+        let navigationController = UINavigationController(rootViewController: homeVueVC)
+        
         if let window = UIApplication.shared.windows.first {
-            let navigationController = UINavigationController(rootViewController: homeVueVC)
             window.rootViewController = navigationController
             window.makeKeyAndVisible()
-
-            // Optionally, add a transition animation
-            UIView.transition(with: window, duration: 0.5, options: .allowAnimatedContent, animations: nil, completion: nil)
         }
     }
-
-    
 
     
     
