@@ -1,6 +1,21 @@
 import UIKit
 
 class CustomTabBarController: UITabBarController {
+    
+    func hideTabBar() {
+        UIView.animate(withDuration: 0.0) {
+            self.tabBar.alpha = 0
+            self.customTabBarBackground.alpha = 0
+        }
+    }
+
+    // Method to show the tab bar and its custom background
+    func showTabBar() {
+        UIView.animate(withDuration: 0.0) {
+            self.tabBar.alpha = 1
+            self.customTabBarBackground.alpha = 1
+        }
+    }
 
 //    static let identifier = "CustomTabBarController"
     private let customTabBarBackground = UIView()
@@ -99,7 +114,7 @@ class CustomTabBarController: UITabBarController {
         let titleLabel = UILabel()
         titleLabel.text = "Scan Your Room"
         titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold) // Increased size and lighter weight
-        titleLabel.textColor = UIColor(red: 255/255, green: 247/255, blue: 231/255, alpha: 0.9) // FFF7E7 with 90% opacity
+        titleLabel.textColor = UIColor(red: 255/255, green: 247/255, blue: 231/255, alpha: 1.0) // FFF7E7 with 90% opacity
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         alertView.addSubview(titleLabel)
@@ -110,6 +125,23 @@ class CustomTabBarController: UITabBarController {
         roomNameTextField.borderStyle = .roundedRect
         roomNameTextField.backgroundColor = UIColor(red: 255/255, green: 247/255, blue: 231/255, alpha: 1.0) // FFF7E7
         roomNameTextField.translatesAutoresizingMaskIntoConstraints = false
+
+        // Center the typed text
+        roomNameTextField.textAlignment = .center // This ensures typed text is centered ✅
+
+        // Create a paragraph style to center placeholder text
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+
+        // Set the placeholder with centered text
+        roomNameTextField.attributedPlaceholder = NSAttributedString(
+            string: "Room Name",
+            attributes: [
+                .foregroundColor: UIColor.darkGray, // Placeholder text color
+                .paragraphStyle: paragraphStyle
+            ]
+        )
+
         alertView.addSubview(roomNameTextField)
 
         // Add Room Type Selector Button

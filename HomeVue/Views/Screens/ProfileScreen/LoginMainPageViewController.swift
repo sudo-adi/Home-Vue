@@ -58,10 +58,7 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
 
         override func viewWillDisappear(_ animated: Bool) {
             super.viewWillDisappear(animated)
-                resetNavigationBarAppearance()
-                
-                // Hide the tab bar when navigating away from this screen
-                self.tabBarController?.tabBar.isHidden = true
+            resetNavigationBarAppearance()
         }
 
         // MARK: - Setup Methods

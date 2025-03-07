@@ -57,14 +57,24 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-            
-        if let navigationBar = self.navigationController?.navigationBar {
-            navigationBar.titleTextAttributes = [ .foregroundColor: UIColor.gradientEndColor]
-            navigationBar.tintColor = UIColor.gradientEndColor
-                
+//        customizeNavigationBar()
+
+        // Hide the tab bar when this screen appears
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            tabBarController.hideTabBar()
         }
-        
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+//        resetNavigationBarAppearance()
+
+        // Show the tab bar again when leaving this screen
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            tabBarController.showTabBar()
+        }
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()

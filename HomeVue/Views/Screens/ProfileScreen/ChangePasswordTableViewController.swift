@@ -16,7 +16,16 @@ class ChangePasswordTableViewController: UITableViewController {
             navigationBar.titleTextAttributes = [ .foregroundColor: UIColor.gradientEndColor]
             navigationBar.tintColor = UIColor.gradientEndColor
         }
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            tabBarController.hideTabBar()
+        }
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            tabBarController.showTabBar()
+        }
     }
     
     override func viewDidLoad() {
