@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Room Capture View Controller-->
+        <scene sceneID="0Xg-Bd-9h3">
+            <objects>
+                <viewController storyboardIdentifier="RoomCaptureViewController" id="IDu-ff-w8x" customClass="RoomCaptureViewController" customModule="HomeVue" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Jjh-XH-cL8">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" role="primary" translatesAutoresizingMaskIntoConstraints="NO" id="ymC-Lq-m5I">
+                                <rect key="frame" x="121.66666666666669" y="719" width="150" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="dcz-Pf-2Ku"/>
+                                    <constraint firstAttribute="height" constant="50" id="ips-Tc-B0D"/>
+                                </constraints>
+                                <color key="tintColor" systemColor="systemBlueColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Export" cornerStyle="capsule">
+                                    <backgroundConfiguration key="background"/>
+                                    <fontDescription key="titleFontDescription" style="UICTFontTextStyleHeadline"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="exportResults:" destination="IDu-ff-w8x" eventType="touchUpInside" id="5y3-S2-fkq"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="a18-Iq-41G"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ymC-Lq-m5I" firstAttribute="bottom" secondItem="a18-Iq-41G" secondAttribute="bottom" id="6wF-5B-RX7"/>
+                            <constraint firstItem="ymC-Lq-m5I" firstAttribute="centerX" secondItem="Jjh-XH-cL8" secondAttribute="centerX" id="Czj-ga-fdk"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="ake-sh-sx3">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="sBF-NL-k6u">
+                            <connections>
+                                <action selector="cancelScanning:" destination="IDu-ff-w8x" id="Eb3-31-Gxg"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="LGB-eG-3tI">
+                            <connections>
+                                <action selector="doneScanning:" destination="IDu-ff-w8x" id="aeX-Eg-Eha"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="cancelButton" destination="sBF-NL-k6u" id="Qba-zW-VDP"/>
+                        <outlet property="doneButton" destination="LGB-eG-3tI" id="V6n-mp-OYY"/>
+                        <outlet property="exportButton" destination="ymC-Lq-m5I" id="s06-Jp-7lE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eT4-7M-Ius" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-49" y="133"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="4Ci-BX-AbE">
+            <objects>
+                <navigationController storyboardIdentifier="RoomCaptureViewNavigationController" id="mZT-EK-Xcy" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="cUc-BI-IFL">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="IDu-ff-w8x" kind="relationship" relationship="rootViewController" id="jxX-YA-R2F"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="q7v-Xf-CVd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-820" y="133"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
