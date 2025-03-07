@@ -315,9 +315,9 @@ class RoomsCollectionViewController: UICollectionViewController {
         }
 
         // Open CaptureViewController
-        let captureVC = CaptureViewController()
-        captureVC.modalPresentationStyle = .fullScreen
-        self.present(captureVC, animated: true, completion: nil)
+//        let captureVC = CaptureViewController()
+//        captureVC.modalPresentationStyle = .fullScreen
+//        self.present(captureVC, animated: true, completion: nil)
     }
 
         }
