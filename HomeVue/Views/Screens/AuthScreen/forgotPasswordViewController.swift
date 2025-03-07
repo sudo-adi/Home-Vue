@@ -54,4 +54,39 @@ class forgotPasswordViewController: UIViewController {
     }
     */
 
+    @IBAction func continueButtonTapped(_ sender: Any) {
+        let email = enterEmailTextField.text
+        let newPassword = newPasswordTextField.text
+        let confirmPassword = confirmPasswordTextField.text
+        
+        // Validate email first using handleEmailLogin logic
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+
+        guard let email = email, !email.isEmpty, emailPredicate.evaluate(with: email) else {
+            showAlert(on: self, message: "Please enter a valid email address.")
+            return
+        }
+        
+        // Ensure both password fields are filled
+        guard let newPassword = newPassword, !newPassword.isEmpty,
+              let confirmPassword = confirmPassword, !confirmPassword.isEmpty else {
+            showAlert(on: self, message: "Please fill in both password fields.")
+            return
+        }
+
+        // Check if passwords match
+        guard newPassword == confirmPassword else {
+            showAlert(on: self, message: "Passwords do not match.")
+            return
+        }
+
+        // ✅ If everything is valid, navigate to VerifyViewController
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let verifyViewController = storyboard.instantiateViewController(withIdentifier: "VerifyViewController") as? VerifyViewController {
+            navigateToViewController(from: self, destinationVC: verifyViewController)
+        } else {
+            showAlert(on: self, message: "Unable to load verification screen. Please try again.")
+        }
+    }
 }

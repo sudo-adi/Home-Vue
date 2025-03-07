@@ -2,12 +2,14 @@ import UIKit
 
 class CustomTabBarController: UITabBarController {
 
+//    static let identifier = "CustomTabBarController"
     private let customTabBarBackground = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
         setupViewControllers()
+//        self.restorationIdentifier = "CustomTabBarController"
         self.delegate = self // Set the delegate to handle tab selection
     }
 

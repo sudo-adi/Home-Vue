@@ -20,7 +20,7 @@ class VerifyViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         
         // Setup UI
-        setupUI()
+//        setupUI()
         
         // Set delegates for OTP text fields
         [otpTextField1, otpTextField2, otpTextField3, otpTextField4].forEach {
@@ -37,10 +37,15 @@ class VerifyViewController: UIViewController, UITextFieldDelegate {
     }
     
     // MARK: - UI Setup
-    private func setupUI() {
-        verifyButton.addCornerRadius()
-        resendOTPButton.addCornerRadius()
-    }
+//    private func setupUI() {
+//        if let verifyBtn = verifyButton {
+//            verifyBtn.addCornerRadius()
+//        }
+//        
+//        if let resendBtn = resendOTPButton {
+//            resendBtn.addCornerRadius()
+//        }
+//    }
     
     // MARK: - Dismiss Keyboard
     @objc func dismissKeyboard() {
@@ -80,34 +85,48 @@ class VerifyViewController: UIViewController, UITextFieldDelegate {
     }
     
     // MARK: - Verify Button Action
-    @IBAction func verifyButtonTapped(_ sender: Any) {
+    @IBAction func verifyButtonTapped(_ sender: Any)  {
         let otp = getOTP()
+        
         if otp.count == 4 {
             print("Entered OTP: \(otp)")
             
-            // Instantiate the CustomTabBarController programmatically
-            let tabBarController = CustomTabBarController()
-            tabBarController.selectedIndex = 0 // Select the first tab (Home)
-            
-            // Set the CustomTabBarController as the root view controller of the window
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = windowScene.windows.first {
-                // Add slide-in animation
-                let transition = CATransition()
-                transition.duration = 0.5
-                transition.type = CATransitionType.push
-                transition.subtype = CATransitionSubtype.fromRight
-                transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            // ✅ Check if coming from SignUpViewController
+            if let navigationController = self.navigationController,
+               let previousVC = navigationController.viewControllers.dropLast().last,
+               previousVC is SignUpViewController {
                 
-                window.layer.add(transition, forKey: kCATransition)
-                window.rootViewController = tabBarController
-                window.makeKeyAndVisible()
+                // Unwind navigation stack two pages back to reach LoginViewController
+                if let viewControllers = navigationController.viewControllers as? [UIViewController] {
+                    // Find the LoginViewController in the navigation stack
+                    for controller in viewControllers {
+                        if controller is LoginViewController {
+                            // Pop to LoginViewController
+                            navigationController.popToViewController(controller, animated: true)
+                            return
+                        }
+                    }
+                    
+                    // If LoginViewController is not in the stack, instantiate and replace stack
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    if let loginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController {
+                        navigationController.setViewControllers([loginViewController], animated: true)
+                    } else {
+                        showAlert(message: "Unable to load Login screen. Please try again.")
+                    }
+                }
+                
+            } else {
+                // ✅ Default navigation for other cases (e.g., login OTP verification)
+                let tabBarController = CustomTabBarController()
+                UIApplication.shared.windows.first?.rootViewController = tabBarController
+                UIApplication.shared.windows.first?.makeKeyAndVisible()
             }
+            
         } else {
             showAlert(message: "Please enter a 4-digit OTP.")
         }
     }
-    
     // MARK: - Show Alert
     func showAlert(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)

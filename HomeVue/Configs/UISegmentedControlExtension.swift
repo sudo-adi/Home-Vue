@@ -17,16 +17,22 @@ extension UISegmentedControl{
         self.setTitleTextAttributes([.foregroundColor: normalTextColor], for: .normal)
     }
     
-    func updateUI(emailTextField: UITextField, passwordTextField: UITextField, phoneTextField: UITextField, parentView: UIView) {
+    func updateUI(emailTextField: UITextField, passwordTextField: UITextField,reEnterTextField:UITextField?=nil, phoneTextField: UITextField, parentView: UIView) {
         switch self.selectedSegmentIndex {
         case 0:
             emailTextField.isHidden = false
             passwordTextField.isHidden = false
             phoneTextField.isHidden = true
+            if let reEnterTextField = reEnterTextField{
+                reEnterTextField.isHidden = false
+            }
         case 1:
             emailTextField.isHidden = true
             passwordTextField.isHidden = true
             phoneTextField.isHidden = false
+            if let reEnterTextField = reEnterTextField{
+                reEnterTextField.isHidden = true
+            }
         default:
             break
         }

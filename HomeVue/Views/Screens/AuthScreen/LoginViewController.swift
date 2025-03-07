@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PracViewController: UIViewController {
+class LoginViewController: UIViewController {
 
     @IBOutlet weak var loginView: UIView!
     @IBOutlet weak var emailTextField: UITextField!
@@ -70,16 +70,17 @@ class PracViewController: UIViewController {
     @IBAction func continueButtonTapped(_ sender: Any) {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            handleEmailLogin(
-            email: emailTextField.text,
-            password: passwordTextField.text)
+            // Email login validation & navigation
+            handleEmailLogin(from: self, email: emailTextField.text, password: passwordTextField.text)
+            
         case 1:
-            handlePhoneLogin(
-            phone: phoneTextField.text)
+            // Phone login validation & navigation
+            handlePhoneLogin(from: self, phone: phoneTextField.text)
+            
         default:
             break
         }
-            }
+    }
     
     
     /*
@@ -91,5 +92,19 @@ class PracViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    func showAlert(message: String) {
+            let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+        }
+    
+    func navigateToVerifyViewController(email: String) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let verifyVC = storyboard.instantiateViewController(withIdentifier: "VerifyViewController") as? VerifyViewController {
+            //verifyVC.email = email  // Pass email if needed
+            navigationController?.pushViewController(verifyVC, animated: true)
+        }
+    }
+    
 
 }
