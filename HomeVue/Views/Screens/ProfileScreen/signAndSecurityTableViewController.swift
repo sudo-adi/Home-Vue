@@ -24,7 +24,10 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
             
             // Fetch updated user data
             updateUserInterface()
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            tabBarController.hideTabBar()
         }
+    }
 
         override func viewWillDisappear(_ animated: Bool) {
             super.viewWillDisappear(animated)
@@ -33,6 +36,9 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
             if let navigationBar = self.navigationController?.navigationBar {
                 navigationBar.titleTextAttributes = nil
                 navigationBar.tintColor = nil
+            }
+            if let tabBarController = self.tabBarController as? CustomTabBarController {
+                tabBarController.showTabBar()
             }
         }
 
@@ -55,6 +61,14 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
             EmailLAbel.text = User1.email
             MobileNumberLabel.text = User1.phoneNumber
         }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let header = view as? UITableViewHeaderFooterView {
+            header.textLabel?.textColor = .white // Set text color to white
+//            header.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold) // Optional: Adjust font size and weight
+        }
+    }
+
 
 //    @IBOutlet weak var ChangePassword: UIButton! // Ensure this is connected in the storyboard
 
