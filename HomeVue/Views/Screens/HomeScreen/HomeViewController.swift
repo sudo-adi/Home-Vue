@@ -472,12 +472,17 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if(topSegmentedControl.selectedSegmentIndex==0){
             print("Item selected at indexPath: \(indexPath)")
-            let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
-            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
-                let selectedItem = roomCategories[indexPath.item]
-                if let roomCategory = selectedItem as? RoomCategory {
-                    destinationVC.roomCategory = roomCategory // Pass data
-                    print(roomCategory)}
+            let selectedCategoryType = roomCategories[indexPath.item]
+                   print("Selected category: \(selectedCategoryType.rawValue)")
+                   guard let roomCategory = RoomDataProvider.shared.roomCategories.first(where: { $0.category == selectedCategoryType }) else {
+                       print("Error: No matching RoomCategory found for \(selectedCategoryType.rawValue)")
+                       return
+                   }
+
+                   let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
+                   if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
+                       destinationVC.roomCategory = roomCategory
+                       print("Passing roomCategory: \(roomCategory.category.rawValue)")
                 navigationController?.pushViewController(destinationVC, animated: true)}
         }else{
             let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
