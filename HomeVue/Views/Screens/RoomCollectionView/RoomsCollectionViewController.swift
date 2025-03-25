@@ -12,14 +12,8 @@ private let reuseIdentifier = "RoomCell"
 class RoomsCollectionViewController: UICollectionViewController {
     
     @IBOutlet weak var addBarButton: UIBarButtonItem!
-    
-    var rooms: [(name: String, date: String, image: UIImage, id: UUID, category: String)] = [
-        (name: "Room 2", date: "3rd Oct 2024", image: UIImage(named: "model_img") ?? UIImage(), id: UUID(), category: "Living Room"),
-        (name: "Room 1", date: "5th Oct 2024", image: UIImage(named: "model_img") ?? UIImage(), id: UUID(), category: "Bedroom"),
-        (name: "Room 3", date: "10th Oct 2024", image: UIImage(named: "model_img") ?? UIImage(), id: UUID(), category: "Kitchen")
-    ]
         var roomCategory :RoomCategory!
-  //    var rooms:[RoomModel] = []
+        var rooms:[RoomModel] = []
 
             override func viewDidLoad() {
                 super.viewDidLoad()
@@ -29,7 +23,8 @@ class RoomsCollectionViewController: UICollectionViewController {
                 
                 let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
                     collectionView.addGestureRecognizer(longPressGesture)
-//                self.title = roomCategory.category.rawValue
+                self.title = roomCategory.category.rawValue
+                rooms = RoomDataProvider.shared.getRooms(for: roomCategory.category)
             }
            func setupNavigationBarAppearance() {
                let appearance = UINavigationBarAppearance()
@@ -69,8 +64,8 @@ class RoomsCollectionViewController: UICollectionViewController {
            override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! RoomsCollectionViewCell
                let room = rooms[indexPath.item]
-               cell.nameLabel.text = room.name
-               cell.dateCreatedLabel?.text = "Created on : \(room.date)"
+               cell.nameLabel.text = room.details.name
+               cell.dateCreatedLabel?.text = "Created on : \(room.details.createdDate)"
                cell.roomImage.image = UIImage(named:"model_img")
                return cell
            }
@@ -103,7 +98,7 @@ class RoomsCollectionViewController: UICollectionViewController {
         
         let alert = UIAlertController(
             title: "Delete Room",
-            message: "Are you sure you want to delete \(roomToDelete.name)?",
+            message: "Are you sure you want to delete \(roomToDelete.details.name)?",
             preferredStyle: .alert
         )
         
@@ -111,7 +106,7 @@ class RoomsCollectionViewController: UICollectionViewController {
         
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
             // Remove room from the RoomDataProvider
-            RoomDataProvider.shared.removeRoom(from: RoomCategoryType(rawValue: roomToDelete.category) ?? .bathroom, byId: roomToDelete.id)
+            RoomDataProvider.shared.removeRoom(from: RoomCategoryType(rawValue: roomToDelete.category.rawValue) ?? .bathroom, byId: roomToDelete.details.id)
             
             // Also remove from the local rooms array used for collection view display
             self.rooms.remove(at: index)
