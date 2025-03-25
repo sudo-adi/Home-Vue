@@ -165,20 +165,15 @@ class HomeViewController: UIViewController {
     // MARK: - Horizontal Scroll View Setup
     private func setupHorizontalScrollView() {
         view.addSubview(horizontalScrollView)
+        
         horizontalScrollView.addSubview(horizontalStackView)
-
-        // Create and add card views
-//        for (index, item) in adCards.enumerated() {
-//            let cardView = createHorizontalCardView(item: item, backgroundImageName: "HeroBg\(index + 1)", labelText: ["Office Table", "Chair", "Dining Table"][index])
-//            horizontalStackView.addArrangedSubview(cardView)
-//        }
         for (index, item) in adCards.enumerated() {
             let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index + 1)", labelText: item.name)
             horizontalStackView.addArrangedSubview(cardView)
         }
 
         NSLayoutConstraint.activate([
-            horizontalScrollView.topAnchor.constraint(equalTo: appBarStackView.bottomAnchor, constant: 20),
+            horizontalScrollView.topAnchor.constraint(equalTo: appBarStackView.bottomAnchor, constant: 10),
             horizontalScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             horizontalScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             horizontalScrollView.heightAnchor.constraint(equalToConstant: 190),
@@ -193,7 +188,7 @@ class HomeViewController: UIViewController {
     // MARK: - Create Horizontal Card View
     private func createHorizontalCardView(item: FurnitureItem, backgroundImageName: String, labelText: String) -> UIView {
         let cardView = UIView()
-        cardView.layer.cornerRadius = 40
+        cardView.layer.cornerRadius = 30
         cardView.clipsToBounds = true
         cardView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -201,7 +196,7 @@ class HomeViewController: UIViewController {
         let backgroundImageView = UIImageView(image: UIImage(named: backgroundImageName))
         backgroundImageView.contentMode = .scaleAspectFill
         backgroundImageView.clipsToBounds = true
-        backgroundImageView.layer.cornerRadius = 40
+        backgroundImageView.layer.cornerRadius = 30
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
         backgroundImageView.alpha = 0.90 // Set opacity to 90%
         cardView.addSubview(backgroundImageView)
