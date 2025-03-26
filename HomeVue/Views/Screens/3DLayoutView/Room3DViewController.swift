@@ -1,15 +1,11 @@
-//
-//  Room3DViewController.swift
-//  HomeVue
-//
-//  Created by Aditya Prasad on 27/01/25.
-//
-
-
 import UIKit
 import SceneKit
 
 class Room3DViewController: UIViewController {
+
+    var modelURL: URL?
+    var roomName: String?
+
     var scnView: SCNView!
     var modelNode: SCNNode!
     var cameraNode: SCNNode!
@@ -30,7 +26,7 @@ class Room3DViewController: UIViewController {
         ("KitchenFurnitureImg", "Kitchen Furniture"),
         ("OthersImg", "Others"),
         ("SeatingFurnitureImg", "Seating Furniture"),
-        ("TableImg", "Table")
+        ("TableImg", "Table"),
     ]
 
     override func viewDidLoad() {
@@ -104,14 +100,30 @@ class Room3DViewController: UIViewController {
 
 
     @objc func handleBackButton() {
-        // Dismiss the current view controller with animation
-        self.dismiss(animated: true, completion: nil)
+        // Get the key window scene
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let sceneDelegate = windowScene.delegate as? SceneDelegate else {
+            return
+        }
+        
+        // Create and set the CustomTabBarController as root
+        let tabBarController = CustomTabBarController()
+        sceneDelegate.window?.rootViewController = tabBarController
+        sceneDelegate.window?.makeKeyAndVisible()
+        
+        // Optional: Add cross dissolve transition
+        UIView.transition(with: sceneDelegate.window!,
+                          duration: 0.1,
+                          options: .transitionCrossDissolve,
+                          animations: nil,
+                          completion: nil)
     }
 
     // MARK: - Handle Scan Again Button
     @objc func handleScanAgainButton() {
-        // Handle scan again button action
-        print("Scan Again button tapped")
+        
+        self.dismiss(animated: true, completion: nil)
+
         // Add your scan again functionality here
     }
 
@@ -153,34 +165,74 @@ class Room3DViewController: UIViewController {
         directionalLightNode.position = SCNVector3(0, 10, 10) // Position the light
         directionalLightNode.eulerAngles = SCNVector3(-Float.pi / 4, Float.pi / 4, 0) // Rotate the light
         scene.rootNode.addChildNode(directionalLightNode)
+        
+        // Enhanced lighting
+           ambientLightNode.light = SCNLight()
+           ambientLightNode.light?.type = .ambient
+           ambientLightNode.light?.intensity = 1000
+           ambientLightNode.light?.color = UIColor.white
+           scene.rootNode.addChildNode(ambientLightNode)
+
+           // Key light
+           let directionalLight = SCNLight()
+           directionalLight.type = .directional
+           directionalLight.intensity = 1000
+           directionalLight.castsShadow = true
+           let directionalNode = SCNNode()
+           directionalNode.light = directionalLight
+           directionalNode.position = SCNVector3(-10, 20, 10)
+           directionalNode.eulerAngles = SCNVector3(-Float.pi/4, -Float.pi/4, -Float.pi/4)
+           scene.rootNode.addChildNode(directionalNode)
+           
+           // Fill light
+           let fillLight = SCNLight()
+           fillLight.type = .directional
+           fillLight.intensity = 500
+           let fillNode = SCNNode()
+           fillNode.light = fillLight
+           fillNode.position = SCNVector3(10, 10, 10)
+           scene.rootNode.addChildNode(fillNode)
     }
 
-    // MARK: - Load 3D Model
     func loadRoomModel() {
-        // Load the 3D model from the app bundle
-        let modelName = "plane" // Name of the 3D model file (e.g., .scn, .dae, .usdz)
-        guard let modelURL = Bundle.main.url(forResource: modelName, withExtension: "usdz") else {
-            print("Failed to find the 3D model in the bundle.")
+        guard let modelURL = self.modelURL else {
+            print("No model URL provided")
             return
         }
 
-        // Load the 3D model from the URL
-        guard let modelScene = try? SCNScene(url: modelURL, options: nil) else {
-            print("Failed to load the 3D model from the URL.")
-            return
+        do {
+            // Load the USDZ file
+            let modelScene = try SCNScene(url: modelURL, options: nil)
+            modelNode = modelScene.rootNode
+
+            // Center the model
+            modelNode.position = SCNVector3(0, 0, 0)
+            
+            // Calculate screen dimensions
+            let screenSize = UIScreen.main.bounds.size
+            let scaleFactor = Float(min(screenSize.width, screenSize.height)) / 500.0
+            
+            // Apply scale (adjust the divisor as needed)
+            modelNode.scale = SCNVector3(scaleFactor, scaleFactor, scaleFactor)
+
+            // Add the model to the scene
+            scnView.scene?.rootNode.addChildNode(modelNode)
+
+            // Configure the view
+            scnView.allowsCameraControl = true
+            scnView.autoenablesDefaultLighting = true
+            scnView.backgroundColor = UIColor(hex: "#504645")
+
+        } catch {
+            print("Failed to load the 3D model: \(error)")
         }
-
-        // Get the root node of the model
-        modelNode = modelScene.rootNode
-
-        // Position the model in the scene
-        modelNode.position = SCNVector3(0, 0, 0) // Center the model
-
-        // Scale the model if it's too large
-        modelNode.scale = SCNVector3(0.5, 0.5, 0.5) // Adjust scale as needed
-
-        // Add the model to the scene
-        scnView.scene?.rootNode.addChildNode(modelNode)
+    }
+    
+    
+    deinit {
+        if let modelURL = self.modelURL {
+            try? FileManager.default.removeItem(at: modelURL)
+        }
     }
 
     // MARK: - Add Gestures for Interaction
@@ -412,9 +464,18 @@ class Room3DViewController: UIViewController {
 
     // MARK: - Handle Share Button
     @objc func handleShare() {
-        // Handle share button action
-        print("Share button tapped")
-        // Add your share functionality here
+        guard let modelURL = self.modelURL else { return }
+
+        let activityVC = UIActivityViewController(
+            activityItems: [modelURL],
+            applicationActivities: nil
+        )
+
+        if let popOver = activityVC.popoverPresentationController {
+            popOver.sourceView = shareButton
+        }
+
+        present(activityVC, animated: true)
     }
 }
 

@@ -59,8 +59,8 @@ class RoomCategory {
 struct RoomDetails {
     let id: UUID
     let name: String
-    let model3D: String
-    let modelImage: UIImage
+    let model3D: String?
+    let modelImage: UIImage?
     let createdDate: Date
 }
 
@@ -70,7 +70,7 @@ class RoomModel {
     let userId: UUID
     let category: RoomCategoryType
     
-    init(name: String, model3D: String, modelImage: UIImage, createdDate: Date, userId: UUID, category: RoomCategoryType) {
+    init(name: String, model3D: String?, modelImage: UIImage?, createdDate: Date, userId: UUID, category: RoomCategoryType) {
         self.details = RoomDetails(id: UUID(), name: name, model3D: model3D, modelImage: modelImage, createdDate: createdDate)
         self.addedFurniture = []
         self.userId = userId
