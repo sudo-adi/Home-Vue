@@ -56,8 +56,6 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="cancelButton" destination="sBF-NL-k6u" id="Qba-zW-VDP"/>
-                        <outlet property="doneButton" destination="LGB-eG-3tI" id="V6n-mp-OYY"/>
-                        <outlet property="exportButton" destination="ymC-Lq-m5I" id="s06-Jp-7lE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eT4-7M-Ius" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

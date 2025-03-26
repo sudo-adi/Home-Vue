@@ -1,6 +1,8 @@
 import UIKit
 
 class CustomTabBarController: UITabBarController {
+    private var selectedRoomName: String?
+    private var selectedRoomType: RoomCategoryType?
     
     func hideTabBar() {
         UIView.animate(withDuration: 0.0) {
@@ -101,7 +103,7 @@ class CustomTabBarController: UITabBarController {
     }
 
     // Show custom alert when the Camera tab is clicked
-    private func showCustomAlert() {
+    func showCustomAlert(preselectedCategory: RoomCategoryType? = nil) {
         // Create a custom alert view
         let alertView = UIView()
         alertView.backgroundColor = UIColor(red: 156/255, green: 138/255, blue: 124/255, alpha: 0.8) // 9C8A7C with 80% opacity
@@ -151,7 +153,7 @@ class CustomTabBarController: UITabBarController {
         roomTypeButton.addTarget(self, action: #selector(showRoomTypePicker), for: .touchUpInside)
         roomTypeButton.translatesAutoresizingMaskIntoConstraints = false
         alertView.addSubview(roomTypeButton)
-
+        
         // Add Cancel Button
         let cancelButton = UIButton(type: .system)
         cancelButton.setTitle("Cancel", for: .normal)
@@ -232,7 +234,7 @@ class CustomTabBarController: UITabBarController {
         }, completion: nil)
     }
 
-    @objc private func showRoomTypePicker() {
+    @objc func showRoomTypePicker() {
         let pickerAlert = UIAlertController(title: "Select Room Type", message: nil, preferredStyle: .actionSheet)
 
         // Set background color for the action sheet
@@ -258,8 +260,9 @@ class CustomTabBarController: UITabBarController {
         for roomType in RoomCategoryType.allCases {
             let action = UIAlertAction(title: roomType.rawValue, style: .default) { _ in
                 if let alertView = self.view.subviews.last?.subviews.first as? UIView,
-                   let roomTypeButton = alertView.subviews.compactMap({ $0 as? UIButton }).first(where: { $0.titleLabel?.text == "Select Room Type" }) {
+                   let roomTypeButton = alertView.subviews.compactMap({ $0 as? UIButton }).first{
                     roomTypeButton.setTitle(roomType.rawValue, for: .normal)
+                    self.selectedRoomType = roomType
                 }
             }
             action.setValue(UIColor(red: 57/255, green: 50/255, blue: 49/255, alpha: 1.0), forKey: "titleTextColor") // 393231
@@ -285,21 +288,45 @@ class CustomTabBarController: UITabBarController {
             })
         }
     }
+    
     @objc private func createButtonTapped() {
-        // Dismiss the custom alert with animation
-        if let containerView = view.subviews.last {
-            UIView.animate(withDuration: 0.3, animations: {
-                containerView.alpha = 0
-            }, completion: { _ in
-                containerView.removeFromSuperview()
-            })
-        }
-
-        // Open CaptureViewController using the correct storyboard
-        let storyboard = UIStoryboard(name: "RoomCaptureView", bundle: nil)
-        if let captureVC = storyboard.instantiateViewController(withIdentifier: "RoomCaptureViewNavigationController") as? UINavigationController {
-            captureVC.modalPresentationStyle = .fullScreen
-            self.present(captureVC, animated: true, completion: nil)
+        // Get the room name from the text field
+        if let alertView = view.subviews.last?.subviews.first as? UIView,
+           let roomNameTextField = alertView.subviews.compactMap({ $0 as? UITextField }).first,
+           let roomName = roomNameTextField.text, !roomName.isEmpty,
+           let roomType = selectedRoomType {
+            
+            // Store the values
+            self.selectedRoomName = roomName
+            
+            // Dismiss the custom alert with animation
+            if let containerView = view.subviews.last {
+                UIView.animate(withDuration: 0.3, animations: {
+                    containerView.alpha = 0
+                }, completion: { _ in
+                    containerView.removeFromSuperview()
+                    
+                    // Open CaptureViewController using the correct storyboard
+                    let storyboard = UIStoryboard(name: "RoomCaptureView", bundle: nil)
+                    if let captureVC = storyboard.instantiateViewController(withIdentifier: "RoomCaptureViewNavigationController") as? UINavigationController,
+                       let roomCaptureVC = captureVC.topViewController as? RoomCaptureViewController {
+                        
+                        // Set the room details
+//                        roomCaptureVC.roomName = self.selectedRoomName
+//                        roomCaptureVC.roomCategory = roomType
+                        
+                        captureVC.modalPresentationStyle = .fullScreen
+                        self.present(captureVC, animated: true, completion: nil)
+                    }
+                })
+            }
+        } else {
+            // Show error alert if room name is empty or room type is not selected
+            let alert = UIAlertController(title: "Invalid Input",
+                                        message: "Please enter a room name and select a room type.",
+                                        preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
         }
     }
 
