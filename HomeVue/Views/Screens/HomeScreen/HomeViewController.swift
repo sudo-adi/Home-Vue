@@ -49,26 +49,20 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Create the gradient layer
         let gradientLayer = CAGradientLayer()
 
-        // Set the gradient colors
         gradientLayer.colors = [
             UIColor(red: 135/255.0, green: 122/255.0, blue: 120/255.0, alpha: 1.0).cgColor,
             UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0).cgColor,
         ]
 
-        // Set the gradient locations (optional)
         gradientLayer.locations = [0.0, 1.0] // Start and end points (0% to 100%)
 
-        // Set the start and end points for gradient direction
         gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0) // Top-left
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0) // Bottom-right
 
-        // Set the frame of the gradient to match the view
         gradientLayer.frame = view.bounds
 
-        // Add the gradient layer to the view's layer
         view.layer.insertSublayer(gradientLayer, at: 0)
 
         setupAppBar()
@@ -78,7 +72,6 @@ class HomeViewController: UIViewController {
         setupGridCollectionView()
         setupSegmentedControl()
 
-        // Ensure horizontal scroll view is initially visible
         horizontalScrollView.isHidden = false
 
         navigationController?.navigationBar.isTranslucent = false
@@ -87,10 +80,8 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Hide the navigation bar for this view
         navigationController?.setNavigationBarHidden(true, animated: false)
 
-        // Ensure proper layout by removing extra space
         navigationController?.navigationBar.isTranslucent = false
         self.extendedLayoutIncludesOpaqueBars = true
     }
@@ -98,7 +89,6 @@ class HomeViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        // Restore the navigation bar for other views
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
 
@@ -111,18 +101,16 @@ class HomeViewController: UIViewController {
         view.addSubview(appBarStackView)
 
         // Avatar setup
-        avatarImageView.image = UIImage(named: "ProfileImage") // Set image to "ProfileImage"
+        avatarImageView.image = UIImage(named: "ProfileImage")
         avatarImageView.tintColor = .white
-        avatarImageView.contentMode = .scaleAspectFill // Use scaleAspectFill to fill the rounded view
-        avatarImageView.clipsToBounds = true // Ensure the image stays within the rounded bounds
-        avatarImageView.layer.cornerRadius = 25 // Half of the height to make it rounded
-        avatarImageView.layer.masksToBounds = true // Apply corner radius to the image
+        avatarImageView.contentMode = .scaleAspectFill
+        avatarImageView.clipsToBounds = true
+        avatarImageView.layer.cornerRadius = 25
+        avatarImageView.layer.masksToBounds = true
 
-        // Set a smaller size for the avatar image view
         avatarImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
         avatarImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
-        // Create attributed text for userName
         let attributedUserName = NSMutableAttributedString(
             string: "Hi ",
             attributes: [
@@ -139,18 +127,15 @@ class HomeViewController: UIViewController {
             ]
         ))
 
-        // Title label setup
         userNameLabel.attributedText = attributedUserName
         userNameLabel.numberOfLines = 1
 
-        // Explore label setup
         exploreLabel.text = "Explore something new"
         exploreLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         exploreLabel.textColor = .white
-        exploreLabel.alpha = 1 // Initially hidden for animation
+        exploreLabel.alpha = 1
         exploreLabel.numberOfLines = 1
 
-        // Add avatar and labels to the stack view
         appBarStackView.addArrangedSubview(avatarImageView)
         appBarStackView.addArrangedSubview(userNameLabel)
         appBarStackView.addArrangedSubview(exploreLabel)
@@ -192,7 +177,6 @@ class HomeViewController: UIViewController {
         cardView.clipsToBounds = true
         cardView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Add background image
         let backgroundImageView = UIImageView(image: UIImage(named: backgroundImageName))
         backgroundImageView.contentMode = .scaleAspectFill
         backgroundImageView.clipsToBounds = true
@@ -201,32 +185,27 @@ class HomeViewController: UIViewController {
         backgroundImageView.alpha = 0.90 // Set opacity to 90%
         cardView.addSubview(backgroundImageView)
 
-        // Add semi-transparent black overlay
         let overlayView = UIView()
         overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(overlayView)
 
-        // Add furniture image
         let furnitureImageView = UIImageView(image: item.image)
         furnitureImageView.contentMode = .scaleAspectFit
         furnitureImageView.clipsToBounds = true
         furnitureImageView.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(furnitureImageView)
 
-        // Add text label at the bottom right
         let textLabel = UILabel()
         textLabel.text = labelText
         textLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        textLabel.textColor = .white // Changed to white for better visibility
+        textLabel.textColor = .white
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(textLabel)
 
-        // Add image button at the top left corner
         let imageButton = UIButton(type: .custom)
         imageButton.translatesAutoresizingMaskIntoConstraints = false
 
-        // Configure the button using UIButtonConfiguration
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "arkit")?.withTintColor(.white.withAlphaComponent(0.95), renderingMode: .alwaysOriginal)
         config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
@@ -256,9 +235,9 @@ class HomeViewController: UIViewController {
 
             // Furniture image constraints - larger size and overflow effect
             furnitureImageView.centerXAnchor.constraint(equalTo: cardView.centerXAnchor),
-            furnitureImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
-            furnitureImageView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 1.1), // 110% of card width
-            furnitureImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 1.1), // 110% of card height
+            furnitureImageView.topAnchor.constraint(equalTo: cardView.topAnchor),
+            furnitureImageView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 1.1),
+            furnitureImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 1.0),
 
             // Text label constraints
             textLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
@@ -275,7 +254,6 @@ class HomeViewController: UIViewController {
     }
     // MARK: - Bottom Sheet Setup
     private func setupBottomSheet() {
-        // Set the background color of the bottom sheet to #D9D9D9
         bottomSheetView.backgroundColor = UIColor(red: 217/255.0, green: 217/255.0, blue: 217/255.0, alpha: 1.0) // #D9D9D9
         bottomSheetView.layer.cornerRadius = 40
         bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -326,11 +304,9 @@ class HomeViewController: UIViewController {
         gridCollectionView.translatesAutoresizingMaskIntoConstraints = false
         bottomSheetView.addSubview(gridCollectionView)
 
-        // Register cell
         gridCollectionView.register(RoomCardCell.self, forCellWithReuseIdentifier: RoomCardCell.reuseIdentifier)
         gridCollectionView.register(CatalogueCardCell.self, forCellWithReuseIdentifier: CatalogueCardCell.reuseIdentifier)
 
-        // Set delegate and data source
         gridCollectionView.delegate = self
         gridCollectionView.dataSource = self
 
@@ -357,7 +333,6 @@ class HomeViewController: UIViewController {
             bottomSheetTopConstraint.constant = max(-maxSheetHeight, min(newTopConstant, -view.frame.height / 2))
             gesture.setTranslation(.zero, in: view)
 
-            // Dynamically update the app bar layout during dragging
             let isExpanded = bottomSheetTopConstraint.constant == -(view.frame.height * expandedHeightMultiplier)
             updateAppBarLayout(isExpanded: isExpanded)
         }
@@ -386,13 +361,12 @@ class HomeViewController: UIViewController {
             self.appBarStackView.spacing = isExpanded ? 16 : 8
             self.appBarStackView.alignment = isExpanded ? .fill : .leading
 
-            // Update font sizes for expanded/collapsed states
             let userNameText = NSMutableAttributedString(
                 string: "Hi ",
                 attributes: [
                     .font: isExpanded
-                        ? UIFont.systemFont(ofSize: 16, weight: .thin) // Smaller font when expanded
-                        : UIFont.systemFont(ofSize: 32, weight: .thin), // Original font size when collapsed
+                        ? UIFont.systemFont(ofSize: 16, weight: .thin)
+                        : UIFont.systemFont(ofSize: 32, weight: .thin),
                     .foregroundColor: UIColor.white
                 ]
             )
@@ -401,20 +375,18 @@ class HomeViewController: UIViewController {
                 string: User1.name,
                 attributes: [
                     .font: isExpanded
-                        ? UIFont.systemFont(ofSize: 16, weight: .semibold) // Smaller font when expanded
-                        : UIFont.systemFont(ofSize: 32, weight: .bold), // Original font size when collapsed
+                        ? UIFont.systemFont(ofSize: 16, weight: .semibold)
+                        : UIFont.systemFont(ofSize: 32, weight: .bold),
                     .foregroundColor: UIColor.white
                 ]
             ))
 
             self.userNameLabel.attributedText = userNameText
 
-            // Update explore label font
             self.exploreLabel.font = isExpanded
                 ? UIFont.systemFont(ofSize: 16, weight: .thin) // Smaller font when expanded
                 : UIFont.systemFont(ofSize: 16, weight: .regular) // Original font size when collapsed
 
-            // Hide or show the horizontal scroll view
             self.horizontalScrollView.isHidden = isExpanded
         }
     }
@@ -462,11 +434,11 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10 // Minimal horizontal spacing between items
+        return 10
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 10 // Minimal vertical spacing between rows
+        return 10
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
