@@ -228,7 +228,7 @@ class HomeViewController: UIViewController {
 
         // Configure the button using UIButtonConfiguration
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "cube.transparent")?.withTintColor(.white.withAlphaComponent(0.95), renderingMode: .alwaysOriginal)
+        config.image = UIImage(systemName: "arkit")?.withTintColor(.white.withAlphaComponent(0.95), renderingMode: .alwaysOriginal)
         config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         imageButton.configuration = config
 

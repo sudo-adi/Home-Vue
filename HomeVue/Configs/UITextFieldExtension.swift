@@ -37,4 +37,22 @@ extension UITextField {
             attributes: [.foregroundColor: placeholderColor]
         )
     }
+    
+    func setPhoneNumberValidation() {
+            self.delegate = self
+        }
 }
+
+extension UITextField: UITextFieldDelegate {
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+               let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+               
+               let allowedCharacters = CharacterSet.decimalDigits
+               let characterSet = CharacterSet(charactersIn: string)
+               let isNumeric = allowedCharacters.isSuperset(of: characterSet)
+               
+               return updatedText.count <= 10 && isNumeric
+           }
+       }
