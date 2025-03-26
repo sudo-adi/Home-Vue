@@ -53,6 +53,7 @@ class SignUpViewController: UIViewController {
             placeholderColor: UIColor.lightGray)
         phoneTextField.setPadding(left: 10, right: 10)
         phoneTextField.addCornerRadius(17)
+        phoneTextField.setPhoneNumberValidation()
         
        
     }
