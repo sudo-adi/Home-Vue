@@ -44,7 +44,7 @@ class SignUpViewController: UIViewController {
         continueButton.addCornerRadius()
        
     }
-    
+
     @IBAction func continueButtonTapped(_ sender: Any)  {
             // Email Sign-In Validation
             guard let password = passwordTextField.text, !password.isEmpty,
@@ -60,6 +60,7 @@ class SignUpViewController: UIViewController {
 
             // Proceed if passwords are valid
             handleEmailLogin(from: self, email: emailTextField.text, password: password)
+
     }
     
     
