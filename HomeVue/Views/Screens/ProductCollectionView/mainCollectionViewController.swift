@@ -2,23 +2,50 @@ import UIKit
 
 private let reuseIdentifier = "ItemCollectionViewCell"
 
-class mainCollectionViewController: UICollectionViewController {
+class mainCollectionViewController: UICollectionViewController, UISearchBarDelegate {
 
     var furnitureCategory: FurnitureCategory?
     var furnitureItems: [FurnitureItem] = []
     
+    // Add filtered items array
+    private var filteredFurnitureItems: [FurnitureItem] = []
+    private let searchBar = UISearchBar()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigationBarAppearance()
+        setupSearchBar()
+        
         navigationController?.navigationBar.barTintColor = .white
         collectionView.collectionViewLayout = createLayout()
         self.title = furnitureCategory?.category.rawValue
         if let furnitureCategory = furnitureCategory {
             furnitureItems = furnitureCategory.furnitureItems
+            filteredFurnitureItems = furnitureItems
         } else {
             print("Furniture category is nil")
         }
+    }
+    
+    private func setupSearchBar() {
+        searchBar.delegate = self
+            searchBar.placeholder = "Search furniture..."
+            searchBar.searchBarStyle = .minimal
+            searchBar.showsCancelButton = true
+            searchBar.sizeToFit()
+            
+            // Add search bar as header view of collection view
+        collectionView.contentInset = UIEdgeInsets(top: searchBar.frame.height, left: 0, bottom: 0, right: 0)
+            collectionView.addSubview(searchBar)
+            
+            // Position search bar
+            searchBar.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                searchBar.topAnchor.constraint(equalTo: collectionView.topAnchor),
+                searchBar.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
+                searchBar.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor)
+            ])
     }
     
     func setupNavigationBarAppearance() {
@@ -52,7 +79,7 @@ class mainCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return furnitureItems.count
+        return filteredFurnitureItems.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -60,13 +87,13 @@ class mainCollectionViewController: UICollectionViewController {
             fatalError("Unable to dequeue ItemCollectionViewCell")
         }
         
-        let item = furnitureItems[indexPath.item]
+        let item = filteredFurnitureItems[indexPath.item]
         configure(cell: cell, with: item)
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedItem = furnitureItems[indexPath.item]
+        let selectedItem = filteredFurnitureItems[indexPath.item]
         performSegue(withIdentifier: "showProductInfoSegue", sender: selectedItem)
     }
     
@@ -85,5 +112,26 @@ class mainCollectionViewController: UICollectionViewController {
     func configure(cell: ItemCollectionViewCell, with item: FurnitureItem) {
         cell.ProductImg?.image = item.image ?? UIImage(named: "placeholder")
         cell.ProductName?.text = item.name
+    }
+    
+    // Add UISearchBarDelegate methods
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredFurnitureItems = furnitureItems
+        } else {
+            filteredFurnitureItems = furnitureItems.filter { item in
+                item.name.lowercased().contains(searchText.lowercased()) ||
+                item.brandName.lowercased().contains(searchText.lowercased()) ||
+                item.description.lowercased().contains(searchText.lowercased())
+            }
+        }
+        collectionView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        filteredFurnitureItems = furnitureItems
+        searchBar.resignFirstResponder()
+        collectionView.reloadData()
     }
 }
