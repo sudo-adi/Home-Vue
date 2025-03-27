@@ -13,6 +13,9 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var continueButton: UIButton!
+    
+    private var passwordRulesLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,8 +39,16 @@ class LoginViewController: UIViewController {
         passwordTextField.addCornerRadius()
         
         continueButton.addCornerRadius()
+        
+        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: passwordTextField, aboveButton: continueButton)
+                
+        // Add text field editing changed action
+        passwordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
     }
     
+    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
+        validatePassword(textField.text, rulesLabel: passwordRulesLabel)
+    }
     
     @IBAction func continueButtonTapped(_ sender: Any) {
             // Email login validation & navigation
