@@ -15,6 +15,10 @@ class Room3DViewController: UIViewController {
     var addFurnitureToCatalogueToolBar: UIView! // Renamed expandable view
     var crossButton: UIButton!
     var scrollView: UIScrollView! // Scroll view for cards
+    
+    private var isShowingCategories = true
+    private var currentCategory: FurnitureCategoryType?
+    private let furnitureDataProvider = FurnitureDataProvider.shared
 
     // List of furniture images and names
     let furnitureItems = [
@@ -317,13 +321,12 @@ class Room3DViewController: UIViewController {
     func setupAddFurnitureToCatalogueToolBar() {
         // Create the expandable view
         addFurnitureToCatalogueToolBar = UIView()
-        addFurnitureToCatalogueToolBar.backgroundColor = UIColor(hex: "#4a4551").withAlphaComponent(0.8) // Semi-transparent
+        addFurnitureToCatalogueToolBar.backgroundColor = UIColor(hex: "#4a4551").withAlphaComponent(0.8)
         addFurnitureToCatalogueToolBar.layer.cornerRadius = 10
-        addFurnitureToCatalogueToolBar.isHidden = true // Initially hidden
+        addFurnitureToCatalogueToolBar.isHidden = true
 
-        // Increase width and height
-        let toolBarWidth = view.frame.width / 2.2 // Wider toolbar
-        let toolBarHeight = view.frame.height / 2 * 1.2 // Increased height
+        let toolBarWidth = view.frame.width / 2.2
+        let toolBarHeight = view.frame.height / 2 * 1.2
         addFurnitureToCatalogueToolBar.frame = CGRect(x: view.frame.width - toolBarWidth, y: 150, width: toolBarWidth, height: toolBarHeight)
         view.addSubview(addFurnitureToCatalogueToolBar)
 
@@ -337,14 +340,14 @@ class Room3DViewController: UIViewController {
 
         // Add cross button
         crossButton = UIButton(type: .system)
-        crossButton.setTitle("×", for: .normal) // Cross symbol
+        crossButton.setTitle("×", for: .normal)
         crossButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         crossButton.tintColor = .white
         crossButton.frame = CGRect(x: 10, y: 10, width: 30, height: 30)
         crossButton.addTarget(self, action: #selector(toggleAddFurnitureToCatalogueToolBar), for: .touchUpInside)
         addFurnitureToCatalogueToolBar.addSubview(crossButton)
 
-        // Add "Inventory" text (centered horizontally)
+        // Add "Inventory" text
         let inventoryLabel = UILabel()
         inventoryLabel.text = "Inventory"
         inventoryLabel.textColor = .white
@@ -359,55 +362,138 @@ class Room3DViewController: UIViewController {
         scrollView.showsVerticalScrollIndicator = false
         addFurnitureToCatalogueToolBar.addSubview(scrollView)
 
-        // Add square cards to the scroll view
-        let cardSize = CGSize(width: scrollView.frame.width - 20, height: 150) // Increased height for name
-        let spacing: CGFloat = 10 // Spacing between cards
+        showCategories()
+    }
+
+    private func showCategories() {
+        // Clear existing content
+        scrollView.subviews.forEach { $0.removeFromSuperview() }
+        isShowingCategories = true
+        
+        let cardSize = CGSize(width: scrollView.frame.width - 20, height: 150)
+        let spacing: CGFloat = 10
         var yOffset: CGFloat = 0
 
-        for (imageName, itemName) in furnitureItems {
+        for category in FurnitureCategoryType.allCases {
             let card = UIView()
             card.backgroundColor = .white
             card.layer.cornerRadius = 10
             card.frame = CGRect(x: 10, y: yOffset, width: cardSize.width, height: cardSize.height)
-            scrollView.addSubview(card)
+            
+            // Make card tappable
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(categoryCardTapped(_:)))
+            card.addGestureRecognizer(tapGesture)
+            card.isUserInteractionEnabled = true
+            card.tag = category.hashValue // Store category information
+            
+            // Add category image
+            let imageView = UIImageView(image: UIImage(named: category.thumbnail))
+            imageView.contentMode = .scaleAspectFit
+            imageView.frame = CGRect(x: 10, y: 10, width: card.frame.width - 20, height: 100)
+            card.addSubview(imageView)
 
-            // Add + button at the top-left corner
-            let addButton = UIButton(type: .system)
-            addButton.setImage(UIImage(systemName: "plus"), for: .normal)
-            addButton.tintColor = .white
-            addButton.backgroundColor = UIColor(hex: "#393231") // Circular background
-            addButton.layer.cornerRadius = 15 // Half of the height to make it circular
-            addButton.frame = CGRect(x: 10, y: 10, width: 30, height: 30)
-            card.addSubview(addButton)
-
-            // Add furniture image (smaller size)
-            let furnitureImageView = UIImageView(image: UIImage(named: imageName))
-            furnitureImageView.contentMode = .scaleAspectFit
-            furnitureImageView.frame = CGRect(x: 10, y: 50, width: card.frame.width - 20, height: 60) // Smaller image
-            card.addSubview(furnitureImageView)
-
-            // Add item name
+            // Add category name
             let nameLabel = UILabel()
-            nameLabel.text = itemName
+            nameLabel.text = category.rawValue
             nameLabel.textColor = .black
             nameLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
             nameLabel.textAlignment = .center
-            nameLabel.backgroundColor = UIColor(hex: "#F0F0F0") // Light gray background
+            nameLabel.backgroundColor = UIColor(hex: "#F0F0F0")
             nameLabel.layer.cornerRadius = 5
             nameLabel.layer.masksToBounds = true
-            nameLabel.layer.borderColor = UIColor.black.cgColor // Black border
-            nameLabel.layer.borderWidth = 1 // Border width
             nameLabel.frame = CGRect(x: 10, y: 120, width: card.frame.width - 20, height: 20)
             card.addSubview(nameLabel)
 
+            scrollView.addSubview(card)
             yOffset += cardSize.height + spacing
         }
 
-        // Set the content size of the scroll view
         scrollView.contentSize = CGSize(width: scrollView.frame.width, height: yOffset)
     }
 
-    // MARK: - Setup Current Viewport Items
+    private func showItemsForCategory(_ category: FurnitureCategoryType) {
+        // Clear existing content
+        scrollView.subviews.forEach { $0.removeFromSuperview() }
+        isShowingCategories = false
+        currentCategory = category
+
+        // Add back button
+        let backButton = UIButton(type: .system)
+        backButton.setTitle("← Back", for: .normal)
+        backButton.tintColor = .white
+        backButton.frame = CGRect(x: 10, y: 10, width: 60, height: 30)
+        backButton.addTarget(self, action: #selector(backToCategories), for: .touchUpInside)
+        scrollView.addSubview(backButton)
+
+        // Get items for the selected category
+        let items = furnitureDataProvider.fetchFurnitureItems(for: category)
+        
+        let cardSize = CGSize(width: scrollView.frame.width - 20, height: 150)
+        let spacing: CGFloat = 10
+        var yOffset: CGFloat = 50 // Start below back button
+
+        for item in items {
+            let card = UIView()
+            card.backgroundColor = .white
+            card.layer.cornerRadius = 10
+            card.frame = CGRect(x: 10, y: yOffset, width: cardSize.width, height: cardSize.height)
+
+            // Add + button
+            let addButton = UIButton(type: .system)
+            addButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            addButton.tintColor = .white
+            addButton.backgroundColor = UIColor(hex: "#393231")
+            addButton.layer.cornerRadius = 15
+            addButton.frame = CGRect(x: 10, y: 10, width: 30, height: 30)
+            addButton.tag = item.id.hashValue
+            addButton.addTarget(self, action: #selector(addItemButtonTapped(_:)), for: .touchUpInside)
+            card.addSubview(addButton)
+
+            // Add item image
+            let imageView = UIImageView(image: item.image)
+            imageView.contentMode = .scaleAspectFit
+            imageView.frame = CGRect(x: 10, y: 50, width: card.frame.width - 20, height: 60)
+            card.addSubview(imageView)
+
+            // Add item name
+            let nameLabel = UILabel()
+            nameLabel.text = item.name
+            nameLabel.textColor = .black
+            nameLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+            nameLabel.textAlignment = .center
+            nameLabel.backgroundColor = UIColor(hex: "#F0F0F0")
+            nameLabel.layer.cornerRadius = 5
+            nameLabel.layer.masksToBounds = true
+            nameLabel.layer.borderColor = UIColor.black.cgColor
+            nameLabel.layer.borderWidth = 1
+            nameLabel.frame = CGRect(x: 10, y: 120, width: card.frame.width - 20, height: 20)
+            card.addSubview(nameLabel)
+
+            scrollView.addSubview(card)
+            yOffset += cardSize.height + spacing
+        }
+
+        scrollView.contentSize = CGSize(width: scrollView.frame.width, height: yOffset)
+    }
+
+    @objc private func categoryCardTapped(_ gesture: UITapGestureRecognizer) {
+        guard let card = gesture.view,
+              let category = FurnitureCategoryType.allCases.first(where: { $0.hashValue == card.tag }) else {
+            return
+        }
+        showItemsForCategory(category)
+    }
+
+    @objc private func backToCategories() {
+        showCategories()
+    }
+
+    @objc private func addItemButtonTapped(_ sender: UIButton) {
+        // Handle adding item to the 3D view
+        print("Add item button tapped with tag: \(sender.tag)")
+        // Implement your item adding logic here
+    }
+
     // MARK: - Setup Current Viewport Items
     func setupCurrentViewportItems() {
         // Create the horizontal bar at the bottom

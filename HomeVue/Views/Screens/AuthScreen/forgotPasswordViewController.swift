@@ -81,12 +81,6 @@ class forgotPasswordViewController: UIViewController {
             return
         }
 
-        // ✅ If everything is valid, navigate to VerifyViewController
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let verifyViewController = storyboard.instantiateViewController(withIdentifier: "VerifyViewController") as? VerifyViewController {
-            navigateToViewController(from: self, destinationVC: verifyViewController)
-        } else {
             showAlert(on: self, message: "Unable to load verification screen. Please try again.")
-        }
     }
 }

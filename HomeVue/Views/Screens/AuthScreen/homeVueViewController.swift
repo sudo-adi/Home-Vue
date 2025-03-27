@@ -11,10 +11,14 @@ class homeVueViewController: UIViewController {
 
     @IBOutlet weak var googleButton: UIButton!
     @IBOutlet weak var emailPhoneButton: UIButton!
+    @IBOutlet weak var bgImageview: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
         googleButton.addCornerRadius()
         emailPhoneButton.addCornerRadius()
+        let overlay = UIView(frame: bgImageview.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.25)
+        bgImageview.addSubview(overlay)
     }
 
     
