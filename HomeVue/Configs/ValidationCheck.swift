@@ -15,40 +15,11 @@ func handleEmailLogin(from viewController: UIViewController, email: String?, pas
         showAlert(on: viewController, message: "Please enter your password.")
         return
     }
-
-    // ✅ Check if coming from SignUpViewController
-    if viewController is SignUpViewController {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let verifyViewController = storyboard.instantiateViewController(withIdentifier: "VerifyViewController") as? VerifyViewController {
-            navigateToViewController(from: viewController, destinationVC: verifyViewController)
-        } else {
-            showAlert(on: viewController, message: "Unable to load verification screen. Please try again.")
-        }
-    } else {
         // ✅ Default navigation for other cases (e.g., Login)
         let tabBarController = CustomTabBarController()
         navigateToViewController(from: viewController, destinationVC: tabBarController)
-    }
 }
 
-
-func handlePhoneLogin(from viewController: UIViewController, phone: String?) {
-    let phoneRegex = "^[0-9]{10}$" // Regular expression for exactly 10 digits
-    let phonePredicate = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
-
-    guard let phone = phone, phonePredicate.evaluate(with: phone) else {
-        showAlert(on: viewController, message: "Please enter a valid 10-digit phone number.")
-        return
-    }
-
-    // ✅ Load VerifyViewController from Storyboard
-    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    if let verifyViewController = storyboard.instantiateViewController(withIdentifier: "VerifyViewController") as? VerifyViewController {
-        navigateToViewController(from: viewController, destinationVC: verifyViewController)
-    } else {
-        showAlert(on: viewController, message: "Unable to load verification screen. Please try again.")
-    }
-}
 
 // Function to show an alert
 func showAlert(on viewController: UIViewController, title: String = "Error", message: String) {

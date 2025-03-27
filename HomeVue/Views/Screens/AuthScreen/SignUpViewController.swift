@@ -14,8 +14,6 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var reEnterPasswordTextField: UITextField!
     @IBOutlet weak var signUpView: UIView!
-    @IBOutlet weak var phoneTextField: UITextField!
-    @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var backNavigationItem: UINavigationItem!
     @IBOutlet weak var emailTextField: UITextField!
     override func viewDidLoad() {
@@ -24,9 +22,6 @@ class SignUpViewController: UIViewController {
         signUpView.layer.borderColor = UIColor.black.cgColor
         signUpView.layer.borderWidth = 0.5
         signUpView.addCornerRadius(20)
-        
-        configureUI()
-        segmentedControl.setCustomAppearance()
         
         emailTextField.configureText(
             placeholder: "hello@gmail.com",
@@ -47,28 +42,10 @@ class SignUpViewController: UIViewController {
         
         backNavigationItem.titleView?.tintColor = UIColor.white
         continueButton.addCornerRadius()
-      
-        phoneTextField.configureText(
-            placeholder: "e.g. 94567XXXXX",
-            placeholderColor: UIColor.lightGray)
-        phoneTextField.setPadding(left: 10, right: 10)
-        phoneTextField.addCornerRadius(17)
-        phoneTextField.setPhoneNumberValidation()
-        
        
     }
-    @IBAction func changeSegment(_ sender: UISegmentedControl) {
-        sender.updateUI(emailTextField: emailTextField, passwordTextField: passwordTextField, reEnterTextField: reEnterPasswordTextField, phoneTextField: phoneTextField, parentView: self.view)
-    }
-    func configureUI() {
-        segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.updateUI(emailTextField: emailTextField, passwordTextField: passwordTextField, phoneTextField: phoneTextField, parentView: self.view)
-    }
     
-
     @IBAction func continueButtonTapped(_ sender: Any)  {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0:
             // Email Sign-In Validation
             guard let password = passwordTextField.text, !password.isEmpty,
                   let reEnterPassword = reEnterPasswordTextField.text, !reEnterPassword.isEmpty else {
@@ -83,14 +60,6 @@ class SignUpViewController: UIViewController {
 
             // Proceed if passwords are valid
             handleEmailLogin(from: self, email: emailTextField.text, password: password)
-
-        case 1:
-            // Phone Sign-In
-            handlePhoneLogin(from: self, phone: phoneTextField.text)
-        
-        default:
-            break
-        }
     }
     
     
