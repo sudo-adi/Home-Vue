@@ -13,64 +13,79 @@ class RoomsCollectionViewController: UICollectionViewController {
     
     @IBOutlet weak var addBarButton: UIBarButtonItem!
     
-        var roomCategory :RoomCategory!
-        var rooms:[RoomModel] = []
+    var roomCategory :RoomCategory!
+    var rooms:[RoomModel] = []
+    private var searchController: SearchController<RoomModel>!
 
-            override func viewDidLoad() {
-                super.viewDidLoad()
-                collectionView.collectionViewLayout = createLayout()
-                setupNavigationBarAppearance()
-                self.navigationController?.setNavigationBarHidden(false, animated: false)
-                
-                let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
-                    collectionView.addGestureRecognizer(longPressGesture)
-                
-                self.title = roomCategory.category.rawValue
-                rooms = RoomDataProvider.shared.getRooms(for: roomCategory.category)
-            }
-           func setupNavigationBarAppearance() {
-               let appearance = UINavigationBarAppearance()
-               appearance.configureWithOpaqueBackground()
-               appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-               appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
-               appearance.backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.black]
-               UINavigationBar.appearance().standardAppearance = appearance
-               UINavigationBar.appearance().scrollEdgeAppearance = appearance
-           }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        collectionView.collectionViewLayout = createLayout()
+        setupNavigationBarAppearance()
+        setupSearch()
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+            collectionView.addGestureRecognizer(longPressGesture)
+        
+        self.title = roomCategory.category.rawValue
+        rooms = RoomDataProvider.shared.getRooms(for: roomCategory.category)
+        searchController.updateItems(rooms)
+    }
+    
+    private func setupSearch() {
+        searchController = SearchController(
+            collectionView: collectionView,
+            initialItems: [],
+            filterPredicate: { room, searchText in
+                room.details.name.lowercased().contains(searchText.lowercased())
+            },
+            placeholder: "Search rooms..."
+        )
+    }
+    
+   func setupNavigationBarAppearance() {
+       let appearance = UINavigationBarAppearance()
+       appearance.configureWithOpaqueBackground()
+       appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
+       appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+       appearance.backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.black]
+       UINavigationBar.appearance().standardAppearance = appearance
+       UINavigationBar.appearance().scrollEdgeAppearance = appearance
+   }
 
-           func createLayout() -> UICollectionViewLayout {
-               return UICollectionViewCompositionalLayout { sectionIndex, _ in
-               let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
-               let item = NSCollectionLayoutItem(layoutSize: itemSize)
-               item.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+   func createLayout() -> UICollectionViewLayout {
+       return UICollectionViewCompositionalLayout { sectionIndex, _ in
+       let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
+       let item = NSCollectionLayoutItem(layoutSize: itemSize)
+       item.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
 
-               let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(200))
-               let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+       let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(200))
+       let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
-               let section = NSCollectionLayoutSection(group: group)
-               section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+       let section = NSCollectionLayoutSection(group: group)
+       section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
 
-               return section
-               }
-           }
+       return section
+       }
+   }
 
-           // MARK: UICollectionViewDataSource
-           override func numberOfSections(in collectionView: UICollectionView) -> Int {
-               return 1
-           }
+   // MARK: UICollectionViewDataSource
+   override func numberOfSections(in collectionView: UICollectionView) -> Int {
+       return 1
+   }
 
-           override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-               return rooms.count
-           }
+   override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+       return searchController.filteredItems.count
+   }
 
-           override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-               let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! RoomsCollectionViewCell
-               let room = rooms[indexPath.item]
-               cell.nameLabel.text = room.details.name
-               cell.dateCreatedLabel?.text = "Created on : \(room.details.createdDate)"
-               cell.roomImage.image = UIImage(named:"model_img")
-               return cell
-           }
+   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! RoomsCollectionViewCell
+       let room = searchController.filteredItems[indexPath.item]
+       cell.nameLabel.text = room.details.name
+       cell.dateCreatedLabel?.text = "Created on : \(room.details.createdDate)"
+       cell.roomImage.image = UIImage(named:"model_img")
+       return cell
+   }
     
     @IBAction func addButtonTapped(_ sender: Any) {
         if let tabBarController = self.tabBarController as? CustomTabBarController {
@@ -98,7 +113,7 @@ class RoomsCollectionViewController: UICollectionViewController {
     }
     @objc func deleteRoom(_ sender: UIButton) {
         let index = sender.tag
-        let roomToDelete = rooms[index]
+        let roomToDelete = searchController.filteredItems[index]
         
         let alert = UIAlertController(
             title: "Delete Room",
@@ -112,8 +127,12 @@ class RoomsCollectionViewController: UICollectionViewController {
             // Remove room from the RoomDataProvider
             RoomDataProvider.shared.removeRoom(from: RoomCategoryType(rawValue: roomToDelete.category.rawValue) ?? .bathroom, byId: roomToDelete.details.id)
             
-            // Also remove from the local rooms array used for collection view display
-            self.rooms.remove(at: index)
+            // 2. Get fresh data from provider
+            let updatedRooms = RoomDataProvider.shared.getRooms(for: self.roomCategory.category)
+            
+            // 3. Update search controller
+            self.searchController.updateItems(updatedRooms)
+            
             self.collectionView.reloadData()
         }))
         

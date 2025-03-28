@@ -16,7 +16,7 @@
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="VUS-96-GbL">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.85098039215686272" green="0.85098039215686272" blue="0.85098039215686272" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.27450981740000002" green="0.2470588088" blue="0.2470588088" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="mIO-X5-C4u">
                             <size key="itemSize" width="205" height="188"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -133,6 +133,17 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" image="arkit" catalog="system">
+                                                        <backgroundConfiguration key="background">
+                                                            <color key="backgroundColor" red="0.35294118520000001" green="0.31629637059999999" blue="0.3119665908" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                        </backgroundConfiguration>
+                                                        <color key="baseForegroundColor" systemColor="tertiarySystemBackgroundColor"/>
+                                                    </buttonConfiguration>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tK6-Qq-myq">
+                                                    <rect key="frame" x="65" y="10" width="35" height="35"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="plain" image="view.3d" catalog="system">
                                                         <backgroundConfiguration key="background">
                                                             <color key="backgroundColor" red="0.35294118520000001" green="0.31629637059999999" blue="0.3119665908" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                         </backgroundConfiguration>
@@ -390,6 +401,7 @@
                     <navigationItem key="navigationItem" id="SOw-mn-Jbm"/>
                     <connections>
                         <outlet property="ARButton" destination="YG4-7Z-BPg" id="V4r-MU-Wki"/>
+                        <outlet property="ThreeDButton" destination="tK6-Qq-myq" id="yCE-CD-z0y"/>
                         <outlet property="brandNameLabel" destination="Z0u-rv-J4d" id="dFX-vv-UQa"/>
                         <outlet property="depthLabel" destination="PiY-Al-jm2" id="tcF-hk-2g2"/>
                         <outlet property="descriptionLabel" destination="uAB-cQ-osB" id="u7W-F6-Z3S"/>
@@ -409,12 +421,13 @@
         <image name="Decor" width="120" height="123"/>
         <image name="arkit" catalog="system" width="128" height="125"/>
         <image name="square.and.arrow.up" catalog="system" width="110" height="128"/>
+        <image name="view.3d" catalog="system" width="128" height="76"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tertiarySystemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
