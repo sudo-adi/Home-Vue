@@ -19,6 +19,7 @@ class ProductInfoTableViewController: UITableViewController {
     @IBOutlet weak var depthLabel: UILabel!
     @IBOutlet weak var providersNameLabel: UILabel!
     @IBOutlet weak var ARButton: UIButton!
+    @IBOutlet weak var ThreeDButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,6 +28,7 @@ class ProductInfoTableViewController: UITableViewController {
            return
        }
         ARButton.addCornerRadius()
+        ThreeDButton.addCornerRadius()
         title = furnitureItem.name
             updateUI()
     }
@@ -58,10 +60,10 @@ class ProductInfoTableViewController: UITableViewController {
             // Prepare the items to share
                 var shareText = "Check out this furniture item!\n"
                 shareText += "Name: \(furnitureItem.name)\n"
-                shareText += "Brand: \(furnitureItem.brandName ?? "N/A")\n"
-                shareText += "Description: \(furnitureItem.description ?? "N/A")\n"
-            shareText += "Dimensions: \(furnitureItem.dimensions.height ?? 0) x \(furnitureItem.dimensions.width ?? 0) x \(furnitureItem.dimensions.depth ?? 0) cm\n"
-                shareText += "Providers: \(furnitureItem.providers.map { $0.name }.joined(separator: ", ") ?? "N/A")"
+        shareText += "Brand: \(furnitureItem.brandName)\n"
+        shareText += "Description: \(furnitureItem.description)\n"
+        shareText += "Dimensions: \(furnitureItem.dimensions.height) x \(furnitureItem.dimensions.width) x \(furnitureItem.dimensions.depth) cm\n"
+        shareText += "Providers: \(furnitureItem.providers.map { $0.name }.joined(separator: ", "))"
 
                 var itemsToShare: [Any] = [shareText]
                 
