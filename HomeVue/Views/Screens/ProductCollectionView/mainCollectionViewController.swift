@@ -52,7 +52,7 @@ class mainCollectionViewController: UICollectionViewController {
     
     // MARK: - Compositional Layout
     func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.3))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
 
@@ -104,5 +104,7 @@ class mainCollectionViewController: UICollectionViewController {
     func configure(cell: ItemCollectionViewCell, with item: FurnitureItem) {
         cell.ProductImg?.image = item.image ?? UIImage(named: "placeholder")
         cell.ProductName?.text = item.name
+        cell.ProductBrandName?.text = item.brandName
+        cell.ProductDimension?.text = "\(Int(item.dimensions.width))W x \(Int(item.dimensions.height))H x \(Int(item.dimensions.depth))D"
     }
 }

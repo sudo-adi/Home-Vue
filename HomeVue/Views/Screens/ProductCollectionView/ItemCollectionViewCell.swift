@@ -11,13 +11,15 @@ class ItemCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var ARButton: UIButton!
     @IBOutlet weak var ProductImg: UIImageView?
     @IBOutlet weak var ProductName: UILabel?
+    @IBOutlet weak var ProductDimension: UILabel!
+    @IBOutlet weak var ProductBrandName: UILabel!
     
     private var item: FurnitureItem?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        ARButton.addCornerRadius(ARButton.frame.height / 2)
+        ARButton.addCornerRadius()
         
         self.addCornerRadius(15)
     }
