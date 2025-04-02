@@ -6,11 +6,12 @@
 ////
 
 import UIKit
+import SceneKit
 
 class ProductInfoTableViewController: UITableViewController {
     var furnitureItem: FurnitureItem!
     
-    @IBOutlet weak var productImageView: UIImageView!
+    @IBOutlet weak var productSCNView: SCNView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var brandNameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
@@ -19,7 +20,7 @@ class ProductInfoTableViewController: UITableViewController {
     @IBOutlet weak var depthLabel: UILabel!
     @IBOutlet weak var providersNameLabel: UILabel!
     @IBOutlet weak var ARButton: UIButton!
-    @IBOutlet weak var ThreeDButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,12 +29,22 @@ class ProductInfoTableViewController: UITableViewController {
            return
        }
         ARButton.addCornerRadius()
-        ThreeDButton.addCornerRadius()
         title = furnitureItem.name
-            updateUI()
+        updateUI()
+        
+        productSCNView.allowsCameraControl = true
+        productSCNView.autoenablesDefaultLighting = true
+        productSCNView.antialiasingMode = .multisampling2X
+        productSCNView.backgroundColor = .white
     }
     private func updateUI() {
-        productImageView.image = furnitureItem?.image
+        if let modelName = furnitureItem?.model3D {
+            if let scene = SCNScene(named: modelName) {
+                productSCNView.scene = scene
+            } else {
+                print(" Error: 3D model \(modelName) not found in bundle.")
+            }
+        }
         nameLabel.text = furnitureItem?.name
         print(furnitureItem.name)
             brandNameLabel.text = furnitureItem?.brandName ?? "N/A"
