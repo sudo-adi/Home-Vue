@@ -39,12 +39,19 @@ class ProductInfoTableViewController: UITableViewController {
     }
     private func updateUI() {
         if let modelName = furnitureItem?.model3D {
-            if let scene = SCNScene(named: modelName) {
-                productSCNView.scene = scene
+            if let scenePath = Bundle.main.path(forResource: modelName, ofType: nil) {
+                let sceneURL = URL(fileURLWithPath: scenePath)
+                do {
+                    let scene = try SCNScene(url: sceneURL, options: nil)
+                    productSCNView.scene = scene
+                } catch {
+                    print("Error loading 3D model: \(error)")
+                }
             } else {
-                print(" Error: 3D model \(modelName) not found in bundle.")
+                print("❌ Error: 3D model \(modelName).usdz not found in '3D Model' folder.")
             }
         }
+
         nameLabel.text = furnitureItem?.name
         print(furnitureItem.name)
             brandNameLabel.text = furnitureItem?.brandName ?? "N/A"

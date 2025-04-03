@@ -180,6 +180,13 @@ horizontalScrollView.addSubview(horizontalStackView)
         cardView.layer.cornerRadius = 30
         cardView.clipsToBounds = true
         cardView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(horizontalCardTapped(_:)))
+            cardView.addGestureRecognizer(tapGesture)
+            cardView.isUserInteractionEnabled = true
+            
+            // Store the furniture item's name as identifier
+            cardView.accessibilityIdentifier = item.name
 
         let backgroundImageView = UIImageView(image: UIImage(named: backgroundImageName))
         backgroundImageView.contentMode = .scaleAspectFill
@@ -256,6 +263,24 @@ horizontalScrollView.addSubview(horizontalStackView)
 
         return cardView
     }
+    
+    @objc private func horizontalCardTapped(_ gesture: UITapGestureRecognizer) {
+        guard let cardView = gesture.view,
+              let itemName = cardView.accessibilityIdentifier else { return }
+        
+        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+        let allItems = allCategories.flatMap { $0.furnitureItems }
+        
+        guard let tappedItem = allItems.first(where: { $0.name == itemName }) else { return }
+        
+        let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
+        if let destinationVC = storyboard.instantiateViewController(withIdentifier: "ProductInfoTableViewController") as? ProductInfoTableViewController {
+            destinationVC.furnitureItem = tappedItem
+            destinationVC.modalPresentationStyle = .fullScreen
+            present(destinationVC, animated: true)
+        }
+    }
+    
     // MARK: - Bottom Sheet Setup
     private func setupBottomSheet() {
         bottomSheetView.backgroundColor = UIColor(red: 217/255.0, green: 217/255.0, blue: 217/255.0, alpha: 1.0) // #D9D9D9
