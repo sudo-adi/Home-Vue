@@ -165,6 +165,7 @@
                         <outlet property="emailTextField" destination="bmD-Ar-hMI" id="IXq-mi-Rgo"/>
                         <outlet property="loginView" destination="zPZ-YX-AYm" id="xwA-Hx-bzz"/>
                         <outlet property="passwordTextField" destination="NDK-l3-Yvb" id="fmh-75-SDh"/>
+                        <outlet property="stackView" destination="G5T-gZ-FdX" id="Wnt-IE-hXl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MEg-52-lBb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -438,7 +439,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="OGN-2d-m60">
                                 <rect key="frame" x="52" y="475" width="288" height="121"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cfl-fm-XzP">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cfl-fm-XzP">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="46"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="288" id="KZC-5L-4Ao"/>
@@ -453,13 +454,13 @@
                                             <action selector="verifyButtonTapped:" destination="gXw-yq-voJ" eventType="touchUpInside" id="IxQ-4B-8M9"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="____________________________________________" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="scg-rZ-fXc">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="____________________________________________" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="scg-rZ-fXc">
                                         <rect key="frame" x="0.0" y="54" width="288" height="13.333333333333329"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                         <color key="textColor" red="0.40034073799999997" green="0.39545011679999997" blue="0.39156437430000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UuY-lP-7Ih">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UuY-lP-7Ih">
                                         <rect key="frame" x="0.0" y="75.333333333333371" width="288" height="45.666666666666657"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="288" id="gdL-NU-63g"/>
