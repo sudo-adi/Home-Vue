@@ -60,14 +60,17 @@ func setupPasswordRulesLabel(in view: UIView, below textField: UITextField, abov
     return rulesLabel
 }
 
-func validatePassword(_ password: String?, rulesLabel: UILabel) {
+func validatePassword(_ password: String?, rulesLabel: UILabel) -> Bool  {
     guard let password = password else {
         rulesLabel.isHidden = false
-        return
+        return false
     }
     
     let passwordPredicate = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
-    rulesLabel.isHidden = passwordPredicate.evaluate(with: password)
+    let isValid = passwordPredicate.evaluate(with: password)
+    rulesLabel.isHidden = isValid
+    
+    return isValid
 }
 
 // Helper functions

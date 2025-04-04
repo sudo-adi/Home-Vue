@@ -19,6 +19,8 @@ class homeVueViewController: UIViewController {
         let overlay = UIView(frame: bgImageview.bounds)
         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.25)
         bgImageview.addSubview(overlay)
+        
+//        self.navigationController?.navigationBar.isHidden = true
     }
 
     

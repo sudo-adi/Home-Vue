@@ -16,6 +16,9 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var signUpView: UIView!
     @IBOutlet weak var backNavigationItem: UINavigationItem!
     @IBOutlet weak var emailTextField: UITextField!
+    
+    private var passwordRulesLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,7 +45,16 @@ class SignUpViewController: UIViewController {
         
         backNavigationItem.titleView?.tintColor = UIColor.white
         continueButton.addCornerRadius()
+        
+        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: passwordTextField, aboveButton: continueButton)
+                
+        // Add text field editing changed action
+        passwordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
        
+    }
+    
+    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
+        validatePassword(textField.text, rulesLabel: passwordRulesLabel)
     }
 
     @IBAction func continueButtonTapped(_ sender: Any)  {
