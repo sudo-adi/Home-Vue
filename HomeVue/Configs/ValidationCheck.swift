@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 
 // Password validation regex
-private let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
+private let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$"
 
 func handleEmailLogin(from viewController: UIViewController, email: String?, password: String?) {
     let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
@@ -60,14 +60,17 @@ func setupPasswordRulesLabel(in view: UIView, below textField: UITextField, abov
     return rulesLabel
 }
 
-func validatePassword(_ password: String?, rulesLabel: UILabel) {
+func validatePassword(_ password: String?, rulesLabel: UILabel) -> Bool  {
     guard let password = password else {
         rulesLabel.isHidden = false
-        return
+        return false
     }
     
     let passwordPredicate = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
-    rulesLabel.isHidden = passwordPredicate.evaluate(with: password)
+    let isValid = passwordPredicate.evaluate(with: password)
+    rulesLabel.isHidden = isValid
+    
+    return isValid
 }
 
 // Helper functions

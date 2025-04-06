@@ -152,10 +152,14 @@ class HomeViewController: UIViewController {
         view.addSubview(horizontalScrollView)
         
         horizontalScrollView.addSubview(horizontalStackView)
-        for (index, item) in adCards.enumerated() {
-            let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index + 1)", labelText: item.name)
-            horizontalStackView.addArrangedSubview(cardView)
-        }
+
+        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+            let topItems = allCategories.flatMap { $0.furnitureItems }.prefix(4)
+            
+            for (index, item) in topItems.enumerated() {
+                let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index + 1)", labelText: item.name)
+                horizontalStackView.addArrangedSubview(cardView)
+            }
 
         NSLayoutConstraint.activate([
             horizontalScrollView.topAnchor.constraint(equalTo: appBarStackView.bottomAnchor, constant: 10),
@@ -176,6 +180,13 @@ class HomeViewController: UIViewController {
         cardView.layer.cornerRadius = 30
         cardView.clipsToBounds = true
         cardView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(horizontalCardTapped(_:)))
+            cardView.addGestureRecognizer(tapGesture)
+            cardView.isUserInteractionEnabled = true
+            
+            // Store the furniture item's name as identifier
+            cardView.accessibilityIdentifier = item.name
 
         let backgroundImageView = UIImageView(image: UIImage(named: backgroundImageName))
         backgroundImageView.contentMode = .scaleAspectFill
@@ -252,6 +263,24 @@ class HomeViewController: UIViewController {
 
         return cardView
     }
+    
+    @objc private func horizontalCardTapped(_ gesture: UITapGestureRecognizer) {
+        guard let cardView = gesture.view,
+              let itemName = cardView.accessibilityIdentifier else { return }
+        
+        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+        let allItems = allCategories.flatMap { $0.furnitureItems }
+        
+        guard let tappedItem = allItems.first(where: { $0.name == itemName }) else { return }
+        
+        let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
+        if let destinationVC = storyboard.instantiateViewController(withIdentifier: "ProductInfoTableViewController") as? ProductInfoTableViewController {
+            destinationVC.furnitureItem = tappedItem
+            destinationVC.modalPresentationStyle = .fullScreen
+            present(destinationVC, animated: true)
+        }
+    }
+    
     // MARK: - Bottom Sheet Setup
     private func setupBottomSheet() {
         bottomSheetView.backgroundColor = UIColor(red: 217/255.0, green: 217/255.0, blue: 217/255.0, alpha: 1.0) // #D9D9D9
@@ -445,18 +474,22 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         if(topSegmentedControl.selectedSegmentIndex==0){
             print("Item selected at indexPath: \(indexPath)")
             let selectedCategoryType = roomCategories[indexPath.item]
-                   print("Selected category: \(selectedCategoryType.rawValue)")
-                   guard let roomCategory = RoomDataProvider.shared.roomCategories.first(where: { $0.category == selectedCategoryType }) else {
-                       print("Error: No matching RoomCategory found for \(selectedCategoryType.rawValue)")
-                       return
-                   }
+            print("Selected category: \(selectedCategoryType.rawValue)")
+            
+            let roomCount = RoomDataProvider.shared.getRooms(for: selectedCategoryType).count
+            
+           guard let roomCategory = RoomDataProvider.shared.roomCategories.first(where: { $0.category == selectedCategoryType }) else {
+               print("Error: No matching RoomCategory found for \(selectedCategoryType.rawValue)")
+               return
+           }
 
-                   let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
-                   if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
-                       destinationVC.roomCategory = roomCategory
-                       print("Passing roomCategory: \(roomCategory.category.rawValue)")
-                navigationController?.pushViewController(destinationVC, animated: true)}
-        }else{
+           let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
+           if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
+               destinationVC.roomCategory = roomCategory
+               print("Passing roomCategory: \(roomCategory.category.rawValue)")
+               navigationController?.pushViewController(destinationVC, animated: true)}
+        } else {
+            //Catalouge Card
             let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
                 let selectedCategoryType = furnitureCategories[indexPath.item] // FurnitureCategoryType
@@ -471,7 +504,18 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
 // MARK: - Custom Room Card Cell
 class RoomCardCell: UICollectionViewCell {
     static let reuseIdentifier = "RoomCardCell"
-
+    
+    private let countLabel: UILabel = {
+            let label = UILabel()
+            label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+            label.textColor = .white
+            label.textAlignment = .center
+            label.backgroundColor = .brown
+            label.layer.cornerRadius = 12
+            label.layer.masksToBounds = true
+            return label
+        }()
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -517,11 +561,32 @@ class RoomCardCell: UICollectionViewCell {
             roomNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
             roomNameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
         ])
+
+        // Add count label
+        addSubview(countLabel)
+                countLabel.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    countLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+                    countLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+                    countLabel.widthAnchor.constraint(equalToConstant: 24),
+                    countLabel.heightAnchor.constraint(equalToConstant: 24)
+                ])
+
     }
 
     func configure(with category: RoomCategoryType) {
         imageView.image = UIImage(named: category.thumbnail)
         roomNameLabel.text = category.rawValue
+
+
+        // Get room count for this category
+        let roomCount = RoomDataProvider.shared.getRooms(for: category).count
+        countLabel.text = "\(roomCount)"
+        
+        // Update cell appearance based on room count
+//        isUserInteractionEnabled = roomCount > 0
+        alpha = roomCount > 0 ? 1.0 : 0.6
+
     }
 }
 

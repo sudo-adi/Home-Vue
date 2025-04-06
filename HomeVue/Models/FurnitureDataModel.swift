@@ -100,27 +100,17 @@ class FurnitureDataProvider {
     func getFurnitureCategories() -> [FurnitureCategory] {
         return [
             FurnitureCategory(
-                category: .tablesAndChairs,
+                category: .decor,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
-                        name: "Office Table",
-                        model3D: "Table.usdz",
-                        brandName: "Ikea",
-                        description: "Material: MDF with laminate finish\nSturdy metal legs for durability\nSpacious surface for a laptop and documents\nModern design, perfect for office or study",
-                        image: UIImage(named: "TableImg.jpg")!,
-                        availableColors: ["Black", "White"],
-                        dimensions: Dimension(depth: 160, width: 80, height: 75),
-                        providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
-                    ),
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Gaming Chair",
-                        model3D: "Chair.usdz",
-                        brandName: "Herman Miller",
-                        description: "Material: Premium leather and breathable mesh\nErgonomic design for all-day comfort\nAdjustable armrests and lumbar support\nHeight and tilt adjustable for personalized comfort\nPerfect for gaming or long office hours",
-                        image: UIImage(named: "ChairImg.jpg")!,
-                        availableColors: ["Purple", "Grey", "Blue"],
-                        dimensions: Dimension(depth: 65, width: 65, height: 125),
-                        providers: [Provider(name: "Herman Miller")]
+                        name: "Flower Pot",
+                        model3D: "Decoration.usdz",
+                        brandName: "Target",
+                        description: "Material: Ceramic with intricate designs\nPerfect for displaying fresh flowers or plants\nAvailable in multiple sizes for different uses\nElegant and decorative for home or office spaces\nAdds a touch of nature to any room",
+                        image: UIImage(named: "DecorImg.jpg")!,
+                        availableColors: ["White", "Blue", "Green"],
+                        dimensions: Dimension(depth: 25, width: 25, height: 50),
+                        providers: [Provider(name: "Target")]
                     )
                 ]
             ),
@@ -136,6 +126,75 @@ class FurnitureDataProvider {
                         availableColors: ["White", "Beige", "Dark Blue"],
                         dimensions: Dimension(depth: 85, width: 90, height: 85),
                         providers: [Provider(name: "Ashley Furniture"), Provider(name: "Amazon")]
+                    )
+                ]
+            ),
+            FurnitureCategory(
+                category: .dining,
+                furnitureItems: [
+                    FurnitureItemManager.createFurnitureItem(
+                        name: "Dining Table",
+                        model3D:"Dining.usdz",
+                        brandName: "Ikea",
+                        description: "Material: Solid wood with a durable finish\nSimple, modern design that fits any dining room\nComfortable for up to four people\nEasy to clean surface for everyday use\nAvailable in various colors to suit your decor",
+                        image: UIImage(named: "DiningImg.jpg")!,
+                        availableColors: ["Wood", "Black", "White"],
+                        dimensions: Dimension(depth: 200, width: 100, height: 75),
+                        providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
+                    )
+                ]
+            ),
+            FurnitureCategory(
+                category: .tablesAndChairs,
+                furnitureItems: [
+                    FurnitureItemManager.createFurnitureItem(
+                        name: "Gaming Chair",
+                        model3D: "Chair.usdz",
+                        brandName: "Herman Miller",
+                        description: "Material: Premium leather and breathable mesh\nErgonomic design for all-day comfort\nAdjustable armrests and lumbar support\nHeight and tilt adjustable for personalized comfort\nPerfect for gaming or long office hours",
+                        image: UIImage(named: "ChairImg.jpg")!,
+                        availableColors: ["Purple", "Grey", "Blue"],
+                        dimensions: Dimension(depth: 65, width: 65, height: 125),
+                        providers: [Provider(name: "Herman Miller")]
+                    ),
+                    FurnitureItemManager.createFurnitureItem(
+                        name: "Office Table",
+                        model3D: "Table.usdz",
+                        brandName: "Ikea",
+                        description: "Material: MDF with laminate finish\nSturdy metal legs for durability\nSpacious surface for a laptop and documents\nModern design, perfect for office or study",
+                        image: UIImage(named: "TableImg.jpg")!,
+                        availableColors: ["Black", "White"],
+                        dimensions: Dimension(depth: 160, width: 80, height: 75),
+                        providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
+                    )
+                ]
+            ),
+            FurnitureCategory(category: .others,
+                              furnitureItems: [
+                                FurnitureItemManager.createFurnitureItem(
+                                    name: "52' TV",
+                                    model3D: "Others.usdz",
+                                    brandName: "Samsung",
+                                    description: "Display: 4K Ultra HD resolution for crystal-clear visuals\nSound: Dolby Atmos surround sound for an immersive audio experience\nSmart Features: Built-in streaming apps like Netflix, YouTube, and Prime Video\nVoice Control: Compatible with Alexa, Google Assistant, and Siri for hands-free operation\nDesign: Slim, bezel-less frame for a modern and stylish look\nConnectivity: Multiple HDMI and USB ports for seamless device integration\n",
+                                    image: UIImage(named: "OthersImg.jpg")!,
+                                    availableColors:[],
+                                    dimensions: Dimension(depth: 7.5, width: 43.5, height: 72.4),
+                                    providers: [Provider(name: "Samsung"),Provider(name: "Sony")]
+                    )
+                ]
+            ),
+            FurnitureCategory(
+                category: .cabinetAndShelves,
+                furnitureItems: [
+                    FurnitureItemManager.createFurnitureItem(
+                        name: "Long Cabinet",
+                        model3D: "Cabinets.usdz",
+                        brandName: "Wayfair",
+                        description: "Material: Solid oak wood with smooth matte finish\nFive spacious shelves for ample storage\nSturdy construction, perfect for books or decorative items\nMinimalist design fits seamlessly in modern spaces\nAvailable in multiple colors to suit your home",
+                        image: UIImage(named: "CabinetsAndShelvesImg.jpg")!,
+                        availableColors: ["Wood", "Black", "White"],
+                        dimensions: Dimension(depth: 120, width: 35, height: 180),
+                        providers: [Provider(name: "Wayfair")]
                     )
                 ]
             ),
@@ -169,53 +228,10 @@ class FurnitureDataProvider {
                     )
                 ]
             ),
-            FurnitureCategory(
-                category: .decor,
-                furnitureItems: [
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Flower Pot",
-                        model3D: "Decoration.usdz",
-                        brandName: "Target",
-                        description: "Material: Ceramic with intricate designs\nPerfect for displaying fresh flowers or plants\nAvailable in multiple sizes for different uses\nElegant and decorative for home or office spaces\nAdds a touch of nature to any room",
-                        image: UIImage(named: "DecorImg.jpg")!,
-                        availableColors: ["White", "Blue", "Green"],
-                        dimensions: Dimension(depth: 25, width: 25, height: 50),
-                        providers: [Provider(name: "Target")]
-                    )
-                ]
-            ),
-            FurnitureCategory(
-                category: .cabinetAndShelves,
-                furnitureItems: [
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Long Cabinet",
-                        model3D: "Cabinets.usdz",
-                        brandName: "Wayfair",
-                        description: "Material: Solid oak wood with smooth matte finish\nFive spacious shelves for ample storage\nSturdy construction, perfect for books or decorative items\nMinimalist design fits seamlessly in modern spaces\nAvailable in multiple colors to suit your home",
-                        image: UIImage(named: "CabinetsAndShelvesImg.jpg")!,
-                        availableColors: ["Wood", "Black", "White"],
-                        dimensions: Dimension(depth: 120, width: 35, height: 180),
-                        providers: [Provider(name: "Wayfair")]
-                    )
-                ]
-            ),
-            FurnitureCategory(
-                category: .dining,
-                furnitureItems: [
-                    FurnitureItemManager.createFurnitureItem(
-                        name: "Dining Table",
-                        model3D:"Dining.usdz",
-                        brandName: "Ikea",
-                        description: "Material: Solid wood with a durable finish\nSimple, modern design that fits any dining room\nComfortable for up to four people\nEasy to clean surface for everyday use\nAvailable in various colors to suit your decor",
-                        image: UIImage(named: "DiningImg.jpg")!,
-                        availableColors: ["Wood", "Black", "White"],
-                        dimensions: Dimension(depth: 200, width: 100, height: 75),
-                        providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
-                    )
-                ]
-            )
+           
         ]
     }
+    
     func fetchFurnitureItems(for categoryType: FurnitureCategoryType) -> [FurnitureItem] {
         let allCategories = getFurnitureCategories()
         return allCategories.first(where: { $0.category == categoryType })?.furnitureItems ?? []
@@ -223,9 +239,9 @@ class FurnitureDataProvider {
 }
 
 // MARK: - Ad Section
-var adCards: [FurnitureItem] = [
-    FurnitureItem(id: UUID(), name: "Gaming Chair", model3D: "Chair.usdz", brandName: "", description: "", image: UIImage(named: "ChairImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
-    FurnitureItem(id: UUID(), name: "Flower Pot", model3D: "Decoration.usdz", brandName: "", description: "", image: UIImage(named: "DecorImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
-    FurnitureItem(id: UUID(), name: "Single Sofa", model3D: "SeatingFurniture.usdz", brandName: "", description: "", image: UIImage(named: "SeatingFurnitureImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
-    FurnitureItem(id: UUID(), name: "52' TV", model3D: "Others.usdz", brandName: "", description: "", image: UIImage(named: "OthersImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: [])
-]
+//var adCards: [FurnitureItem] = [
+//    FurnitureItem(id: UUID(), name: "Gaming Chair", model3D: "Chair.usdz", brandName: "", description: "", image: UIImage(named: "ChairImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
+//    FurnitureItem(id: UUID(), name: "Flower Pot", model3D: "Decoration.usdz", brandName: "", description: "", image: UIImage(named: "DecorImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
+//    FurnitureItem(id: UUID(), name: "Single Sofa", model3D: "SeatingFurniture.usdz", brandName: "", description: "", image: UIImage(named: "SeatingFurnitureImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
+//    FurnitureItem(id: UUID(), name: "52' TV", model3D: "Others.usdz", brandName: "", description: "", image: UIImage(named: "OthersImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: [])
+//]

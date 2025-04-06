@@ -15,6 +15,8 @@ class forgotPasswordViewController: UIViewController {
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var continueButton: UIButton!
     
+//    private var passwordRulesLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,9 +43,17 @@ class forgotPasswordViewController: UIViewController {
         confirmPasswordTextField.addCornerRadius()
         
         continueButton.addCornerRadius()
+        
+//        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: newPasswordTextField, aboveButton: continueButton)
+                
+        // Add text field editing changed action
+//        newPasswordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
     }
     
-
+//    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
+//        validatePassword(textField.text, rulesLabel: passwordRulesLabel)
+//    }
+    
     /*
     // MARK: - Navigation
 

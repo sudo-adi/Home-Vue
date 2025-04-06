@@ -13,6 +13,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var continueButton: UIButton!
+    @IBOutlet weak var stackView: UIStackView!
     
     private var passwordRulesLabel: UILabel!
     
@@ -47,7 +48,16 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
-        validatePassword(textField.text, rulesLabel: passwordRulesLabel)
+        let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
+        
+        UIView.animate(withDuration: 0.25) {
+            if isValid {
+                self.stackView.setCustomSpacing(8, after: self.passwordTextField) // Normal spacing
+            } else {
+                self.stackView.setCustomSpacing(16, after: self.passwordRulesLabel) // Increase spacing
+            }
+            self.view.layoutIfNeeded()
+        }
     }
     
     @IBAction func continueButtonTapped(_ sender: Any) {
