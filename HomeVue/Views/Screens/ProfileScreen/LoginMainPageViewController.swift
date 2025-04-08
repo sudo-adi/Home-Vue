@@ -45,10 +45,6 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             profileView.image = User1.profilePicture
             personName.text = User1.name
             personEmail.text = User1.email
-            lastBackgroundView.addRoundedCornersWithCutout(cornerRadius: 36, cutoutRadius: 80, cutoutCenter: CGPoint(x: lastBackgroundView.bounds.width / 2, y: 0))
-            
-            applyShadow(to: lastBackgroundView)
-            
         }
 
         override func viewWillAppear(_ animated: Bool) {
@@ -66,18 +62,21 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             // Gradient background
             view.applyGradientBackground()
 
-            
+            //Profile View
+            profileView.addCornerRadius()
+            profileView.layer.borderWidth = 4
+            profileView.layer.borderColor = UIColor.solidBackgroundColor.cgColor
+            profileView.backgroundColor = .clear
+
             // Profile outline
-            outlineForProfile.addCornerRadius(70)
-            outlineForProfile.layer.borderWidth = 4
-            outlineForProfile.layer.borderColor = UIColor.solidBackgroundColor.cgColor
+            outlineForProfile.addCornerRadius()
+            outlineForProfile.layer.borderWidth = 5
+            outlineForProfile.layer.borderColor = UIColor.gradientStartColor.cgColor
             outlineForProfile.backgroundColor = .clear
-//
-//            // Profile image
-            profileView.addCornerRadius(profileView.frame.width / 2)
 
             // Background view
             lastBackgroundView.backgroundColor = .solidBackgroundColor
+            lastBackgroundView.layer.cornerRadius = 30
 
             // Table view setup
             profileSectionTableView.dataSource = self
@@ -198,27 +197,6 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             window.makeKeyAndVisible()
         }
     }
-
-    
-    
-    func applyShadow(to view: UIView,
-                     color: UIColor = .brown,
-                     opacity: Float = 1.0,
-                     offset: CGSize = CGSize(width: 10, height: 10),
-                     radius: CGFloat = 6,
-                     cornerRadius: CGFloat = 10) {
-        view.layer.shadowColor = color.cgColor
-        view.layer.shadowOpacity = opacity
-        view.layer.shadowOffset = offset
-        view.layer.shadowRadius = radius
-        view.layer.cornerRadius = cornerRadius
-    }
-    
-//    @IBAction func unwindToLoginMainPage(_ segue: UIStoryboardSegue) {
-//        // Update the main page UI if needed
-//        personEmail.text = User1.email
-////        personPhone.text = User1.phoneNumber
-//    }
 
     @IBAction func unwindToLoginMainPage(_ segue: UIStoryboardSegue) {
         // Update the main page UI if needed

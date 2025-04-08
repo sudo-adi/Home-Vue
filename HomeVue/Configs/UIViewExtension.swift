@@ -33,25 +33,4 @@ extension UIView {
 
         self.layer.insertSublayer(gradientLayer, at: 0)
     }
-    
-    func addRoundedCornersWithCutout(cornerRadius: CGFloat, cutoutRadius: CGFloat, cutoutCenter: CGPoint) {
-        // Define the path for the rounded rectangle
-        let rect = self.bounds
-        let path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
-        
-        // Define the path for the circular cutout
-        let cutoutPath = UIBezierPath(arcCenter: cutoutCenter,
-                                      radius: cutoutRadius,
-                                      startAngle: 0,
-                                      endAngle: CGFloat.pi,
-                                      clockwise: true)
-        path.append(cutoutPath)
-        path.usesEvenOddFillRule = true
-        
-        // Apply the path as a mask
-        let maskLayer = CAShapeLayer()
-        maskLayer.path = path.cgPath
-        maskLayer.fillRule = .evenOdd
-        self.layer.mask = maskLayer
-    }
 }
