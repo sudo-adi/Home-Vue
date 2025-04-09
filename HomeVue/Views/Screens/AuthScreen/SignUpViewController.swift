@@ -16,6 +16,10 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var signUpView: UIView!
     @IBOutlet weak var backNavigationItem: UINavigationItem!
     @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var stackView: UIStackView!
+    
+    private var passwordRulesLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,9 +46,27 @@ class SignUpViewController: UIViewController {
         
         backNavigationItem.titleView?.tintColor = UIColor.white
         continueButton.addCornerRadius()
+        
+        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: passwordTextField, aboveButton: continueButton)
+                
+        // Add text field editing changed action
+        passwordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
        
     }
 
+    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
+        let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
+        
+        UIView.animate(withDuration: 0.25) {
+            if isValid {
+                self.stackView.setCustomSpacing(20, after: self.passwordTextField) // Normal spacing
+            } else {
+                self.stackView.setCustomSpacing(24, after: self.passwordRulesLabel) // Increase spacing
+            }
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     @IBAction func continueButtonTapped(_ sender: Any)  {
             // Email Sign-In Validation
             guard let password = passwordTextField.text, !password.isEmpty,

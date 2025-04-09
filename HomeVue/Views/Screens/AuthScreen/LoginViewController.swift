@@ -52,9 +52,9 @@ class LoginViewController: UIViewController {
         
         UIView.animate(withDuration: 0.25) {
             if isValid {
-                self.stackView.setCustomSpacing(8, after: self.passwordTextField) // Normal spacing
+                self.stackView.setCustomSpacing(20, after: self.passwordTextField) // Normal spacing
             } else {
-                self.stackView.setCustomSpacing(16, after: self.passwordRulesLabel) // Increase spacing
+                self.stackView.setCustomSpacing(24, after: self.passwordRulesLabel) // Increase spacing
             }
             self.view.layoutIfNeeded()
         }

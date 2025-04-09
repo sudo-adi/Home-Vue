@@ -188,7 +188,7 @@ class FurnitureDataProvider {
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
                         name: "Long Cabinet",
-                        model3D: "Cabinets.usdz",
+                        model3D: "CabinetsAndShelves.usdz",
                         brandName: "Wayfair",
                         description: "Material: Solid oak wood with smooth matte finish\nFive spacious shelves for ample storage\nSturdy construction, perfect for books or decorative items\nMinimalist design fits seamlessly in modern spaces\nAvailable in multiple colors to suit your home",
                         image: UIImage(named: "CabinetsAndShelvesImg.jpg")!,

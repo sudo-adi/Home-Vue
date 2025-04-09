@@ -14,8 +14,9 @@ class forgotPasswordViewController: UIViewController {
     @IBOutlet weak var newPasswordTextField: UITextField!
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var continueButton: UIButton!
+    @IBOutlet weak var stackView: UIStackView!
     
-//    private var passwordRulesLabel: UILabel!
+    private var passwordRulesLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,15 +45,24 @@ class forgotPasswordViewController: UIViewController {
         
         continueButton.addCornerRadius()
         
-//        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: newPasswordTextField, aboveButton: continueButton)
+        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: newPasswordTextField, aboveButton: continueButton)
                 
         // Add text field editing changed action
-//        newPasswordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
+        newPasswordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
     }
     
-//    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
-//        validatePassword(textField.text, rulesLabel: passwordRulesLabel)
-//    }
+    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
+        let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
+        
+        UIView.animate(withDuration: 0.25) {
+            if isValid {
+                self.stackView.setCustomSpacing(20, after: self.newPasswordTextField) // Normal spacing
+            } else {
+                self.stackView.setCustomSpacing(24, after: self.passwordRulesLabel) // Increase spacing
+            }
+            self.view.layoutIfNeeded()
+        }
+    }
     
     /*
     // MARK: - Navigation
