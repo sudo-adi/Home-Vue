@@ -101,7 +101,7 @@ class HomeViewController: UIViewController {
         view.addSubview(appBarStackView)
 
         // Avatar setup
-        avatarImageView.image = UIImage(named: "ProfileImage")
+        avatarImageView.image = UIImage(named: "profileImage")
         avatarImageView.tintColor = .white
         avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.clipsToBounds = true

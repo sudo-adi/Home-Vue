@@ -11,6 +11,7 @@
 		48A9DABE2D91348B005D013C /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = 48A9DABD2D91348B005D013C /* PostgREST */; };
 		48A9DAC02D91348B005D013C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 48A9DABF2D91348B005D013C /* Storage */; };
 		48A9DAC22D91348B005D013C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 48A9DAC12D91348B005D013C /* Supabase */; };
+		DBAFAE2B2DA7D0D7008E309C /* FocusEntity in Frameworks */ = {isa = PBXBuildFile; productRef = DBAFAE2A2DA7D0D7008E309C /* FocusEntity */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBAFAE2B2DA7D0D7008E309C /* FocusEntity in Frameworks */,
 				48A9DAC22D91348B005D013C /* Supabase in Frameworks */,
 				48A9DAC02D91348B005D013C /* Storage in Frameworks */,
 				48A9DABE2D91348B005D013C /* PostgREST in Frameworks */,
@@ -93,6 +95,7 @@
 				48A9DABD2D91348B005D013C /* PostgREST */,
 				48A9DABF2D91348B005D013C /* Storage */,
 				48A9DAC12D91348B005D013C /* Supabase */,
+				DBAFAE2A2DA7D0D7008E309C /* FocusEntity */,
 			);
 			productName = HomeVue;
 			productReference = 488220282D367C250024567B /* HomeVue.app */;
@@ -124,6 +127,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				48A9DABA2D91348B005D013C /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				DBAFAE292DA7D0D7008E309C /* XCRemoteSwiftPackageReference "FocusEntity" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 488220292D367C250024567B /* Products */;
@@ -164,7 +168,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = M5XDLWHGTJ;
+				DEVELOPMENT_TEAM = X744283B4A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HomeVue/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access the camera for scanning the room ";
@@ -178,7 +182,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LoremIpsum.HomeVuepre;
+				PRODUCT_BUNDLE_IDENTIFIER = com.LoremIpsum.HomeVue;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -195,7 +199,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = M5XDLWHGTJ;
+				DEVELOPMENT_TEAM = X744283B4A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HomeVue/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access the camera for scanning the room ";
@@ -209,7 +213,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LoremIpsum.HomeVuepre;
+				PRODUCT_BUNDLE_IDENTIFIER = com.LoremIpsum.HomeVue;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -369,6 +373,14 @@
 				minimumVersion = 2.5.1;
 			};
 		};
+		DBAFAE292DA7D0D7008E309C /* XCRemoteSwiftPackageReference "FocusEntity" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maxxfrazer/FocusEntity";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -391,6 +403,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 48A9DABA2D91348B005D013C /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		DBAFAE2A2DA7D0D7008E309C /* FocusEntity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DBAFAE292DA7D0D7008E309C /* XCRemoteSwiftPackageReference "FocusEntity" */;
+			productName = FocusEntity;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -1,10 +1,10 @@
-
 import UIKit
+import SwiftUI
 
 private let reuseIdentifier = "ItemCollectionViewCell"
 
 class mainCollectionViewController: UICollectionViewController {
-    
+   @IBOutlet weak var ARButton: UIButton!
     var furnitureCategory: FurnitureCategory?
     private var searchController: SearchController<FurnitureItem>!
     
@@ -102,9 +102,38 @@ class mainCollectionViewController: UICollectionViewController {
     }
     
     func configure(cell: ItemCollectionViewCell, with item: FurnitureItem) {
-        cell.ProductImg?.image = item.image ?? UIImage(named: "placeholder")
+        cell.ProductImg?.image = item.image
         cell.ProductName?.text = item.name
         cell.ProductBrandName?.text = item.brandName
         cell.ProductDimension?.text = "\(Int(item.dimensions.width))W x \(Int(item.dimensions.height))H x \(Int(item.dimensions.depth))D"
     }
+    
+    @IBAction func navigateToSwiftUI(_ sender: UIButton) {
+        // Get the cell that contains the button
+        let buttonPosition = sender.convert(CGPoint.zero, to: collectionView)
+        guard let indexPath = collectionView.indexPathForItem(at: buttonPosition) else { return }
+        
+        // Get the selected furniture item
+        let selectedItem = searchController.filteredItems[indexPath.item]
+        
+        // Get the model category using the helper function
+        let modelCategory = Model.getCategoryFromModel3D(selectedItem.model3D)
+        
+        // Create a Model object for the selected furniture
+        let model = Model(name: selectedItem.model3D.replacingOccurrences(of: ".usdz", with: ""), category: modelCategory)
+        model.asyncLoadModelEntity()
+        
+        // Create placement settings with the selected model
+        let placementSettings = PlacementSettings()
+        placementSettings.selectedModel = model
+        
+        // Create content view with the selected model and disable browse
+        let contentView = ContentView(allowBrowse: false)
+            .environmentObject(placementSettings)
+            .environmentObject(SessionSettings())
+        
+        self.presentFullScreen(contentView)
+    }
+
+    
 }

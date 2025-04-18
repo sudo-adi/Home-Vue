@@ -98,4 +98,23 @@ class ProductInfoTableViewController: UITableViewController {
                 self.present(activityViewController, animated: true, completion: nil)
 
         }
+    @IBAction func navigateToSwiftUI(_ sender: Any) {
+        // Get the model category using the helper function
+        let modelCategory = Model.getCategoryFromModel3D(furnitureItem.model3D)
+        
+        // Create a Model object for the selected furniture
+        let model = Model(name: furnitureItem.model3D.replacingOccurrences(of: ".usdz", with: ""), category: modelCategory)
+        model.asyncLoadModelEntity()
+        
+        // Create placement settings with the selected model
+        let placementSettings = PlacementSettings()
+        placementSettings.selectedModel = model
+        
+        // Create content view with the selected model and disable browse
+        let contentView = ContentView(allowBrowse: false)
+            .environmentObject(placementSettings)
+            .environmentObject(SessionSettings())
+        
+        self.presentFullScreen(contentView)
+    }
 }
