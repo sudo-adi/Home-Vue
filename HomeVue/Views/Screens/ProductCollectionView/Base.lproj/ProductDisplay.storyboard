@@ -71,7 +71,24 @@
                                                 <color key="baseForegroundColor" systemColor="tertiarySystemBackgroundColor"/>
                                             </buttonConfiguration>
                                             <connections>
-                                                <action selector="navigateToSwiftUI:" destination="dA1-EJ-22B" eventType="touchUpInside" id="BnX-x4-H8a"/>
+                                                <action selector="arButtonTapped:" destination="S9C-Qo-Xdu" eventType="touchUpInside" id="of7-QZ-TRJ"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fDn-RY-7GN">
+                                            <rect key="frame" x="157" y="5" width="40" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="4Om-S2-Xhw"/>
+                                                <constraint firstAttribute="width" constant="40" id="wwn-Ua-w6t"/>
+                                            </constraints>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system">
+                                                <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="font" weight="medium">
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
+                                                </preferredSymbolConfiguration>
+                                                <color key="baseForegroundColor" red="0.21960783" green="0.20000001789999999" blue="0.19607841970000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            </buttonConfiguration>
+                                            <connections>
+                                                <action selector="favoriteButtonTapped:" destination="S9C-Qo-Xdu" eventType="touchUpInside" id="plo-Lq-iju"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -88,6 +105,8 @@
                                         <constraint firstItem="adU-Kz-wfN" firstAttribute="top" secondItem="F8z-xZ-Xas" secondAttribute="bottom" constant="8" id="a8g-ok-GEw"/>
                                         <constraint firstItem="vGL-Hn-CPt" firstAttribute="leading" secondItem="tkS-Zd-jle" secondAttribute="leading" constant="10" id="ogS-yB-xbd"/>
                                         <constraint firstItem="F37-9E-tSV" firstAttribute="top" secondItem="adU-Kz-wfN" secondAttribute="bottom" id="pOa-ZQ-Yqi"/>
+                                        <constraint firstAttribute="trailing" secondItem="fDn-RY-7GN" secondAttribute="trailing" constant="5" id="pXu-H9-3IZ"/>
+                                        <constraint firstItem="fDn-RY-7GN" firstAttribute="top" secondItem="tkS-Zd-jle" secondAttribute="top" constant="5" id="sTM-0p-8Vw"/>
                                         <constraint firstItem="F37-9E-tSV" firstAttribute="leading" secondItem="tkS-Zd-jle" secondAttribute="leading" constant="15" id="zkS-1E-2II"/>
                                     </constraints>
                                 </collectionViewCellContentView>
@@ -99,6 +118,7 @@
                                     <outlet property="ProductDimension" destination="32X-JL-U9S" id="xyR-6W-ZJr"/>
                                     <outlet property="ProductImg" destination="F8z-xZ-Xas" id="LMD-WB-C5l"/>
                                     <outlet property="ProductName" destination="adU-Kz-wfN" id="l8c-PU-BjM"/>
+                                    <outlet property="favoriteButton" destination="fDn-RY-7GN" id="G2f-px-lK9"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -211,7 +231,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zu8-Jr-10H">
-                                                    <rect key="frame" x="322" y="18" width="40" height="40"/>
+                                                    <rect key="frame" x="323" y="18" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="4br-PB-oVs"/>
                                                         <constraint firstAttribute="width" constant="40" id="CL2-X0-ZWo"/>
@@ -227,14 +247,30 @@
                                                         <action selector="shareButtonTapped:" destination="4VZ-lk-S1D" eventType="touchUpInside" id="Vtv-eV-uh3"/>
                                                     </connections>
                                                 </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tnH-gG-H0Y">
+                                                    <rect key="frame" x="281" y="20" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="JGI-OB-oe3"/>
+                                                        <constraint firstAttribute="height" constant="40" id="mR6-r6-jKF"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system">
+                                                        <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="font" weight="semibold">
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
+                                                        </preferredSymbolConfiguration>
+                                                        <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </buttonConfiguration>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Z0u-rv-J4d" firstAttribute="leading" secondItem="v1l-3U-fyN" secondAttribute="leadingMargin" constant="6" id="0CY-8W-9tm"/>
                                                 <constraint firstItem="Z0u-rv-J4d" firstAttribute="bottom" secondItem="v1l-3U-fyN" secondAttribute="bottomMargin" id="4Ma-fg-gv8"/>
                                                 <constraint firstItem="zu8-Jr-10H" firstAttribute="top" secondItem="v1l-3U-fyN" secondAttribute="topMargin" constant="7" id="7Z3-vs-V3Z"/>
+                                                <constraint firstItem="zu8-Jr-10H" firstAttribute="leading" secondItem="tnH-gG-H0Y" secondAttribute="trailing" constant="2" id="9V4-Gr-1NA"/>
+                                                <constraint firstItem="tnH-gG-H0Y" firstAttribute="top" secondItem="v1l-3U-fyN" secondAttribute="topMargin" constant="9" id="NVm-T1-C9g"/>
                                                 <constraint firstItem="CUK-Du-ftb" firstAttribute="top" secondItem="v1l-3U-fyN" secondAttribute="topMargin" id="ObM-Br-A1k"/>
                                                 <constraint firstItem="CUK-Du-ftb" firstAttribute="leading" secondItem="v1l-3U-fyN" secondAttribute="leadingMargin" constant="6" id="Sjg-po-GN2"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="zu8-Jr-10H" secondAttribute="trailing" constant="11" id="vIa-Cf-GWT"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="zu8-Jr-10H" secondAttribute="trailing" constant="10" id="vIa-Cf-GWT"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -434,6 +470,7 @@
                         <outlet property="brandNameLabel" destination="Z0u-rv-J4d" id="dFX-vv-UQa"/>
                         <outlet property="depthLabel" destination="PiY-Al-jm2" id="tcF-hk-2g2"/>
                         <outlet property="descriptionLabel" destination="uAB-cQ-osB" id="u7W-F6-Z3S"/>
+                        <outlet property="favoriteButton" destination="tnH-gG-H0Y" id="hCG-qy-5l5"/>
                         <outlet property="heightLabel" destination="ogb-eU-XkI" id="ZfL-Wa-4gJ"/>
                         <outlet property="nameLabel" destination="CUK-Du-ftb" id="YWh-Bm-qZ1"/>
                         <outlet property="productSCNView" destination="EIv-08-kmg" id="ON3-80-3jO"/>
@@ -449,13 +486,14 @@
     <resources>
         <image name="Decor" width="120" height="123"/>
         <image name="arkit" catalog="system" width="128" height="125"/>
+        <image name="heart" catalog="system" width="128" height="107"/>
         <image name="square.and.arrow.up" catalog="system" width="110" height="128"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tertiarySystemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

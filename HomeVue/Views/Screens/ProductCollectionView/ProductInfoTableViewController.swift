@@ -21,6 +21,7 @@ class ProductInfoTableViewController: UITableViewController {
     @IBOutlet weak var depthLabel: UILabel!
     @IBOutlet weak var providersNameLabel: UILabel!
     @IBOutlet weak var ARButton: UIButton!
+    @IBOutlet weak var favoriteButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()

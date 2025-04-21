@@ -31,7 +31,8 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
         let tableData: [(section: String, rows: [(icon: String, title: String, isRed: Bool)])] = [
             ("Account", [
                 ("person.text.rectangle.fill", "Personal Information", false),
-                ("key.viewfinder", "Sign-in and Security", false)
+                ("key.viewfinder", "Sign-in and Security", false),
+                ("heart.fill", "Favorites", false)
             ]),
             ("Log-in", [
                 ("rectangle.portrait.and.arrow.right", "Log out", true)
@@ -133,27 +134,32 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
        // Map actions to segues or functions
        let segueMap: [String: String] = [
            "Personal Information": "PersonalInformation",
-           "Sign-in and Security": "SignInAndSecurity"
+           "Sign-in and Security": "SignInAndSecurity",
+           "Favorites": "Favorites"
        ]
 
-       if let segueIdentifier = segueMap[selectedItem] {
-           //performSegue(withIdentifier: segueIdentifier, sender: nil)
-           if segueIdentifier == "PersonalInformation" {
-               // When navigating to PersonalInformationTableViewController, set the delegate
-               if let personalInfoVC = storyboard?.instantiateViewController(withIdentifier: "PersonalInfo") as? PersonalInformationTableViewController {
-                   personalInfoVC.delegate = self // Set the delegate here
-                   navigationController?.pushViewController(personalInfoVC, animated: true)
-               }
-           } else {
-               performSegue(withIdentifier: segueIdentifier, sender: nil)
-           }
-       } else if selectedItem == "Log out" {
-           handleLogout()
-       } else {
-           print("No segue found for \(selectedItem)")
-       }
+        if let segueIdentifier = segueMap[selectedItem] {
+            if segueIdentifier == "PersonalInformation" {
+                // When navigating to PersonalInformationTableViewController, set the delegate
+                if let personalInfoVC = storyboard?.instantiateViewController(withIdentifier: "PersonalInfo") as? PersonalInformationTableViewController {
+                    personalInfoVC.delegate = self // Set the delegate here
+                    navigationController?.pushViewController(personalInfoVC, animated: true)
+                }
+            } else if segueIdentifier == "Favorites" {
+                // Navigate to FavoritesViewController
+                if let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "FavoritesCollectionViewController") as? FavoritesCollectionViewController {
+                    navigationController?.pushViewController(favoritesVC, animated: true)
+                }
+            } else {
+                performSegue(withIdentifier: segueIdentifier, sender: nil)
+            }
+        } else if selectedItem == "Log out" {
+            handleLogout()
+        } else {
+            print("No segue found for \(selectedItem)")
+        }
 
-       tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
    }
 
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {

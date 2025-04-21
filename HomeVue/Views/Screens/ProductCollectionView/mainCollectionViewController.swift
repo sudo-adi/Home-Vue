@@ -12,28 +12,38 @@ class mainCollectionViewController: UICollectionViewController {
         super.viewDidLoad()
         
         setupNavigationBarAppearance()
-        setupSearch()
+        fetchItemsForCategory()
         setupCollectionView()
         
         navigationController?.navigationBar.barTintColor = .white
         self.title = furnitureCategory?.category.rawValue
     }
     
-    private func setupSearch() {
-        guard let furnitureItems = furnitureCategory?.furnitureItems else {
-            print("Furniture category is nil")
-            return
-        }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        fetchItemsForCategory()
+        collectionView.reloadData()
+    }
+    
+    func fetchItemsForCategory() {
+        guard let categoryType = furnitureCategory?.category else { return }
+        
+        // Fetch furniture items
+        let items = FurnitureDataProvider.shared.fetchFurnitureItems(for: categoryType)
+        
+        // Update the search controller with these items
         searchController = SearchController(
             collectionView: collectionView,
-            initialItems: furnitureItems,
+            initialItems: items,
             filterPredicate: { item, text in
                 item.name.lowercased().contains(text.lowercased()) ||
                 item.brandName.lowercased().contains(text.lowercased())
             },
             placeholder: "Search furniture..."
         )
+        
+        collectionView.reloadData()
     }
     
     private func setupCollectionView() {
@@ -80,7 +90,12 @@ class mainCollectionViewController: UICollectionViewController {
         }
         
         let item = searchController.filteredItems[indexPath.item]
-        configure(cell: cell, with: item)
+        cell.configure(with: item, favoriteToggleAction: { [weak self] furnitureItem in
+            self?.toggleFavorite(furnitureItem: furnitureItem)
+        }, arButtonAction: { [weak self] furnitureItem in
+            ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self!)
+        })
+        print("Item: \(item.name), ID: \(item.id), IsFavorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id))")
         return cell
     }
     
@@ -101,39 +116,10 @@ class mainCollectionViewController: UICollectionViewController {
         }
     }
     
-    func configure(cell: ItemCollectionViewCell, with item: FurnitureItem) {
-        cell.ProductImg?.image = item.image
-        cell.ProductName?.text = item.name
-        cell.ProductBrandName?.text = item.brandName
-        cell.ProductDimension?.text = "\(Int(item.dimensions.width))W x \(Int(item.dimensions.height))H x \(Int(item.dimensions.depth))D"
+    private func toggleFavorite(furnitureItem: FurnitureItem) {
+        // Toggle favorite status
+        UserDetails.shared.toggleSave(furnitureItem: furnitureItem)
+        // Refresh items to update favorite status
+        collectionView.reloadData()
     }
-    
-    @IBAction func navigateToSwiftUI(_ sender: UIButton) {
-        // Get the cell that contains the button
-        let buttonPosition = sender.convert(CGPoint.zero, to: collectionView)
-        guard let indexPath = collectionView.indexPathForItem(at: buttonPosition) else { return }
-        
-        // Get the selected furniture item
-        let selectedItem = searchController.filteredItems[indexPath.item]
-        
-        // Get the model category using the helper function
-        let modelCategory = Model.getCategoryFromModel3D(selectedItem.model3D)
-        
-        // Create a Model object for the selected furniture
-        let model = Model(name: selectedItem.model3D.replacingOccurrences(of: ".usdz", with: ""), category: modelCategory)
-        model.asyncLoadModelEntity()
-        
-        // Create placement settings with the selected model
-        let placementSettings = PlacementSettings()
-        placementSettings.selectedModel = model
-        
-        // Create content view with the selected model and disable browse
-        let contentView = ContentView(allowBrowse: false)
-            .environmentObject(placementSettings)
-            .environmentObject(SessionSettings())
-        
-        self.presentFullScreen(contentView)
-    }
-
-    
 }

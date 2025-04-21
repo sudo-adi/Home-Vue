@@ -26,7 +26,9 @@ class LoginViewController: UIViewController {
         loginView.layer.borderColor = UIColor.black.cgColor
         loginView.layer.borderWidth = 0.5
         
-      
+        emailTextField.text = "test@gmail.com"
+        passwordTextField.text = "test@12345"
+        
         emailTextField.configureText(
         placeholder: "hello@gmail.com",
         placeholderColor: UIColor.lightGray)

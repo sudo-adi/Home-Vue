@@ -1,12 +1,6 @@
-//
-//  FurnitureDataModel.swift
-//  dummy
-//
-//  Created by student-2 on 15/01/25.
-//
-
 import Foundation
 import UIKit
+import CryptoKit
 
 // Repesents furniture items present in a particular category
 struct FurnitureCategory {
@@ -88,8 +82,9 @@ struct FurnitureItem {
 
 // MARK: - FurnitureItemManager
 class FurnitureItemManager {
-    static func createFurnitureItem(name: String, model3D: String, brandName: String, description: String, image: UIImage, availableColors: [String], dimensions: Dimension, providers: [Provider]) -> FurnitureItem {
-        return FurnitureItem(id: UUID(), name: name, model3D: model3D, brandName: brandName, description: description, image: image, availableColors: availableColors, dimensions: dimensions, providers: providers)}
+    static func createFurnitureItem(id: UUID,name: String, model3D: String, brandName: String, description: String, image: UIImage, availableColors: [String], dimensions: Dimension, providers: [Provider]) -> FurnitureItem {
+        return FurnitureItem(id: id, name: name, model3D: model3D, brandName: brandName, description: description, image: image, availableColors: availableColors, dimensions: dimensions, providers: providers)
+    }
 }
 
 // MARK: - FurnitureDataProvider
@@ -103,6 +98,7 @@ class FurnitureDataProvider {
                 category: .decor,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
                         name: "Flower Pot",
                         model3D: "Decoration.usdz",
                         brandName: "Target",
@@ -118,6 +114,7 @@ class FurnitureDataProvider {
                 category: .seatingFurniture,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
                         name: "Single Seater",
                         model3D: "SeatingFurniture.usdz",
                         brandName: "Ashley",
@@ -133,6 +130,7 @@ class FurnitureDataProvider {
                 category: .dining,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!,
                         name: "Dining Table",
                         model3D:"Dining.usdz",
                         brandName: "Ikea",
@@ -148,6 +146,7 @@ class FurnitureDataProvider {
                 category: .tablesAndChairs,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!,
                         name: "Gaming Chair",
                         model3D: "Chair.usdz",
                         brandName: "Herman Miller",
@@ -158,6 +157,7 @@ class FurnitureDataProvider {
                         providers: [Provider(name: "Herman Miller")]
                     ),
                     FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000005")!,
                         name: "Office Table",
                         model3D: "Table.usdz",
                         brandName: "Ikea",
@@ -172,6 +172,7 @@ class FurnitureDataProvider {
             FurnitureCategory(category: .others,
                               furnitureItems: [
                                 FurnitureItemManager.createFurnitureItem(
+                                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000006")!,
                                     name: "52' TV",
                                     model3D: "Others.usdz",
                                     brandName: "Samsung",
@@ -187,6 +188,7 @@ class FurnitureDataProvider {
                 category: .cabinetAndShelves,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000007")!,
                         name: "Long Cabinet",
                         model3D: "CabinetsAndShelves.usdz",
                         brandName: "Wayfair",
@@ -202,6 +204,7 @@ class FurnitureDataProvider {
                 category: .kitchenFurniture,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000008")!,
                         name: "Kitchen Sink",
                         model3D: "KitchenFurniture.usdz",
                         brandName: "Home Depot",
@@ -217,6 +220,7 @@ class FurnitureDataProvider {
                 category: .bed,
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000009")!,
                         name: "Queen Bed",
                         model3D: "Bed.usdz",
                         brandName: "Tempur-Pedic",
@@ -237,11 +241,3 @@ class FurnitureDataProvider {
         return allCategories.first(where: { $0.category == categoryType })?.furnitureItems ?? []
     }
 }
-
-// MARK: - Ad Section
-//var adCards: [FurnitureItem] = [
-//    FurnitureItem(id: UUID(), name: "Gaming Chair", model3D: "Chair.usdz", brandName: "", description: "", image: UIImage(named: "ChairImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
-//    FurnitureItem(id: UUID(), name: "Flower Pot", model3D: "Decoration.usdz", brandName: "", description: "", image: UIImage(named: "DecorImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
-//    FurnitureItem(id: UUID(), name: "Single Sofa", model3D: "SeatingFurniture.usdz", brandName: "", description: "", image: UIImage(named: "SeatingFurnitureImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: []),
-//    FurnitureItem(id: UUID(), name: "52' TV", model3D: "Others.usdz", brandName: "", description: "", image: UIImage(named: "OthersImg.jpg")!, availableColors: [], dimensions: Dimension(depth: 85, width: 90, height: 85), providers: [])
-//]

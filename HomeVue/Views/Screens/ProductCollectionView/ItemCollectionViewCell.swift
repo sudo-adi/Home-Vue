@@ -13,8 +13,11 @@ class ItemCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var ProductName: UILabel?
     @IBOutlet weak var ProductDimension: UILabel!
     @IBOutlet weak var ProductBrandName: UILabel!
+    @IBOutlet weak var favoriteButton: UIButton!
     
     private var item: FurnitureItem?
+    private var favoriteToggleAction: ((FurnitureItem) -> Void)?
+    private var arButtonAction: ((FurnitureItem) -> Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -23,5 +26,55 @@ class ItemCollectionViewCell: UICollectionViewCell {
         
         self.addCornerRadius(15)
     }
-       
+    
+    func configure(with item: FurnitureItem, favoriteToggleAction: @escaping (FurnitureItem) -> Void,arButtonAction: @escaping (FurnitureItem) -> Void) {
+        self.item = item
+        ProductImg?.image = item.image
+        ProductName?.text = item.name
+        ProductBrandName?.text = item.brandName
+        ProductDimension?.text = "\(Int(item.dimensions.width))W x \(Int(item.dimensions.height))H x \(Int(item.dimensions.depth))D"
+        self.favoriteToggleAction = favoriteToggleAction
+        self.arButtonAction = arButtonAction
+        
+        // Update favorite button appearance
+        updateFavoriteButtonAppearance()
+    }
+    
+    func updateFavoriteButtonAppearance() {
+        guard let item = item else { return }
+        let isFavorite = UserDetails.shared.isFavoriteFurniture(furnitureID: item.id)
+        let imageName = isFavorite ? "heart.fill" : "heart"
+        let tintColor = isFavorite ? UIColor.systemRed : UIColor.systemGray
+        
+        favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
+        favoriteButton.tintColor = tintColor
+    }
+    
+    @IBAction func favoriteButtonTapped(_ sender: UIButton) {
+        print("button tapped")
+        guard let item = item, let action = favoriteToggleAction else { return }
+        action(item)
+        print("Item ID: \(item.id), Is favorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id))")
+        // Update button appearance
+        updateFavoriteButtonAppearance()
+        
+        // Add haptic feedback
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        
+        // Add animation
+        UIView.animate(withDuration: 0.1, animations: {
+            self.favoriteButton.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.favoriteButton.transform = CGAffineTransform.identity
+            }
+        }
+    }
+    
+    @IBAction func arButtonTapped(_ sender: UIButton) {
+        print("AR button tapped")
+        guard let item = item, let action = arButtonAction else { return }
+        action(item)
+    }
 }
