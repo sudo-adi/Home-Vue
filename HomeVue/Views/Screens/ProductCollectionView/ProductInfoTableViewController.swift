@@ -29,15 +29,29 @@ class ProductInfoTableViewController: UITableViewController {
         guard furnitureItem != nil else {
            print("Furniture item not set!")
            return
-       }
+        }
         ARButton.addCornerRadius()
         title = furnitureItem.name
         updateUI()
+        updateFavoriteButtonState()
         
         productSCNView.allowsCameraControl = true
         productSCNView.autoenablesDefaultLighting = true
         productSCNView.antialiasingMode = .multisampling2X
         productSCNView.backgroundColor = .white
+    }
+
+    private func updateFavoriteButtonState() {
+    let isFavorite = UserDetails.shared.isFavoriteFurniture(furnitureID: furnitureItem.id)
+    let imageName = isFavorite ? "heart.fill" : "heart"
+    favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
+    }
+
+    @IBAction func favoriteButtonTapped(_ sender: UIButton) {
+        UserDetails.shared.toggleSave(furnitureItem: furnitureItem)
+        updateFavoriteButtonState()
+        
+        NotificationCenter.default.post(name: NSNotification.Name("FavoriteToggled"), object: nil)
     }
     
     private func updateUI() {

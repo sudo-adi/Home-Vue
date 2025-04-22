@@ -17,11 +17,18 @@ class mainCollectionViewController: UICollectionViewController {
         
         navigationController?.navigationBar.barTintColor = .white
         self.title = furnitureCategory?.category.rawValue
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshCollection), name: NSNotification.Name("FavoriteToggled"), object: nil)
     }
-    
+    @objc private func refreshCollection() {
+        collectionView.reloadData()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         fetchItemsForCategory()
         collectionView.reloadData()
     }
