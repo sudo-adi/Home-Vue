@@ -29,38 +29,42 @@ struct ContentView: View {
                 ARViewContainer()
                 
                 if self.placementSettings.selectedModel == nil {
-                    if allowBrowse {
-                        ControlView(isControlVisible: $isControlsVisible, showBrowse: $showBrowse, showSettings: $showSettings)
-                    } else {
-                        // Show controls without browse
-                        VStack {
-                            ControlVisibilityToggleButton(isControlVisible: $isControlsVisible)
-                            
-                            Spacer()
-                            
-                            if isControlsVisible {
-                                HStack {
-                                    //MostRecentlyPLaced Button
-                                    ControlButton(systemIconName: "clock.fill"){
-                                        print("MostRecentlyPlaced button pressed")
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    //Settings Button
-                                    ControlButton(systemIconName: "slider.horizontal.3"){
-                                        print("settings button pressed.")
-                                        self.showSettings.toggle()
-                                    }.sheet(isPresented: $showSettings){
-                                        SettingsView(showSettings: $showSettings)
-                                    }
-                                }
-                                .frame(maxWidth: 500)
-                                .padding(30)
-                                .background(Color.black.opacity(0.25))
-                            }
-                        }
-                    }
+//                    if allowBrowse {
+//                        ControlView(isControlVisible: $isControlsVisible, showBrowse: $showBrowse, showSettings: $showSettings)
+//                    } else {
+//                        // Show controls without browse
+//                        VStack {
+//                            ControlVisibilityToggleButton(isControlVisible: $isControlsVisible)
+//                            
+//                            Spacer()
+//                            
+//                            if isControlsVisible {
+//                                HStack {
+//                                    //MostRecentlyPLaced Button
+//                                    ControlButton(systemIconName: "clock.fill"){
+//                                        print("MostRecentlyPlaced button pressed")
+//                                    }
+//                                    
+//                                    Spacer()
+//                                    
+//                                    //Settings Button
+//                                    ControlButton(systemIconName: "slider.horizontal.3"){
+//                                        print("settings button pressed.")
+//                                        self.showSettings.toggle()
+//                                    }.sheet(isPresented: $showSettings){
+//                                        SettingsView(showSettings: $showSettings)
+//                                    }
+//                                }
+//                                .frame(maxWidth: 500)
+//                                .padding(30)
+//                                .background(Color.black.opacity(0.25))
+//                            }
+//                        }
+//                    }
+                    ControlView(isControlVisible: $isControlsVisible,
+                                                  showBrowse: $showBrowse,
+                                                  showSettings: $showSettings,
+                                                  allowBrowse: allowBrowse)
                 } else {
                     PlacementView()
                 }
@@ -95,6 +99,9 @@ struct ARViewContainer: UIViewRepresentable {
     func makeUIView(context: Context) -> CustomARView {
         let arView = CustomARView(frame: .zero, sessionSettings: sessionSettings)
         
+        // Setup lighting when view is created
+        arView.setupLighting()
+        
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal, .vertical]
         arView.session.run(config, options: [])
@@ -117,17 +124,40 @@ struct ARViewContainer: UIViewRepresentable {
         }
     }
     
+//    private func place(_ modelEntity: ModelEntity, in arView: ARView) {
+//        let clonedEntity = modelEntity.clone(recursive: true)
+//        
+//        clonedEntity.generateCollisionShapes(recursive: true)
+//        arView.installGestures([.translation, .rotation], for: clonedEntity)
+//        
+//        let anchorEntity = AnchorEntity(plane: .any)
+//        anchorEntity.addChild(clonedEntity)
+//        
+//        arView.scene.addAnchor(anchorEntity)
+//        print("added modelEntity to scene")
+//    }
     private func place(_ modelEntity: ModelEntity, in arView: ARView) {
         let clonedEntity = modelEntity.clone(recursive: true)
-        
         clonedEntity.generateCollisionShapes(recursive: true)
         arView.installGestures([.translation, .rotation], for: clonedEntity)
         
-        let anchorEntity = AnchorEntity(plane: .any)
-        anchorEntity.addChild(clonedEntity)
+        // Get the center of the screen
+        let screenCenter = CGPoint(x: arView.bounds.midX, y: arView.bounds.midY)
         
-        arView.scene.addAnchor(anchorEntity)
-        print("added modelEntity to scene")
+        // Perform raycast from screen center
+        if let raycastResult = arView.raycast(from: screenCenter, allowing: .estimatedPlane, alignment: .any).first {
+            // Create anchor at raycast hit position
+            let anchorEntity = AnchorEntity(world: raycastResult.worldTransform)
+            anchorEntity.addChild(clonedEntity)
+            arView.scene.addAnchor(anchorEntity)
+            print("Added modelEntity to scene at raycast position")
+        } else {
+            // Fallback to default plane anchor if raycast fails
+            let anchorEntity = AnchorEntity(plane: .any)
+            anchorEntity.addChild(clonedEntity)
+            arView.scene.addAnchor(anchorEntity)
+            print("Added modelEntity to scene with default plane anchor")
+        }
     }
 }
 

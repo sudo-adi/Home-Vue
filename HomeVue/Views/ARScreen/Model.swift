@@ -83,6 +83,23 @@ class Model {
         }
     }
     
+    static func getScaleCompensation(_ model3D: String) -> Float {
+        switch model3D {
+        case "Table.usdz":
+            return 9.0
+        case "SeatingFurniture.usdz":
+            return 0.40
+        case "Bed.usdz":
+            return 0.28
+        case "CabinetsAndShelves.usdz":
+            return 0.28
+        case "Dining.usdz":
+            return 0.50
+        default:
+            return 1.0
+        }
+    }
+    
     //TODO: Create a methof to sasync load modelEntity
     func asyncLoadModelEntity(){
         let filename = self.name + ".usdz"
@@ -112,15 +129,15 @@ struct Models{
     var all: [Model] = []
     
     init() {
-        let table = Model(name: "Table", category: .tablesAndChairs, scaleCompensation: 10.0)
-        let chair = Model(name: "Chair", category: .tablesAndChairs)
-        let bed = Model(name: "Bed", category: .bed, scaleCompensation: 0.35)
-        let cabinetsAndShelves = Model(name: "CabinetsAndShelves", category: .cabinetsAndShelves, scaleCompensation: 0.20)
-        let seatingFurniture = Model(name: "SeatingFurniture", category: .seatingFurniture)
-        let decoration = Model(name: "Decoration", category: .decor)
-        let dining = Model(name: "Dining", category: .dining, scaleCompensation: 0.50)
-        let kitchenFurniture = Model(name: "KitchenFurniture", category: .kitchenFurniture)
-        let others = Model(name: "Others", category: .others)
+        let table = Model(name: "Table", category: .tablesAndChairs, scaleCompensation: Model.getScaleCompensation("Table.usdz"))
+        let chair = Model(name: "Chair", category: .tablesAndChairs, scaleCompensation: Model.getScaleCompensation("Chair.usdz"))
+        let bed = Model(name: "Bed", category: .bed, scaleCompensation: Model.getScaleCompensation("Bed.usdz"))
+        let cabinetsAndShelves = Model(name: "CabinetsAndShelves", category: .cabinetsAndShelves, scaleCompensation: Model.getScaleCompensation("CabinetsAndShelves.usdz"))
+        let seatingFurniture = Model(name: "SeatingFurniture", category: .seatingFurniture, scaleCompensation: Model.getScaleCompensation("SeatingFurniture.usdz"))
+        let decoration = Model(name: "Decoration", category: .decor, scaleCompensation: Model.getScaleCompensation("Decoration.usdz"))
+        let dining = Model(name: "Dining", category: .dining, scaleCompensation: Model.getScaleCompensation("Dining.usdz"))
+        let kitchenFurniture = Model(name: "KitchenFurniture", category: .kitchenFurniture, scaleCompensation: Model.getScaleCompensation("KitchenFurniture.usdz"))
+        let others = Model(name: "Others", category: .others, scaleCompensation: Model.getScaleCompensation("Others.usdz"))
         
         self.all += [table, chair, bed, seatingFurniture, decoration, cabinetsAndShelves, dining, kitchenFurniture, others]
     }

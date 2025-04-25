@@ -17,7 +17,8 @@ class ARViewPresenter {
         // If a furniture item is provided, set up the model
         if let furnitureItem = furnitureItem {
             let modelCategory = Model.getCategoryFromModel3D(furnitureItem.model3D)
-            let model = Model(name: furnitureItem.model3D.replacingOccurrences(of: ".usdz", with: ""), category: modelCategory)
+            let scaleCompensation = Model.getScaleCompensation(furnitureItem.model3D)
+            let model = Model(name: furnitureItem.model3D.replacingOccurrences(of: ".usdz", with: ""), category: modelCategory, scaleCompensation: scaleCompensation)
             model.asyncLoadModelEntity()
             placementSettings.selectedModel = model
             print("Presenting AR view for: \(furnitureItem.name), model: \(furnitureItem.model3D)")

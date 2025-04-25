@@ -2,7 +2,6 @@
 import SwiftUI
 
 enum Setting {
-    case multiuser
     case peopleOcclusion
     case objectOcclusion
     case lidarDebug
@@ -10,10 +9,10 @@ enum Setting {
     var label: String {
         get {
             switch self {
-            case .multiuser:
-                return "Multiuser"
-            case .peopleOcclusion, .objectOcclusion:
-                return "Occlusion"
+            case .peopleOcclusion:
+                return "People Occlusion"
+            case .objectOcclusion:
+                return "Object Occlusion"
             case .lidarDebug:
                 return "LiDAR"
             }
@@ -23,8 +22,6 @@ enum Setting {
     var systemIconName: String {
         get {
             switch self {
-            case .multiuser:
-                return "person.2"
             case .peopleOcclusion:
                 return "person"
             case .objectOcclusion:
@@ -63,7 +60,6 @@ struct SettingsGrid: View {
         ScrollView {
             // Vertical grid with vertical spacing of 25.
             LazyVGrid(columns: gridItemLayout, spacing: 25) {
-                SettingsToggleButton(setting: .multiuser, isOn: $sessionSettings.isMultiuserEnabled) // NOTE: from Apple Docs - You can get a binding to an observed object, state object, or environment object property by prefixing the name of the object with the dollar sign ($)
                 
                 SettingsToggleButton(setting: .peopleOcclusion, isOn: $sessionSettings.isPeopleOcclusionEnabled)
                 

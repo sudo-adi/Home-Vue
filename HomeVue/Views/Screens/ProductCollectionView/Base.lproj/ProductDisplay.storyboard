@@ -141,7 +141,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="ProductInfoTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="4VZ-lk-S1D" customClass="ProductInfoTableViewController" customModule="HomeVue" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="CZa-et-oV8">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <sections>
@@ -168,7 +168,7 @@
                                                         <color key="baseForegroundColor" systemColor="tertiarySystemBackgroundColor"/>
                                                     </buttonConfiguration>
                                                     <connections>
-                                                        <action selector="navigateToSwiftUI:" destination="4VZ-lk-S1D" eventType="touchUpInside" id="Bk8-iK-LRV"/>
+                                                        <action selector="ARButtonTapped:" destination="4VZ-lk-S1D" eventType="touchUpInside" id="Bk8-iK-LRV"/>
                                                     </connections>
                                                 </button>
                                                 <sceneKitView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EIv-08-kmg">
@@ -496,7 +496,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tertiarySystemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

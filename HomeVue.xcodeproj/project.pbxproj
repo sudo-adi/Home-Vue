@@ -172,6 +172,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HomeVue/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access the camera for scanning the room ";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save the screenshot to the photo library.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -203,6 +204,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HomeVue/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access the camera for scanning the room ";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save the screenshot to the photo library.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

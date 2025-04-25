@@ -11,15 +11,18 @@ import FocusEntity
 import RealityKit
 import SwiftUI
 import Combine
+import Photos
 
 class CustomARView: ARView {
     var focusEntity: FocusEntity!
     var sessionSettings: SessionSettings
     
+    @State private var toastMessage: String = ""
+    @State private var showToast: Bool = false
+    
     private var peopleOcclusionCancellable: AnyCancellable?
     private var objectOcclusionCancellable: AnyCancellable?
     private var lidarDebugCancellable: AnyCancellable?
-    private var multiuserCancellable: AnyCancellable?
     
     required init(frame frameRect: CGRect, sessionSettings: SessionSettings){
         self.sessionSettings = sessionSettings
@@ -46,20 +49,25 @@ class CustomARView: ARView {
     private func configure() {
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal, .vertical]
-        
+
         if ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh) {
             config.sceneReconstruction = .mesh
+            
+            // Ensure good quality mesh reconstruction for occlusion
+            config.environmentTexturing = .automatic
+            
+            // Set the scene's physics origin to world space
+//            self.environment.physicsOrigin = .world
         }
         
-        session.run(config)
+        // Start with a clean session
+        session.run(config, options: [.resetTracking, .removeExistingAnchors])
     }
     
     private func initializeSettings(){
         self.updatePeopleOcclusion(isEnabled: sessionSettings.isPeopleOcclusionEnabled)
         self.updateObjectOcclusion(isEnabled: sessionSettings.isObjectOcclusionEnabled)
         self.updateLidarDebug(isEnabled: sessionSettings.isLidarDebugEnabled)
-        self.updateMultiuser(isEnabled: sessionSettings.isMultiuserEnabled)
-
     }
     
     private func setupSubscribers() {
@@ -74,12 +82,30 @@ class CustomARView: ARView {
         self.lidarDebugCancellable = sessionSettings.$isLidarDebugEnabled.sink { [weak self] isEnabled in
             self?.updateLidarDebug(isEnabled: isEnabled)
         }
-        
-        self.multiuserCancellable = sessionSettings.$isMultiuserEnabled.sink { [weak self] isEnabled in
-            self?.updateMultiuser(isEnabled: isEnabled)
-        }
     }
     
+    func setupLighting() {
+        // Enable automatic environment lighting
+        environment.sceneUnderstanding.options = [.occlusion, .physics]
+        
+        // Add directional light
+        let directionalLight = DirectionalLight()
+        directionalLight.light.intensity = 1000
+        directionalLight.shadow = DirectionalLightComponent.Shadow(
+            maximumDistance: 4,
+            depthBias: 2
+        )
+        
+        // Position the light
+        directionalLight.look(at: [0, 0, 0], from: [1, 1.5, 1], relativeTo: nil)
+        
+        // Create anchor for lights
+        let lightAnchor = AnchorEntity(.world(transform: .init(diagonal: [1,1,1,1])))
+        lightAnchor.addChild(directionalLight)
+        
+        scene.addAnchor(lightAnchor)
+    }
+
     
     private func updatePeopleOcclusion(isEnabled: Bool) {
         print("\(#file)): isPeopleOcclusionEnabled is now \(String(describing: isEnabled).uppercased())")
@@ -109,7 +135,7 @@ class CustomARView: ARView {
         // Rerun the session to affect the configuration change.
         self.session.run(configuration)
     }
-    
+
     private func updateObjectOcclusion(isEnabled: Bool) {
         print("\(#file): isObjectOcclusionEnabled is now \(String(describing: isEnabled).uppercased())")
         
@@ -144,6 +170,7 @@ class CustomARView: ARView {
         self.session.run(configuration, options: [.resetSceneReconstruction])
     }
     
+
     private func updateLidarDebug(isEnabled: Bool) {
         print("\(#file): isLidarDebugEnabled is now \(String(describing: isEnabled).uppercased())")
         
@@ -166,9 +193,5 @@ class CustomARView: ARView {
         
         // Rerun the session to affect the configuration change if needed
         self.session.run(configuration)
-    }
-    
-    private func updateMultiuser(isEnabled: Bool) {
-        print("\(#file): isMultiuserEnabled is now \(String(describing: isEnabled).uppercased())")
     }
 }

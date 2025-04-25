@@ -11,6 +11,7 @@ struct ControlView: View{
     @Binding var isControlVisible: Bool
     @Binding var showBrowse: Bool
     @Binding var showSettings: Bool
+    var allowBrowse: Bool
     
      var body: some View{
         
@@ -20,7 +21,7 @@ struct ControlView: View{
             Spacer()
             
             if isControlVisible{
-                ControlButtonBar(showBrowse: $showBrowse, showSettings: $showSettings)
+                ControlButtonBar(showBrowse: $showBrowse, showSettings: $showSettings, allowBrowse: allowBrowse)
             }
         }
     }
@@ -54,26 +55,34 @@ struct ControlVisibilityToggleButton: View {
 }
 
 struct ControlButtonBar: View {
+    @State private var toastMessage = ""
+    @State private var showToast = false
     @Binding var showBrowse: Bool
     @Binding var showSettings: Bool
+    var allowBrowse: Bool
+
     var body: some View {
         HStack {
 
-            //MostRecentlyPLaced Button
-            ControlButton(systemIconName: "clock.fill"){
-                print("MostRecentlyPlaced button pressed")
+            //Screenshot Button
+            ControlButton(systemIconName: "camera.fill"){
+                takeScreenshot()
             }
             
             Spacer()
-            //Browse Button
-            ControlButton(systemIconName: "square.grid.2x2"){
-                print("Browse button pressed.")
-                self.showBrowse.toggle()
-            }.sheet(isPresented: $showBrowse, content: {
-                BrowseView(showBrowse: $showBrowse)
-            })
             
-            Spacer()
+            if allowBrowse {
+                //Browse Button
+                ControlButton(systemIconName: "square.grid.2x2"){
+                    print("Browse button pressed.")
+                    self.showBrowse.toggle()
+                }.sheet(isPresented: $showBrowse, content: {
+                    BrowseView(showBrowse: $showBrowse)
+                })
+                
+                Spacer()
+            }
+            
             //Settings Button
             ControlButton(systemIconName: "slider.horizontal.3"){
                 print("settings button pressed.")
@@ -86,7 +95,39 @@ struct ControlButtonBar: View {
         }.frame(maxWidth: 500)
             .padding(30)
             .background(Color.black.opacity(0.25))
+        
+//        ToastView(message: toastMessage, isShowing: $showToast)
     }
+    
+    private func takeScreenshot() {
+            guard let window = UIApplication.shared.connectedScenes
+                .filter({ $0.activationState == .foregroundActive })
+                .compactMap({ $0 as? UIWindowScene })
+                .first?.windows
+                .first(where: { $0.isKeyWindow }) else {
+                    toastMessage = "Error: Could not access window"
+                    showToast = true
+                    return
+                }
+            
+            let renderer = UIGraphicsImageRenderer(size: window.bounds.size)
+            let screenshotImage = renderer.image { _ in
+                window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+            }
+            
+            let imageSaver = ImageSaver(
+                onSuccess: { [self] in
+                    self.toastMessage = "Screenshot saved to Photos"
+                    self.showToast = true
+                },
+                onError: { [self] error in
+                    self.toastMessage = "Error saving image: \(error.localizedDescription)"
+                    self.showToast = true
+                }
+            )
+            
+            imageSaver.writeToPhotoAlbum(image: screenshotImage)
+        }
 }
 
 
@@ -107,5 +148,29 @@ struct ControlButton: View {
         }
         .frame(width: 50, height: 50)
         
+    }
+}
+
+
+// Helper class to handle the UIKit callback
+class ImageSaver: NSObject {
+    private let onSuccess: () -> Void
+    private let onError: (Error) -> Void
+    
+    init(onSuccess: @escaping () -> Void, onError: @escaping (Error) -> Void) {
+        self.onSuccess = onSuccess
+        self.onError = onError
+    }
+    
+    func writeToPhotoAlbum(image: UIImage) {
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted), nil)
+    }
+    
+    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            onError(error)
+        } else {
+            onSuccess()
+        }
     }
 }
