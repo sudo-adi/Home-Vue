@@ -4,7 +4,6 @@ import SwiftUI
 private let reuseIdentifier = "ItemCollectionViewCell"
 
 class mainCollectionViewController: UICollectionViewController {
-   @IBOutlet weak var ARButton: UIButton!
     var furnitureCategory: FurnitureCategory?
     private var searchController: SearchController<FurnitureItem>!
     
@@ -20,6 +19,7 @@ class mainCollectionViewController: UICollectionViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshCollection), name: NSNotification.Name("FavoriteToggled"), object: nil)
     }
+    
     @objc private func refreshCollection() {
         collectionView.reloadData()
     }
@@ -27,8 +27,10 @@ class mainCollectionViewController: UICollectionViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setupNavigationBarAppearance()
         fetchItemsForCategory()
         collectionView.reloadData()
     }
@@ -60,11 +62,18 @@ class mainCollectionViewController: UICollectionViewController {
     private func setupNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
         appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
         appearance.backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.black]
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = .black  // Back button color
+        navigationController?.navigationBar.prefersLargeTitles = false
+//        UINavigationBar.appearance().standardAppearance = appearance
+//        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
     
     // MARK: - Compositional Layout

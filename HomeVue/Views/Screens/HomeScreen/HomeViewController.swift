@@ -156,8 +156,8 @@ class HomeViewController: UIViewController {
         let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
             let topItems = allCategories.flatMap { $0.furnitureItems }.prefix(4)
             
-            for (index, item) in topItems.enumerated() {
-                let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index + 1)", labelText: item.name)
+            for (_, item) in topItems.enumerated() {
+                let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards", labelText: item.name)
                 horizontalStackView.addArrangedSubview(cardView)
             }
 
@@ -182,12 +182,12 @@ class HomeViewController: UIViewController {
         cardView.translatesAutoresizingMaskIntoConstraints = false
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(horizontalCardTapped(_:)))
-            cardView.addGestureRecognizer(tapGesture)
-            cardView.isUserInteractionEnabled = true
-            
-            // Store the furniture item's name as identifier
-            cardView.accessibilityIdentifier = item.name
+        cardView.addGestureRecognizer(tapGesture)
+        cardView.isUserInteractionEnabled = true
 
+        // Store the furniture item's name as identifier
+        cardView.accessibilityIdentifier = item.name
+        
         let backgroundImageView = UIImageView(image: UIImage(named: backgroundImageName))
         backgroundImageView.contentMode = .scaleAspectFill
         backgroundImageView.clipsToBounds = true
@@ -225,6 +225,11 @@ class HomeViewController: UIViewController {
         imageButton.backgroundColor = UIColor.white.withAlphaComponent(0.5)
         imageButton.layer.cornerRadius = 20
         imageButton.clipsToBounds = true
+        
+        // Add target-action for the ARKit button
+        imageButton.addTarget(self, action: #selector(arButtonTapped(_:)), for: .touchUpInside)
+        // Store the furniture item's name in the button's accessibilityIdentifier for reference
+        imageButton.accessibilityIdentifier = item.name
 
         cardView.addSubview(imageButton)
 
@@ -247,8 +252,8 @@ class HomeViewController: UIViewController {
             // Furniture image constraints - larger size and overflow effect
             furnitureImageView.centerXAnchor.constraint(equalTo: cardView.centerXAnchor),
             furnitureImageView.topAnchor.constraint(equalTo: cardView.topAnchor),
-            furnitureImageView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 1.1),
-            furnitureImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 1.0),
+            furnitureImageView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 1.0),
+            furnitureImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 1.08),
 
             // Text label constraints
             textLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
@@ -281,9 +286,26 @@ class HomeViewController: UIViewController {
         }
     }
     
+    @objc private func arButtonTapped(_ sender: UIButton) {
+        guard let itemName = sender.accessibilityIdentifier else {
+            print("Error: Could not retrieve furniture item name")
+            return
+        }
+        
+        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+        let allItems = allCategories.flatMap { $0.furnitureItems }
+        
+        guard let furnitureItem = allItems.first(where: { $0.name == itemName }) else {
+            print("Error: Furniture item \(itemName) not found")
+            return
+        }
+        
+        ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self)
+    }
+    
     // MARK: - Bottom Sheet Setup
     private func setupBottomSheet() {
-        bottomSheetView.backgroundColor = UIColor(red: 217/255.0, green: 217/255.0, blue: 217/255.0, alpha: 1.0) // #D9D9D9
+        bottomSheetView.backgroundColor = .solidBackgroundColor // #D9D9D9
         bottomSheetView.layer.cornerRadius = 40
         bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         bottomSheetView.translatesAutoresizingMaskIntoConstraints = false

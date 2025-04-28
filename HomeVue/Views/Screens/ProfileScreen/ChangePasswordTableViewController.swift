@@ -12,10 +12,7 @@ class ChangePasswordTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
             
-        if let navigationBar = self.navigationController?.navigationBar {
-            navigationBar.titleTextAttributes = [ .foregroundColor: UIColor.gradientEndColor]
-            navigationBar.tintColor = UIColor.gradientEndColor
-        }
+        customizeNavigationBar()
         if let tabBarController = self.tabBarController as? CustomTabBarController {
             tabBarController.hideTabBar()
         }
@@ -31,5 +28,20 @@ class ChangePasswordTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.applyGradientBackground()
+        customizeNavigationBar()
+    }
+    
+    private func customizeNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black
+        ]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = .black
     }
 }

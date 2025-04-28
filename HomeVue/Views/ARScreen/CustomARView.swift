@@ -146,28 +146,31 @@ class CustomARView: ARView {
         }
         
         // Obtain the AR Session current configuration
-        guard let configuration = self.session.configuration as? ARWorldTrackingConfiguration else {
-            print("Failed to get AR configuration")
-            return
-        }
-        
+//        guard let configuration = self.session.configuration as? ARWorldTrackingConfiguration else {
+//            print("Failed to get AR configuration")
+//            return
+//        }
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal, .vertical]
+        configuration.environmentTexturing = .automatic
         // Enable mesh reconstruction first (required for object occlusion)
         configuration.sceneReconstruction = .mesh
         
         // Set object occlusion state based on the isEnabled parameter
         if isEnabled {
-            self.environment.sceneUnderstanding.options.insert(.occlusion)
+            self.environment.sceneUnderstanding.options.insert([.occlusion, .receivesLighting])
             // You might also need to set additional occlusion-related options
-            configuration.environmentTexturing = .automatic
+//            configuration.environmentTexturing = .automatic
         } else {
-            self.environment.sceneUnderstanding.options.remove(.occlusion)
+            self.environment.sceneUnderstanding.options.remove([.occlusion, .receivesLighting])
         }
         
         // Add more detailed debugging information
         print("Scene understanding options: \(self.environment.sceneUnderstanding.options)")
         
         // Rerun the session to affect the configuration change
-        self.session.run(configuration, options: [.resetSceneReconstruction])
+//        self.session.run(configuration, options: [.resetSceneReconstruction])
+        self.session.run(configuration, options: [.resetTracking, .removeExistingAnchors, .resetSceneReconstruction])
     }
     
 

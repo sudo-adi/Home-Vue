@@ -57,7 +57,7 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        customizeNavigationBar()
+        customizeNavigationBar()
 
         // Hide the tab bar when this screen appears
         if let tabBarController = self.tabBarController as? CustomTabBarController {
@@ -78,6 +78,7 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        customizeNavigationBar()
         self.hidesBottomBarWhenPushed = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showDatePicker))
         DateLabel.isUserInteractionEnabled = true
@@ -93,7 +94,20 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
         self.view.applyGradientBackground()
     }
     
-    
+    private func customizeNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black
+        ]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = .black
+    }
+
     
     private func setDateLabel(with date: Date) {
         let dateFormatter = DateFormatter()
@@ -146,22 +160,6 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
 
     
     @IBAction func SaveButtonTap(_ sender: UIBarButtonItem) {
-//        if let newName = NameLabel.text, !newName.isEmpty {
-//            User1.name = newName
-//            print("Name updated to \(newName)")
-//        }
-//        
-//        // Update the date of birth
-//        if let dateText = DateLabel.text, let date = convertDateStringToDate(dateText) {
-//            User1.dateOfBirth = date
-//            print("Date of Birth updated to \(date)")
-//        }
-//        
-//        // Update the profile picture
-//        if let updatedImage = ProfileImage.image {
-//            User1.profilePicture = updatedImage
-//            print("Profile picture updated")
-//        }
         
         if let newName = NameLabel.text, !newName.isEmpty {
             User1.name = newName

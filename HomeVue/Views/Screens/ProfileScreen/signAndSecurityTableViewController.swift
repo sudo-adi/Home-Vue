@@ -17,10 +17,10 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
             super.viewWillAppear(animated)
             
             // Update navigation bar appearance
-            if let navigationBar = self.navigationController?.navigationBar {
-                navigationBar.titleTextAttributes = [.foregroundColor: UIColor.gradientEndColor]
-                navigationBar.tintColor = UIColor.gradientEndColor
-            }
+//            if let navigationBar = self.navigationController?.navigationBar {
+//                navigationBar.titleTextAttributes = [.foregroundColor: UIColor.gradientEndColor]
+//                navigationBar.tintColor = UIColor.gradientEndColor
+//            }
             
             // Fetch updated user data
             updateUserInterface()
@@ -32,11 +32,7 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
         override func viewWillDisappear(_ animated: Bool) {
             super.viewWillDisappear(animated)
             
-            // Reset navigation bar appearance
-            if let navigationBar = self.navigationController?.navigationBar {
-                navigationBar.titleTextAttributes = nil
-                navigationBar.tintColor = nil
-            }
+            customizeNavigationBar()
             if let tabBarController = self.tabBarController as? CustomTabBarController {
                 tabBarController.showTabBar()
             }
@@ -45,7 +41,7 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
         override func viewDidLoad() {
             super.viewDidLoad()
             view.backgroundColor = .solidBackgroundColor
-            
+            customizeNavigationBar()
             // Set up button actions
             EditEmailOrPhoneButton.addTarget(self, action: #selector(handleButtonTap(_:)), for: .touchUpInside)
             ChangePassword.addTarget(self, action: #selector(handleButtonTap(_:)), for: .touchUpInside)
@@ -56,6 +52,20 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
             // Fetch and display user data
             updateUserInterface()
         }
+
+    private func customizeNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black
+        ]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = .black
+    }
 
         func updateUserInterface() {
             EmailLAbel.text = User1.email
@@ -68,9 +78,6 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
 //            header.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold) // Optional: Adjust font size and weight
         }
     }
-
-
-//    @IBOutlet weak var ChangePassword: UIButton! // Ensure this is connected in the storyboard
 
     @objc func handleButtonTap(_ sender: UIButton) {
         let alertController = UIAlertController(title: "Verify Password", message: "Enter your current password", preferredStyle: .alert)
@@ -133,18 +140,4 @@ class signAndSecurityTableViewController: UITableViewController,EditMailAndPhone
                 }
             }
         }
-    
-    
-//    @IBAction func unwindToLoginMainPage(_ segue: UIStoryboardSegue) {
-//        // Update the main page UI if needed
-//        EmailLAbel.text = User1.email
-//        MobileNumberLabel.text = User1.phoneNumber
-//    }
-//    @IBAction func unwindToLoginMainPage(_ segue: UIStoryboardSegue) {
-//        // Update the main page UI if needed
-//        personEmail.text = User1.email
-//        personPhone.text = User1.phoneNumber
-//    }
-
-
 }

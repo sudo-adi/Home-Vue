@@ -165,7 +165,6 @@
                         <outlet property="emailTextField" destination="bmD-Ar-hMI" id="IXq-mi-Rgo"/>
                         <outlet property="loginView" destination="zPZ-YX-AYm" id="xwA-Hx-bzz"/>
                         <outlet property="passwordTextField" destination="NDK-l3-Yvb" id="fmh-75-SDh"/>
-                        <outlet property="stackView" destination="G5T-gZ-FdX" id="XJn-Vd-iq3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MEg-52-lBb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -229,7 +228,7 @@
                                             <constraint firstAttribute="height" constant="70" id="ivz-Fm-ONq"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="filled" image="google-white-icon" title="Continue with Google" imagePadding="10" buttonSize="large">
+                                        <buttonConfiguration key="configuration" style="filled" image="person" catalog="system" title="Continue as Guest User" imagePadding="10" buttonSize="large">
                                             <fontDescription key="titleFontDescription" type="system" pointSize="13"/>
                                             <color key="baseForegroundColor" systemColor="secondarySystemGroupedBackgroundColor"/>
                                             <color key="baseBackgroundColor" systemColor="labelColor"/>
@@ -742,8 +741,8 @@
     </scenes>
     <resources>
         <image name="background" width="228" height="464"/>
-        <image name="google-white-icon" width="16" height="16"/>
         <image name="paperplane" catalog="system" width="128" height="119"/>
+        <image name="person" catalog="system" width="128" height="121"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

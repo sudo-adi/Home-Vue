@@ -21,17 +21,17 @@ class Room3DViewController: UIViewController {
     private let furnitureDataProvider = FurnitureDataProvider.shared
 
     // List of furniture images and names
-    let furnitureItems = [
-        ("BedImg", "Bed"),
-        ("CabinetsAndShelvesImg", "Cabinets & Shelves"),
-        ("ChairImg", "Chair"),
-        ("DecorImg", "Decor"),
-        ("DiningImg", "Dining"),
-        ("KitchenFurnitureImg", "Kitchen Furniture"),
-        ("OthersImg", "Others"),
-        ("SeatingFurnitureImg", "Seating Furniture"),
-        ("TableImg", "Table"),
-    ]
+//    let furnitureItems = [
+//        ("BedImg", "Bed"),
+//        ("CabinetsAndShelvesImg", "Cabinets & Shelves"),
+//        ("ChairImg", "Chair"),
+//        ("DecorImg", "Decor"),
+//        ("DiningImg", "Dining"),
+//        ("KitchenFurnitureImg", "Kitchen Furniture"),
+//        ("OthersImg", "Others"),
+//        ("SeatingFurnitureImg", "Seating Furniture"),
+//        ("TableImg", "Table"),
+//    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -505,7 +505,7 @@ class Room3DViewController: UIViewController {
 
         // Add a button (20% width)
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "cube.transparent"), for: .normal)
+        button.setImage(UIImage(systemName: "arkit"), for: .normal)
         button.tintColor = UIColor.white // White color for the icon
         button.backgroundColor = UIColor.white.withAlphaComponent(0.75) // 75% opacity
         button.layer.cornerRadius = (currentViewportItems.frame.height - 10) / 2 // Circular button
@@ -518,7 +518,7 @@ class Room3DViewController: UIViewController {
 
         // Increase the size of the cube icon
         let largeConfig = UIImage.SymbolConfiguration(pointSize: 30, weight: .regular, scale: .default) // Smaller icon
-        let largeCubeIcon = UIImage(systemName: "cube.transparent", withConfiguration: largeConfig)
+        let largeCubeIcon = UIImage(systemName: "arkit", withConfiguration: largeConfig)
         button.setImage(largeCubeIcon, for: .normal)
 
         currentViewportItems.addSubview(button)

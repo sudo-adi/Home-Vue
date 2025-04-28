@@ -51,6 +51,35 @@ class forgotPasswordViewController: UIViewController {
         newPasswordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
     }
     
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithTransparentBackground()
+//        appearance.backgroundColor = .clear
+//        appearance.shadowColor = .clear
+//
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.compactAppearance = appearance
+//
+//        navigationItem.title = "" // no title
+////        navigationItem.backButtonTitle = "" // cleaner back button
+//        navigationController?.navigationBar.tintColor = .white // or white depending on your UI
+//    }
+//
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithDefaultBackground() // Reset to system default
+//
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.compactAppearance = appearance
+//    }
+
+    
     @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
         let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
         

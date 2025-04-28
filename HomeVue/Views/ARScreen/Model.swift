@@ -118,7 +118,7 @@ class Model {
                 
                 self.modelEntity = modelEntity
                 self.modelEntity?.scale *= self.scaleCompensation
-                
+                self.modelEntity?.generateCollisionShapes(recursive: true)
                 print("modelEntity for \(self.name) has been loaded.")
             })
     }

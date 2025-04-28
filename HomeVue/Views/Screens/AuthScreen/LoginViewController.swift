@@ -13,9 +13,6 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var continueButton: UIButton!
-    @IBOutlet weak var stackView: UIStackView!
-    
-    private var passwordRulesLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,25 +39,49 @@ class LoginViewController: UIViewController {
         passwordTextField.addCornerRadius()
         
         continueButton.addCornerRadius()
-        
-        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: passwordTextField, aboveButton: continueButton)
-                
-        // Add text field editing changed action
-        passwordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
     }
+
     
-    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
-        let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
-        
-        UIView.animate(withDuration: 0.25) {
-            if isValid {
-                self.stackView.setCustomSpacing(20, after: self.passwordTextField) // Normal spacing
-            } else {
-                self.stackView.setCustomSpacing(24, after: self.passwordRulesLabel) // Increase spacing
-            }
-            self.view.layoutIfNeeded()
-        }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        // Ensure navigation bar is visible when this screen appears
+//        navigationController?.setNavigationBarHidden(false, animated: true)
+//        navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+//        navigationController?.navigationBar.backgroundColor = .clear
+//    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .clear
+        appearance.shadowColor = .clear
+
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+
+        navigationItem.title = "" // no title
+//        navigationItem.backButtonTitle = "" // cleaner back button
+        navigationController?.navigationBar.tintColor = .white // or white
     }
+
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+////        navigationController?.setNavigationBarHidden(false, animated: true)
+////        navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+////        navigationController?.navigationBar.backgroundColor = .clear
+//        
+//        
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithDefaultBackground() // Reset to normal background (not transparent)
+//
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.compactAppearance = appearance
+//    }
     
     @IBAction func continueButtonTapped(_ sender: Any) {
             // Email login validation & navigation

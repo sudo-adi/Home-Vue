@@ -33,7 +33,12 @@ class SearchBarView: UIView {
         ])
         
         searchBar.delegate = self
-        backgroundColor = .systemGray6
+//        backgroundColor = .systemGray6
+        backgroundColor = UIColor(white: 0.95, alpha: 1.0) // Light gray background
+        
+        searchBar.overrideUserInterfaceStyle = .light
+        searchBar.tintColor = UIColor.darkGray
+        searchBar.searchTextField.textColor = UIColor.black
     }
     
     func setPlaceholder(_ text: String) {

@@ -53,15 +53,54 @@ class SignUpViewController: UIViewController {
         passwordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
        
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithTransparentBackground()
+//        appearance.backgroundColor = .clear
+//        appearance.shadowColor = .clear
+//
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.compactAppearance = appearance
+//
+//        navigationItem.title = "" // no title
+////        navigationItem.backButtonTitle = "" // cleaner back button
+//        navigationController?.navigationBar.tintColor = .white // or white depending on your UI
+//    }
+//
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithDefaultBackground() // Reset to system default
+//
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.compactAppearance = appearance
+//    }
+
 
     @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
         let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
         
         UIView.animate(withDuration: 0.25) {
             if isValid {
-                self.stackView.setCustomSpacing(20, after: self.passwordTextField) // Normal spacing
+                // When password is valid, hide the rules label and use normal spacing
+                self.passwordRulesLabel.isHidden = true
+                // Adjust spacing between password field and re-enter password field
+                if let stackView = self.passwordTextField.superview as? UIStackView {
+                    stackView.setCustomSpacing(20, after: self.passwordTextField)
+                }
             } else {
-                self.stackView.setCustomSpacing(24, after: self.passwordRulesLabel) // Increase spacing
+                // When password is invalid, show the rules label and increase spacing
+                self.passwordRulesLabel.isHidden = false
+                // Increase spacing to accommodate the rules label
+                if let stackView = self.passwordTextField.superview as? UIStackView {
+                    stackView.setCustomSpacing(40, after: self.passwordTextField)
+                }
             }
             self.view.layoutIfNeeded()
         }

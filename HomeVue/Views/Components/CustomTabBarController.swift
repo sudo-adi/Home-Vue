@@ -31,7 +31,7 @@ class CustomTabBarController: UITabBarController {
     private func setupTabBar() {
         // Create and configure the custom background view
         customTabBarBackground.backgroundColor = .white
-        customTabBarBackground.layer.cornerRadius = 35
+        customTabBarBackground.layer.cornerRadius = 25
         customTabBarBackground.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         
         // Add shadow

@@ -6,7 +6,7 @@ private let reuseIdentifier = "ItemCollectionViewCell"
 class FavoritesCollectionViewController: UICollectionViewController {
     
     private var favoriteItems: [FurnitureItem] = []
-    private var emptyStateView: UIView!
+    private var emptyStateView: EmptyStateView!
     
     override func viewDidLoad() {
             super.viewDidLoad()
@@ -32,10 +32,13 @@ class FavoritesCollectionViewController: UICollectionViewController {
         }
     
     private func setupEmptyStateView() {
-        emptyStateView = UIView()
+        emptyStateView = EmptyStateView(
+            icon: UIImage(systemName: "heart.slash"),
+            message: "No Favorites Yet\nItems you save will appear here"
+        )
         view.addSubview(emptyStateView)
-        emptyStateView.translatesAutoresizingMaskIntoConstraints = false
         
+        // Constraints for emptyStateView
         NSLayoutConstraint.activate([
             emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -43,32 +46,8 @@ class FavoritesCollectionViewController: UICollectionViewController {
             emptyStateView.heightAnchor.constraint(equalToConstant: 250)
         ])
         
-        let iconImageView = UIImageView(image: UIImage(systemName: "heart.slash"))
-        iconImageView.tintColor = .systemGray2
-        iconImageView.contentMode = .scaleAspectFit
-        emptyStateView.addSubview(iconImageView)
-        iconImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let messageLabel = UILabel()
-        messageLabel.text = "No Favorites Yet\nItems you save will appear here"
-        messageLabel.numberOfLines = 0
-        messageLabel.textAlignment = .center
-        messageLabel.textColor = .systemGray2
-        messageLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        emptyStateView.addSubview(messageLabel)
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            iconImageView.centerXAnchor.constraint(equalTo: emptyStateView.centerXAnchor),
-            iconImageView.topAnchor.constraint(equalTo: emptyStateView.topAnchor),
-            iconImageView.widthAnchor.constraint(equalToConstant: 70),
-            iconImageView.heightAnchor.constraint(equalToConstant: 70),
-            
-            messageLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 20),
-            messageLabel.leadingAnchor.constraint(equalTo: emptyStateView.leadingAnchor),
-            messageLabel.trailingAnchor.constraint(equalTo: emptyStateView.trailingAnchor),
-            messageLabel.bottomAnchor.constraint(lessThanOrEqualTo: emptyStateView.bottomAnchor)
-        ])
+        // Initially hidden if there are favorite items
+        emptyStateView.isHidden = true
     }
     
     private func updateEmptyStateVisibility() {
@@ -77,6 +56,7 @@ class FavoritesCollectionViewController: UICollectionViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setupNavigationBarAppearance()
         fetchFavoriteItems()
         collectionView.reloadData()
         print("FavoritesViewController viewWillAppear: Refreshed items")
@@ -90,17 +70,21 @@ class FavoritesCollectionViewController: UICollectionViewController {
     
     private func setupCollectionView() {
         collectionView.collectionViewLayout = createLayout()
-        collectionView.backgroundColor = .systemBackground
+//        collectionView.backgroundColor = .systemBackground
     }
     
     private func setupNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
-        appearance.backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.black]
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        appearance.backgroundColor = .white
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black
+        ]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = .black
     }
     
     func createLayout() -> UICollectionViewLayout {

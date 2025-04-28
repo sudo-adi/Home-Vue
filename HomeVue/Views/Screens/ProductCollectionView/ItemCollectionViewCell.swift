@@ -23,9 +23,13 @@ class ItemCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         
         ARButton.addCornerRadius()
+        ARButton.imageView?.tintColor = .white
         
         self.addCornerRadius(15)
+        
+        
     }
+    
     
     func configure(with item: FurnitureItem, favoriteToggleAction: @escaping (FurnitureItem) -> Void,arButtonAction: @escaping (FurnitureItem) -> Void) {
         self.item = item

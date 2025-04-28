@@ -43,6 +43,7 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
         override func viewDidLoad() {
             super.viewDidLoad()
             setupView()
+            customizeNavigationBar()
             profileView.image = User1.profilePicture
             personName.text = User1.name
             personEmail.text = User1.email
@@ -53,10 +54,10 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             customizeNavigationBar()
         }
 
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            resetNavigationBarAppearance()
-        }
+//        override func viewWillDisappear(_ animated: Bool) {
+//            super.viewWillDisappear(animated)
+//            resetNavigationBarAppearance()
+//        }
 
         // MARK: - Setup Methods
         private func setupView() {
@@ -87,15 +88,32 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
         }
 
         private func customizeNavigationBar() {
-            self.navigationController?.navigationBar.titleTextAttributes = [
-                .foregroundColor: UIColor.white,
-                .font: UIFont.titleFont()
-            ]
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .gradientStartColor  // ← Use gradientStartColor directly
+
+               // Customize the title appearance
+               appearance.titleTextAttributes = [
+                   .foregroundColor: UIColor.white,
+                   .font: UIFont.titleFont()
+               ]
+               
+               // Apply the appearance to all bar states
+               navigationController?.navigationBar.standardAppearance = appearance
+               navigationController?.navigationBar.scrollEdgeAppearance = appearance
+               navigationController?.navigationBar.compactAppearance = appearance
+            
+//            self.navigationController?.navigationBar.backgroundColor = .clear
+//            self.navigationController?.navigationBar.titleTextAttributes = [
+//                .foregroundColor: UIColor.white,
+//                .font: UIFont.titleFont()
+//            ]
         }
 
-        private func resetNavigationBarAppearance() {
-            self.navigationController?.navigationBar.titleTextAttributes = nil
-        }
+//        private func resetNavigationBarAppearance() {
+////            self.navigationController?.navigationBar.backgroundColor = .clear
+//            self.navigationController?.navigationBar.titleTextAttributes = nil
+//        }
 
         // MARK: - UITableView DataSource
         func numberOfSections(in tableView: UITableView) -> Int {
@@ -117,10 +135,11 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             // Configure cell appearance
             cell.textLabel?.text = rowData.title
             cell.textLabel?.font = UIFont.cellTextFont()
-            cell.textLabel?.textColor = rowData.isRed ? .red : .gradientStartColor
+            cell.textLabel?.textColor = rowData.isRed ? .red : .systemGray
             cell.imageView?.image = UIImage(systemName: rowData.icon)
             cell.imageView?.tintColor = rowData.isRed ? .red : .systemGray
             cell.accessoryType = .disclosureIndicator
+            cell.backgroundColor = .white
 
              cell.accessoryType = rowData.title == "Log out" ? .none : .disclosureIndicator
 

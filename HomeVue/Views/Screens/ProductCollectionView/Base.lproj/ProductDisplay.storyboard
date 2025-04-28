@@ -33,7 +33,7 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="adU-Kz-wfN">
                                             <rect key="frame" x="15" y="175" width="187" height="19.333333333333343"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                            <nil key="textColor"/>
+                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                             <size key="shadowOffset" width="-7" height="-1"/>
                                         </label>
@@ -57,7 +57,7 @@
                                             <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vGL-Hn-CPt">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vGL-Hn-CPt">
                                             <rect key="frame" x="10" y="10" width="35" height="35"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="35" id="JAc-xc-Ey4"/>
@@ -68,7 +68,7 @@
                                                 <backgroundConfiguration key="background">
                                                     <color key="backgroundColor" red="0.35294118520000001" green="0.31629637059999999" blue="0.3119665908" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 </backgroundConfiguration>
-                                                <color key="baseForegroundColor" systemColor="tertiarySystemBackgroundColor"/>
+                                                <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </buttonConfiguration>
                                             <connections>
                                                 <action selector="arButtonTapped:" destination="S9C-Qo-Xdu" eventType="touchUpInside" id="of7-QZ-TRJ"/>
@@ -141,9 +141,10 @@
             <objects>
                 <tableViewController storyboardIdentifier="ProductInfoTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="4VZ-lk-S1D" customClass="ProductInfoTableViewController" customModule="HomeVue" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="CZa-et-oV8">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <sections>
                             <tableViewSection id="z3r-hD-pGv">
                                 <cells>
@@ -154,7 +155,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="299"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YG4-7Z-BPg">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YG4-7Z-BPg">
                                                     <rect key="frame" x="20" y="10" width="35" height="35"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="35" id="LX9-gP-UG9"/>
@@ -165,7 +166,7 @@
                                                         <backgroundConfiguration key="background">
                                                             <color key="backgroundColor" red="0.35294118520000001" green="0.31629637059999999" blue="0.3119665908" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                         </backgroundConfiguration>
-                                                        <color key="baseForegroundColor" systemColor="tertiarySystemBackgroundColor"/>
+                                                        <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </buttonConfiguration>
                                                     <connections>
                                                         <action selector="ARButtonTapped:" destination="4VZ-lk-S1D" eventType="touchUpInside" id="Bk8-iK-LRV"/>
@@ -173,6 +174,7 @@
                                                 </button>
                                                 <sceneKitView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EIv-08-kmg">
                                                     <rect key="frame" x="20" y="65" width="353" height="224"/>
+                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 </sceneKitView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7lN-ZO-evk">
                                                     <rect key="frame" x="338" y="10" width="35" height="35"/>
@@ -202,6 +204,7 @@
                                                 <constraint firstItem="EIv-08-kmg" firstAttribute="top" secondItem="g2c-bF-Rtm" secondAttribute="top" constant="65" id="k3Z-TT-2Az"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="80" id="VbC-FJ-aqO">
                                         <rect key="frame" x="0.0" y="349" width="393" height="80"/>
@@ -217,7 +220,7 @@
                                                         <constraint firstAttribute="height" constant="40" id="GHP-eQ-V3g"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                                                    <color key="textColor" red="0.28356556059999999" green="0.23964003210000001" blue="0.23616501479999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Crimson" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z0u-rv-J4d">
@@ -227,7 +230,7 @@
                                                         <constraint firstAttribute="width" constant="120" id="h6X-br-7PU"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                    <color key="textColor" systemColor="systemGrayColor"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zu8-Jr-10H">
@@ -265,6 +268,7 @@
                                                     </connections>
                                                 </button>
                                             </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstItem="Z0u-rv-J4d" firstAttribute="leading" secondItem="v1l-3U-fyN" secondAttribute="leadingMargin" constant="6" id="0CY-8W-9tm"/>
                                                 <constraint firstItem="Z0u-rv-J4d" firstAttribute="bottom" secondItem="v1l-3U-fyN" secondAttribute="bottomMargin" id="4Ma-fg-gv8"/>
@@ -276,6 +280,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="zu8-Jr-10H" secondAttribute="trailing" constant="10" id="vIa-Cf-GWT"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="149" id="Vwg-HY-xmp">
                                         <rect key="frame" x="0.0" y="429" width="393" height="149"/>
@@ -291,7 +296,7 @@
                                                         <constraint firstAttribute="width" constant="340" id="nLw-9z-k0U"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                     <size key="shadowOffset" width="0.0" height="0.0"/>
                                                 </label>
@@ -301,7 +306,7 @@
                                                         <constraint firstAttribute="width" constant="142" id="OE8-VL-bbs"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                    <nil key="textColor"/>
+                                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -312,6 +317,7 @@
                                                 <constraint firstItem="36p-3S-XuR" firstAttribute="leading" secondItem="mWM-x7-1hQ" secondAttribute="leadingMargin" constant="10" id="x4L-M5-XKF"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="120" id="0Cb-5o-Q8n">
                                         <rect key="frame" x="0.0" y="578" width="393" height="120"/>
@@ -324,7 +330,7 @@
                                                     <rect key="frame" x="35" y="11" width="80" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                    <nil key="textColor"/>
+                                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="d0t-US-UOX">
@@ -414,6 +420,7 @@
                                                 <constraint firstAttribute="bottom" secondItem="d0t-US-UOX" secondAttribute="bottom" constant="8" id="zbR-DP-QNe"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="9Rq-88-imS">
                                         <rect key="frame" x="0.0" y="698" width="393" height="43.666667938232422"/>
@@ -432,7 +439,7 @@
                                                                 <constraint firstAttribute="height" constant="16" id="FTN-eU-Bjf"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                                            <nil key="textColor"/>
+                                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
                                                             <size key="shadowOffset" width="0.0" height="0.0"/>
                                                         </label>
@@ -443,7 +450,7 @@
                                                                 <constraint firstAttribute="width" constant="181" id="eoT-zp-wp6"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
@@ -458,6 +465,7 @@
                                                 <constraint firstItem="bc4-l1-MPz" firstAttribute="leading" secondItem="kKW-ua-gbv" secondAttribute="leading" constant="35" id="x1p-FF-uHx"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -493,12 +501,6 @@
         <image name="square.and.arrow.up" catalog="system" width="110" height="128"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemGrayColor">
-            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="tertiarySystemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>

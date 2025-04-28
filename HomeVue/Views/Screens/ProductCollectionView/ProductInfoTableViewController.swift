@@ -30,7 +30,12 @@ class ProductInfoTableViewController: UITableViewController {
            print("Furniture item not set!")
            return
         }
+        
+        tableView.backgroundColor = .white
+        view.backgroundColor = .white
+        
         ARButton.addCornerRadius()
+        ARButton.imageView?.tintColor = .white
         title = furnitureItem.name
         updateUI()
         updateFavoriteButtonState()
@@ -86,33 +91,35 @@ class ProductInfoTableViewController: UITableViewController {
             
             providersNameLabel.text = furnitureItem?.providers.map { $0.name }.joined(separator: ", ") ?? "N/A"
         }
+    
     @IBAction func closeButtonTapped(_ sender: UIButton) {
-            dismiss(animated: true, completion: nil)
-        }
+        dismiss(animated: true, completion: nil)
+    }
     
     @IBAction func shareButtonTapped(_ sender: Any) {
             // Prepare the items to share
-                var shareText = "Check out this furniture item!\n"
-                shareText += "Name: \(furnitureItem.name)\n"
+        var shareText = "Check out this furniture item!\n"
+        shareText += "Name: \(furnitureItem.name)\n"
         shareText += "Brand: \(furnitureItem.brandName)\n"
         shareText += "Description: \(furnitureItem.description)\n"
         shareText += "Dimensions: \(furnitureItem.dimensions.height) x \(furnitureItem.dimensions.width) x \(furnitureItem.dimensions.depth) cm\n"
         shareText += "Providers: \(furnitureItem.providers.map { $0.name }.joined(separator: ", "))"
 
-                var itemsToShare: [Any] = [shareText]
-                
-                // Optionally include the image if available
-                    itemsToShare.append(furnitureItem.image)
-                
-                
-                // Create the UIActivityViewController
-                let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
+        var itemsToShare: [Any] = [shareText]
+        
+        // Optionally include the image if available
+            itemsToShare.append(furnitureItem.image)
+        
+        
+        // Create the UIActivityViewController
+        let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
 
-                
-                // Present the share sheet
-                self.present(activityViewController, animated: true, completion: nil)
+        
+        // Present the share sheet
+        self.present(activityViewController, animated: true, completion: nil)
 
-        }
+    }
+    
     @IBAction func ARButtonTapped(_ sender: Any) {
         ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self)
     }

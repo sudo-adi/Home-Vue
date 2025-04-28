@@ -16,12 +16,14 @@ class RoomsCollectionViewController: UICollectionViewController {
     var roomCategory :RoomCategory!
     var rooms:[RoomModel] = []
     private var searchController: SearchController<RoomModel>!
-
+    private var emptyStateView: EmptyStateView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.collectionViewLayout = createLayout()
         setupNavigationBarAppearance()
         setupSearch()
+        setupEmptyStateView()
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
@@ -30,6 +32,7 @@ class RoomsCollectionViewController: UICollectionViewController {
         self.title = roomCategory.category.rawValue
         rooms = RoomDataProvider.shared.getRooms(for: roomCategory.category)
         searchController.updateItems(rooms)
+        updateEmptyState()
     }
     
     private func setupSearch() {
@@ -46,13 +49,44 @@ class RoomsCollectionViewController: UICollectionViewController {
    func setupNavigationBarAppearance() {
        let appearance = UINavigationBarAppearance()
        appearance.configureWithOpaqueBackground()
+       appearance.backgroundColor = .white
        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
        appearance.backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.black]
        UINavigationBar.appearance().standardAppearance = appearance
        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+       addBarButton.tintColor = .black
    }
 
+
+    // MARK: Empty State Setup
+    private func setupEmptyStateView() {
+        emptyStateView = EmptyStateView(
+            icon: UIImage(systemName: "house.fill"),
+            message: "No rooms available.\nAdd a new room to get started!"
+        )
+        collectionView.addSubview(emptyStateView)
+        
+        // Constraints for emptyStateView
+        NSLayoutConstraint.activate([
+            emptyStateView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+            emptyStateView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
+            emptyStateView.widthAnchor.constraint(equalToConstant: 250),
+            emptyStateView.heightAnchor.constraint(equalToConstant: 250)
+        ])
+        
+        // Initially hidden
+        emptyStateView.isHidden = true
+    }
+    
+    private func updateEmptyState() {
+        let isEmpty = searchController.filteredItems.isEmpty
+        print("Updating empty state: filteredItems count = \(searchController.filteredItems.count), isEmpty = \(isEmpty)") // Debug log
+        emptyStateView.isHidden = !isEmpty
+        collectionView.setNeedsLayout()
+        collectionView.layoutIfNeeded()
+    }
+    
    func createLayout() -> UICollectionViewLayout {
        return UICollectionViewCompositionalLayout { sectionIndex, _ in
        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
@@ -68,6 +102,9 @@ class RoomsCollectionViewController: UICollectionViewController {
        return section
        }
    }
+    
+    // MARK: Empty State Setup
+    
 
    // MARK: UICollectionViewDataSource
    override func numberOfSections(in collectionView: UICollectionView) -> Int {

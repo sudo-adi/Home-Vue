@@ -17,17 +17,15 @@ class EditMailAndPhoneTableViewController: UITableViewController {
     
     @IBOutlet weak var EmailTextField: UITextField!
     @IBOutlet weak var PhoneTextField: UITextField!
+    
     override func viewWillAppear(_ animated: Bool) {
            super.viewWillAppear(animated)
                
-           if let navigationBar = self.navigationController?.navigationBar {
-               navigationBar.titleTextAttributes = [ .foregroundColor: UIColor.gradientEndColor]
-               navigationBar.tintColor = UIColor.gradientEndColor
-           }
-            if let tabBarController = self.tabBarController as? CustomTabBarController {
-                   tabBarController.hideTabBar()
-               }
-       }
+        customizeNavigationBar()
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            tabBarController.hideTabBar()
+        }
+    }
     override func viewWillDisappear(_ animated: Bool) {
         if let tabBarController = self.tabBarController as? CustomTabBarController {
             tabBarController.showTabBar()
@@ -37,12 +35,28 @@ class EditMailAndPhoneTableViewController: UITableViewController {
        override func viewDidLoad() {
            super.viewDidLoad()
 
+           customizeNavigationBar()
+           
            EmailTextField.text = User1.email
            PhoneTextField.text = User1.phoneNumber
            
            // Apply gradient background
            self.view.applyGradientBackground()
        }
+    
+    private func customizeNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black
+        ]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = .black
+    }
        
        // MARK: - Table View Data Source
 
