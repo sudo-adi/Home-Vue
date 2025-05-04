@@ -52,8 +52,10 @@ class HomeViewController: UIViewController {
         let gradientLayer = CAGradientLayer()
 
         gradientLayer.colors = [
-            UIColor(red: 135/255.0, green: 122/255.0, blue: 120/255.0, alpha: 1.0).cgColor,
-            UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0).cgColor,
+//            UIColor(red: 135/255.0, green: 122/255.0, blue: 120/255.0, alpha: 1.0).cgColor,
+//            UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0).cgColor,
+            UIColor.gradientStartColor.cgColor,
+            UIColor.gradientEndColor.cgColor
         ]
 
         gradientLayer.locations = [0.0, 1.0] // Start and end points (0% to 100%)
@@ -105,11 +107,32 @@ class HomeViewController: UIViewController {
         avatarImageView.tintColor = .white
         avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.clipsToBounds = true
-        avatarImageView.layer.cornerRadius = 25
+        
+        // Create circular border with spacing
+        avatarImageView.layer.cornerRadius = 30 // Match half of the width/height
+        avatarImageView.layer.borderWidth = 2.0
+        avatarImageView.layer.borderColor = UIColor.white.cgColor
+        
+        // Add outer spacing with a container view
+        let avatarContainerView = UIView()
+        avatarContainerView.translatesAutoresizingMaskIntoConstraints = false
+        avatarContainerView.backgroundColor = UIColor.clear
+        avatarContainerView.layer.cornerRadius = 34 // Slightly larger than avatar
+        avatarContainerView.layer.borderWidth = 1.5
+        avatarContainerView.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
+        view.addSubview(avatarContainerView)
+        
         avatarImageView.layer.masksToBounds = true
+        avatarImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add avatar to container
+        avatarContainerView.addSubview(avatarImageView)
 
-        avatarImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        avatarImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        avatarImageView.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        avatarImageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        // Add avatar directly to view instead of stack view
+        view.addSubview(avatarImageView)
 
         let attributedUserName = NSMutableAttributedString(
             string: "Hi ",
@@ -136,46 +159,50 @@ class HomeViewController: UIViewController {
         exploreLabel.alpha = 1
         exploreLabel.numberOfLines = 1
 
-        appBarStackView.addArrangedSubview(avatarImageView)
+        // Remove avatar from stack view
         appBarStackView.addArrangedSubview(userNameLabel)
         appBarStackView.addArrangedSubview(exploreLabel)
 
         NSLayoutConstraint.activate([
-            appBarStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
+            appBarStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             appBarStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            appBarStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60)
-        ])
-    }
-
-    // MARK: - Horizontal Scroll View Setup
-    private func setupHorizontalScrollView() {
-        view.addSubview(horizontalScrollView)
-        
-        horizontalScrollView.addSubview(horizontalStackView)
-
-        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
-            let topItems = allCategories.flatMap { $0.furnitureItems }.prefix(4)
+            appBarStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60),
             
-            for (_, item) in topItems.enumerated() {
-                let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards", labelText: item.name)
-                horizontalStackView.addArrangedSubview(cardView)
-            }
-
-        NSLayoutConstraint.activate([
-            horizontalScrollView.topAnchor.constraint(equalTo: appBarStackView.bottomAnchor, constant: 10),
-            horizontalScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            horizontalScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            horizontalScrollView.heightAnchor.constraint(equalToConstant: 190),
-
-            horizontalStackView.topAnchor.constraint(equalTo: horizontalScrollView.topAnchor),
-            horizontalStackView.leadingAnchor.constraint(equalTo: horizontalScrollView.leadingAnchor, constant: 16),
-            horizontalStackView.trailingAnchor.constraint(equalTo: horizontalScrollView.trailingAnchor, constant: -16),
-            horizontalStackView.bottomAnchor.constraint(equalTo: horizontalScrollView.bottomAnchor)
+            // Position avatar on the right side
+            avatarImageView.centerYAnchor.constraint(equalTo: appBarStackView.topAnchor, constant: 30),
+            avatarImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -45)
         ])
     }
 
-    // MARK: - Create Horizontal Card View
+//    // MARK: - Horizontal Scroll View Setup
+    private func setupHorizontalScrollView() {
+       view.addSubview(horizontalScrollView)
+       
+       horizontalScrollView.addSubview(horizontalStackView)
+
+       let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+           let topItems = allCategories.flatMap { $0.furnitureItems }.prefix(4)
+           
+           for (index, item) in topItems.enumerated() {
+               let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index+1)", labelText: item.name)
+               horizontalStackView.addArrangedSubview(cardView)
+           }
+
+       NSLayoutConstraint.activate([
+           horizontalScrollView.topAnchor.constraint(equalTo: appBarStackView.bottomAnchor, constant: 30), // Increased from 10 to 16 for better spacing
+           horizontalScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+           horizontalScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+           horizontalScrollView.heightAnchor.constraint(equalToConstant: 210),
+           horizontalStackView.topAnchor.constraint(equalTo: horizontalScrollView.topAnchor),
+           horizontalStackView.leadingAnchor.constraint(equalTo: horizontalScrollView.leadingAnchor, constant: 16),
+           horizontalStackView.trailingAnchor.constraint(equalTo: horizontalScrollView.trailingAnchor, constant: -16),
+           horizontalStackView.bottomAnchor.constraint(equalTo: horizontalScrollView.bottomAnchor)
+       ])
+   }
+
+//    // MARK: - Create Horizontal Card View
     private func createHorizontalCardView(item: FurnitureItem, backgroundImageName: String, labelText: String) -> UIView {
+        
         let cardView = UIView()
         cardView.layer.cornerRadius = 30
         cardView.clipsToBounds = true
@@ -196,11 +223,6 @@ class HomeViewController: UIViewController {
         backgroundImageView.alpha = 0.90 // Set opacity to 90%
         cardView.addSubview(backgroundImageView)
 
-        let overlayView = UIView()
-        overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
-        cardView.addSubview(overlayView)
-
         let furnitureImageView = UIImageView(image: item.image)
         furnitureImageView.contentMode = .scaleAspectFit
         furnitureImageView.clipsToBounds = true
@@ -209,8 +231,9 @@ class HomeViewController: UIViewController {
 
         let textLabel = UILabel()
         textLabel.text = labelText
-        textLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        textLabel.textColor = .white
+        textLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        textLabel.textColor = .black
+        textLabel.textAlignment = .left
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(textLabel)
 
@@ -234,33 +257,28 @@ class HomeViewController: UIViewController {
         cardView.addSubview(imageButton)
 
         NSLayoutConstraint.activate([
-            cardView.widthAnchor.constraint(equalToConstant: 285),
-            cardView.heightAnchor.constraint(equalToConstant: 190),
+            cardView.widthAnchor.constraint(equalToConstant: 300),
+            cardView.heightAnchor.constraint(equalToConstant: 200),
 
             // Background image constraints
-            backgroundImageView.topAnchor.constraint(equalTo: cardView.topAnchor),
+            backgroundImageView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 20),
             backgroundImageView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
             backgroundImageView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
             backgroundImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
 
-            // Overlay constraints
-            overlayView.topAnchor.constraint(equalTo: cardView.topAnchor),
-            overlayView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
-            overlayView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
-            overlayView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
+            //furnitureImageView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 50), // shift right
+            furnitureImageView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: 5),
+            furnitureImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),  // move upward from bottom
+            furnitureImageView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 0.85), // narrower
+            furnitureImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 1.0),  // taller, allows overflow from top
 
-            // Furniture image constraints - larger size and overflow effect
-            furnitureImageView.centerXAnchor.constraint(equalTo: cardView.centerXAnchor),
-            furnitureImageView.topAnchor.constraint(equalTo: cardView.topAnchor),
-            furnitureImageView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 1.0),
-            furnitureImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 1.08),
 
             // Text label constraints
-            textLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+            textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
             textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
 
             // Image button constraints
-            imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
+            imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 24),
             imageButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
             imageButton.widthAnchor.constraint(equalToConstant: 40),
             imageButton.heightAnchor.constraint(equalToConstant: 40)
@@ -409,7 +427,7 @@ class HomeViewController: UIViewController {
         UIView.animate(withDuration: 0.3) {
             // Animate stack view
             self.appBarStackView.axis = isExpanded ? .horizontal : .vertical
-            self.appBarStackView.spacing = isExpanded ? 16 : 8
+            self.appBarStackView.spacing = isExpanded ? 4 : 8
             self.appBarStackView.alignment = isExpanded ? .fill : .leading
 
             let userNameText = NSMutableAttributedString(
@@ -439,11 +457,18 @@ class HomeViewController: UIViewController {
                 : UIFont.systemFont(ofSize: 16, weight: .regular) // Original font size when collapsed
 
             self.horizontalScrollView.isHidden = isExpanded
+            
+            // Adjust avatar visibility when expanded
+            self.avatarImageView.isHidden = isExpanded ? true : false
+//            self.avatarImageView.alpha = isExpanded ? 0.7 : 1.0
         }
     }
 
     // MARK: - Segmented Control Setup
     private func setupSegmentedControl() {
+        topSegmentedControl.selectedSegmentTintColor = .white
+        topSegmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected)
+        topSegmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
         topSegmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
     }
 
@@ -526,6 +551,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
 // MARK: - Custom Room Card Cell
 class RoomCardCell: UICollectionViewCell {
     static let reuseIdentifier = "RoomCardCell"
+    private let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     
     private let countLabel: UILabel = {
             let label = UILabel()
@@ -549,8 +575,8 @@ class RoomCardCell: UICollectionViewCell {
 
     private let roomNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.textColor = .black
         label.textAlignment = .center
         return label
     }()
@@ -558,6 +584,7 @@ class RoomCardCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
+        setupBlurEffect()
     }
 
     required init?(coder: NSCoder) {
@@ -574,26 +601,57 @@ class RoomCardCell: UICollectionViewCell {
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+        
+        // Add blur effect view (before the label)
+        addSubview(blurEffectView)
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            blurEffectView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            blurEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            blurEffectView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            blurEffectView.heightAnchor.constraint(equalToConstant: 40)
+        ])
+        
+        blurEffectView.layer.cornerRadius = 12
+        blurEffectView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        blurEffectView.clipsToBounds = true
+        blurEffectView.alpha = 0.8
 
-        // Add room name label
-        addSubview(roomNameLabel)
+        // Add room name label inside the blurEffectView
+        blurEffectView.contentView.addSubview(roomNameLabel)
         roomNameLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            roomNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            roomNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            roomNameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+            roomNameLabel.leadingAnchor.constraint(equalTo: blurEffectView.contentView.leadingAnchor, constant: 8),
+            roomNameLabel.trailingAnchor.constraint(equalTo: blurEffectView.contentView.trailingAnchor, constant: -8),
+            roomNameLabel.centerYAnchor.constraint(equalTo: blurEffectView.contentView.centerYAnchor)
         ])
 
-        // Add count label
+        // Add count label (still on top of image view directly)
         addSubview(countLabel)
-                countLabel.translatesAutoresizingMaskIntoConstraints = false
-                NSLayoutConstraint.activate([
-                    countLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-                    countLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-                    countLabel.widthAnchor.constraint(equalToConstant: 24),
-                    countLabel.heightAnchor.constraint(equalToConstant: 24)
-                ])
+        countLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            countLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            countLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            countLabel.widthAnchor.constraint(equalToConstant: 24),
+            countLabel.heightAnchor.constraint(equalToConstant: 24)
+        ])
+    }
 
+    private func setupBlurEffect() {
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(blurEffectView)
+        
+        NSLayoutConstraint.activate([
+            blurEffectView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            blurEffectView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            blurEffectView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            blurEffectView.heightAnchor.constraint(equalToConstant: 40) // Only small strip below the text
+        ])
+        
+        blurEffectView.layer.cornerRadius = 12
+        blurEffectView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        blurEffectView.clipsToBounds = true
+        blurEffectView.alpha = 0.8 // Optional: make blur semi-transparent
     }
 
     func configure(with category: RoomCategoryType) {

@@ -99,14 +99,14 @@ class FurnitureDataProvider {
                 furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
                         id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-                        name: "Flower Pot",
+                        name: "Matte Planter",
                         model3D: "Decoration.usdz",
-                        brandName: "Target",
-                        description: "Material: Ceramic with intricate designs\nPerfect for displaying fresh flowers or plants\nAvailable in multiple sizes for different uses\nElegant and decorative for home or office spaces\nAdds a touch of nature to any room",
+                        brandName: "UrbanLeaf",
+                        description: "Material: ABS plastic (lightweight, non-toxic)\nA sleek and minimalistic flower pot in matte black finish, perfect for modern interiors. Its lightweight yet durable construction makes it ideal for both artificial and real indoor plants.",
                         image: UIImage(named: "DecorImg.jpg")!,
-                        availableColors: ["White", "Blue", "Green"],
-                        dimensions: Dimension(depth: 25, width: 25, height: 50),
-                        providers: [Provider(name: "Target")]
+                        availableColors: ["White", "Black", "Sandstone Beige"],
+                        dimensions: Dimension(depth: 15, width: 20, height: 15),
+                        providers: [Provider(name: "Urban Outfitters Home")]
                     )
                 ]
             ),
@@ -117,12 +117,55 @@ class FurnitureDataProvider {
                         id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
                         name: "Single Seater",
                         model3D: "SeatingFurniture.usdz",
-                        brandName: "Ashley",
-                        description: "Material: Soft cushions with premium fabric upholstery\nWooden frame for added strength and durability\nIdeal for living rooms",
+                        brandName: "IKEA STRANDMON",
+                        description: "Material: \nArm & Base: Faux leather (PU)\nSeat & Backrest: High-resilience fabric (polyester blend)\nFrame: Solid wood with MDF reinforcement\nLegs: Wood (walnut finish)",
                         image: UIImage(named: "SeatingFurnitureImg.jpg")!,
-                        availableColors: ["White", "Beige", "Dark Blue"],
-                        dimensions: Dimension(depth: 85, width: 90, height: 85),
-                        providers: [Provider(name: "Ashley Furniture"), Provider(name: "Amazon")]
+                        availableColors: ["Brown", "Beige", "Velvet"],
+                        dimensions: Dimension(depth: 85, width: 90, height: 110),
+                        providers: [Provider(name: "Pepperfry"), Provider(name: "Amazon")]
+                    )
+                ]
+            ),
+            FurnitureCategory(
+                category: .cabinetAndShelves,
+                furnitureItems: [
+                    FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000007")!,
+                        name: "4-Drawer Chest",
+                        model3D: "CabinetsAndShelves.usdz",
+                        brandName: "ScandiHome",
+                        description: "Material: \n Drawer Fronts: Engineered wood with natural oak veneer\nFrame: MDF with matte white laminate\nLegs: Solid pine (white finish)\nA minimalist, Scandinavian-style chest with four spacious drawers, ideal for bedrooms or modern living spaces.",
+                        image: UIImage(named: "CabinetsAndShelvesImg.jpg")!,
+                        availableColors: ["Oak & White", "Walnut & Black", "Ash Gray & White"],
+                        dimensions: Dimension(depth: 45, width: 90, height: 180),
+                        providers: [Provider(name: "Wayfair"), Provider(name: "Urban Ladder")]
+                    )
+                ]
+            ),
+            FurnitureCategory(
+                category: .tablesAndChairs,
+                furnitureItems: [
+                    FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!,
+                        name: "Oslo Lounge Chair",
+                        model3D: "Chair.usdz",
+                        brandName: "UrbanNest Living",
+                        description: "Material: Seat: PU Leather, Legs: Stainless steel (chrome finish)\nA modern, ergonomic swivel lounge chair with a contoured seat and high backrest, perfect for office or lounge settings. The minimalistic design is complemented by polished chrome legs and smooth leather upholstery.",
+                        image: UIImage(named: "ChairImg.jpg")!,
+                        availableColors: ["Tan Brown", "Charcoal Gray", "Off-White"],
+                        dimensions: Dimension(depth: 70, width: 68, height: 105),
+                        providers: [Provider(name: "IKEA"), Provider(name: "Urban Ladder"), Provider(name: "Wayfair"), Provider(name: "Pepperfry")]
+                    ),
+                    FurnitureItemManager.createFurnitureItem(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000005")!,
+                        name: "Office Table",
+                        model3D: "Table.usdz",
+                        brandName: "Ikea",
+                        description: "Material: MDF with laminate finish\nSturdy metal legs for durability\nSpacious surface for a laptop and documents\nModern design, perfect for office or study",
+                        image: UIImage(named: "TableImg.jpg")!,
+                        availableColors: ["Black", "White"],
+                        dimensions: Dimension(depth: 160, width: 80, height: 75),
+                        providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
                     )
                 ]
             ),
@@ -142,64 +185,22 @@ class FurnitureDataProvider {
                     )
                 ]
             ),
-            FurnitureCategory(
-                category: .tablesAndChairs,
-                furnitureItems: [
-                    FurnitureItemManager.createFurnitureItem(
-                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!,
-                        name: "Gaming Chair",
-                        model3D: "Chair.usdz",
-                        brandName: "Herman Miller",
-                        description: "Material: Premium leather and breathable mesh\nErgonomic design for all-day comfort\nAdjustable armrests and lumbar support\nHeight and tilt adjustable for personalized comfort\nPerfect for gaming or long office hours",
-                        image: UIImage(named: "ChairImg.jpg")!,
-                        availableColors: ["Purple", "Grey", "Blue"],
-                        dimensions: Dimension(depth: 65, width: 65, height: 125),
-                        providers: [Provider(name: "Herman Miller")]
-                    ),
-                    FurnitureItemManager.createFurnitureItem(
-                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000005")!,
-                        name: "Office Table",
-                        model3D: "Table.usdz",
-                        brandName: "Ikea",
-                        description: "Material: MDF with laminate finish\nSturdy metal legs for durability\nSpacious surface for a laptop and documents\nModern design, perfect for office or study",
-                        image: UIImage(named: "TableImg.jpg")!,
-                        availableColors: ["Black", "White"],
-                        dimensions: Dimension(depth: 160, width: 80, height: 75),
-                        providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
-                    )
-                ]
-            ),
             FurnitureCategory(category: .others,
-                              furnitureItems: [
-                                FurnitureItemManager.createFurnitureItem(
-                                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000006")!,
-                                    name: "52' TV",
-                                    model3D: "Others.usdz",
-                                    brandName: "Samsung",
-                                    description: "Display: 4K Ultra HD resolution for crystal-clear visuals\nSound: Dolby Atmos surround sound for an immersive audio experience\nSmart Features: Built-in streaming apps like Netflix, YouTube, and Prime Video\nVoice Control: Compatible with Alexa, Google Assistant, and Siri for hands-free operation\nDesign: Slim, bezel-less frame for a modern and stylish look\nConnectivity: Multiple HDMI and USB ports for seamless device integration\n",
-                                    image: UIImage(named: "OthersImg.jpg")!,
-                                    availableColors:[],
-                                    dimensions: Dimension(depth: 7.5, width: 43.5, height: 72.4),
-                                    providers: [Provider(name: "Samsung"),Provider(name: "Sony")]
-                    )
-                ]
-            ),
-            FurnitureCategory(
-                category: .cabinetAndShelves,
-                furnitureItems: [
+                  furnitureItems: [
                     FurnitureItemManager.createFurnitureItem(
-                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000007")!,
-                        name: "Long Cabinet",
-                        model3D: "CabinetsAndShelves.usdz",
-                        brandName: "Wayfair",
-                        description: "Material: Solid oak wood with smooth matte finish\nFive spacious shelves for ample storage\nSturdy construction, perfect for books or decorative items\nMinimalist design fits seamlessly in modern spaces\nAvailable in multiple colors to suit your home",
-                        image: UIImage(named: "CabinetsAndShelvesImg.jpg")!,
-                        availableColors: ["Wood", "Black", "White"],
-                        dimensions: Dimension(depth: 120, width: 35, height: 180),
-                        providers: [Provider(name: "Wayfair")]
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000006")!,
+                        name: "52' TV",
+                        model3D: "Others.usdz",
+                        brandName: "Samsung",
+                        description: "Display: 4K Ultra HD resolution for crystal-clear visuals\nSound: Dolby Atmos surround sound for an immersive audio experience\nSmart Features: Built-in streaming apps like Netflix, YouTube, and Prime Video\nVoice Control: Compatible with Alexa, Google Assistant, and Siri for hands-free operation\nDesign: Slim, bezel-less frame for a modern and stylish look\nConnectivity: Multiple HDMI and USB ports for seamless device integration\n",
+                        image: UIImage(named: "OthersImg.jpg")!,
+                        availableColors:[],
+                        dimensions: Dimension(depth: 7.5, width: 43.5, height: 72.4),
+                        providers: [Provider(name: "Samsung"),Provider(name: "Sony")]
                     )
                 ]
             ),
+            
             FurnitureCategory(
                 category: .kitchenFurniture,
                 furnitureItems: [
