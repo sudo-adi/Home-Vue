@@ -204,7 +204,7 @@ class HomeViewController: UIViewController {
     private func createHorizontalCardView(item: FurnitureItem, backgroundImageName: String, labelText: String) -> UIView {
         
         let cardView = UIView()
-        cardView.layer.cornerRadius = 30
+        cardView.layer.cornerRadius = 35
         cardView.clipsToBounds = true
         cardView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -218,7 +218,7 @@ class HomeViewController: UIViewController {
         let backgroundImageView = UIImageView(image: UIImage(named: backgroundImageName))
         backgroundImageView.contentMode = .scaleAspectFill
         backgroundImageView.clipsToBounds = true
-        backgroundImageView.layer.cornerRadius = 30
+        backgroundImageView.layer.cornerRadius = 25
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
         backgroundImageView.alpha = 0.90 // Set opacity to 90%
         cardView.addSubview(backgroundImageView)
@@ -241,11 +241,11 @@ class HomeViewController: UIViewController {
         imageButton.translatesAutoresizingMaskIntoConstraints = false
 
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "arkit")?.withTintColor(.white.withAlphaComponent(0.95), renderingMode: .alwaysOriginal)
+        config.image = UIImage(systemName: "arkit")?.withTintColor(.white, renderingMode: .alwaysOriginal)
         config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         imageButton.configuration = config
 
-        imageButton.backgroundColor = UIColor.white.withAlphaComponent(0.5)
+        imageButton.backgroundColor = UIColor.gradientEndColor
         imageButton.layer.cornerRadius = 20
         imageButton.clipsToBounds = true
         
