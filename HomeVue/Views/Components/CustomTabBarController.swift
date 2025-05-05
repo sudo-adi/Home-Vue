@@ -1,5 +1,5 @@
 import UIKit
-
+import SwiftUI
 class CustomTabBarController: UITabBarController {
     private var selectedRoomName: String?
     private var selectedRoomType: RoomCategoryType?
@@ -290,36 +290,27 @@ class CustomTabBarController: UITabBarController {
     }
     
     @objc private func createButtonTapped() {
-        // Get the room name from the text field
         if let alertView = view.subviews.last?.subviews.first as? UIView,
-           let roomNameTextField = alertView.subviews.compactMap({ $0 as? UITextField }).first,
-           let roomName = roomNameTextField.text, !roomName.isEmpty,
-           let roomType = selectedRoomType {
-            
-            // Store the values
-            self.selectedRoomName = roomName
-            
-            // Dismiss the custom alert with animation
-            if let containerView = view.subviews.last {
-                UIView.animate(withDuration: 0.3, animations: {
-                    containerView.alpha = 0
-                }, completion: { _ in
-                    containerView.removeFromSuperview()
+                   let roomNameTextField = alertView.subviews.compactMap({ $0 as? UITextField }).first,
+                   let roomName = roomNameTextField.text, !roomName.isEmpty,
+                   let roomType = selectedRoomType {
                     
-                    // Open CaptureViewController using the correct storyboard
-                    let storyboard = UIStoryboard(name: "RoomCaptureView", bundle: nil)
-                    if let captureVC = storyboard.instantiateViewController(withIdentifier: "RoomCaptureViewNavigationController") as? UINavigationController,
-                       let roomCaptureVC = captureVC.topViewController as? RoomCaptureViewController {
-                        
-                        // Set the room details
-//                        roomCaptureVC.roomName = self.selectedRoomName
-//                        roomCaptureVC.roomCategory = roomType
-                        
-                        captureVC.modalPresentationStyle = .fullScreen
-                        self.present(captureVC, animated: true, completion: nil)
+                    // Store the values
+                    self.selectedRoomName = roomName
+                    
+                    // Dismiss the custom alert with animation
+                    if let containerView = view.subviews.last {
+                        UIView.animate(withDuration: 0.3, animations: {
+                            containerView.alpha = 0
+                        }, completion: { _ in
+                            containerView.removeFromSuperview()
+                            
+                            // Present RoomScanView using UIHostingController
+                            let roomScanVC = UIHostingController(rootView: RoomScanView())
+                            roomScanVC.modalPresentationStyle = .fullScreen
+                            self.present(roomScanVC, animated: true, completion: nil)
+                        })
                     }
-                })
-            }
         } else {
             // Show error alert if room name is empty or room type is not selected
             let alert = UIAlertController(title: "Invalid Input",
