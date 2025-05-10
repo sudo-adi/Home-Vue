@@ -11,7 +11,8 @@ class forgotPasswordViewController: UIViewController {
     @IBOutlet weak var bgImageView: UIImageView!
     @IBOutlet weak var stackView: UIStackView!
     
-//    private var passwordRulesLabel: UILabel!
+    private var passwordRulesLabel: UILabel!
+    
     private var currentStep: ForgotPasswordStep = .enterEmail
     
     private enum ForgotPasswordStep {
@@ -52,12 +53,12 @@ class forgotPasswordViewController: UIViewController {
         confirmPasswordTextField.addCornerRadius()
         
         continueButton.addCornerRadius()
-        
-//        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: newPasswordTextField, aboveButton: continueButton)
-//        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: newPasswordTextField, aboveButton: confirmPasswordTextField!)
+    
+        passwordRulesLabel = setupPasswordRulesLabel(in: stackView, below: newPasswordTextField)
+        passwordRulesLabel.isHidden = true
                 
         // Add text field editing changed action
-//        newPasswordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
+        newPasswordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
         confirmPasswordTextField.addTarget(self, action: #selector(isPasswordEqual), for: .editingChanged)
         enterEmailTextField.addTarget(self, action: #selector(emailTextFieldDidChange), for: .editingChanged)
         otpTextField.addTarget(self, action: #selector(otpTextFieldDidChange), for: .editingChanged)
@@ -73,77 +74,61 @@ class forgotPasswordViewController: UIViewController {
         newPasswordTextField.isHidden = true
         confirmPasswordTextField.isHidden = true
         continueButton.setTitle("Send OTP", for: .normal)
-//        passwordRulesLabel.isHidden = true
+        passwordRulesLabel.isHidden = true
         continueButton.isEnabled = false
         
         continueButton.setTitleColor(.lightGray, for: .disabled)
         continueButton.backgroundColor = .black
-        if !continueButton.isEnabled {
-            continueButton.alpha = 0.7
-        } else {
-            continueButton.alpha = 1
-        }
+        continueButton.alpha = 0.7
     }
     
     @objc private func emailTextFieldDidChange(_ textField: UITextField) {
         guard let email = textField.text else { return }
         continueButton.isEnabled = isValidEmail(email)
+        continueButton.alpha = continueButton.isEnabled ? 1 : 0.7
     }
     
     @objc private func isPasswordEqual(_ textField: UITextField) {
         guard let password = textField.text, let confirmPassword = newPasswordTextField.text else { return }
         continueButton.isEnabled = password == confirmPassword
+        continueButton.alpha = continueButton.isEnabled ? 1 : 0.7
     }
     
     @objc private func otpTextFieldDidChange(_ textField: UITextField) {
         guard let otp = textField.text else { return }
         continueButton.isEnabled = isValidOTP(otp)
+        continueButton.alpha = continueButton.isEnabled ? 1 : 0.7
     }
-    /// ---------------------- this was my code from your logic ---------------------------------------------------
-    
-//    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
-//        let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
-//        
-//        UIView.animate(withDuration: 0.25) {
-//            if isValid {
-//                self.stackView.setCustomSpacing(20, after: self.newPasswordTextField)
-//            } else {
-//                self.stackView.setCustomSpacing(40, after: self.passwordRulesLabel)
-//            }
-//            self.view.layoutIfNeeded()
-//        }
-//        
-//        guard let password = textField.text, let confirmPassword = confirmPasswordTextField.text else { return }
-//        continueButton.isEnabled = isValid && password == confirmPassword
-//    }
-    
-    
-    /// ---------------------- this is purelly your Code (SUDHEE) (100% original) ---------------------------------------------------
-//    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
-//        let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
-//        
-//        UIView.animate(withDuration: 0.25) {
-//            if isValid {
-//                // When password is valid, hide the rules label and use normal spacing
-//                self.passwordRulesLabel.isHidden = true
-//                // Adjust spacing between password field and re-enter password field
-//                if let stackView = self.newPasswordTextField.superview as? UIStackView {
-//                    stackView.setCustomSpacing(20, after: self.newPasswordTextField)
-//                }
-//            } else {
-//                // When password is invalid, show the rules label and increase spacing
-//                self.passwordRulesLabel.isHidden = false
-//                // Increase spacing to accommodate the rules label
-//                if let stackView = self.newPasswordTextField.superview as? UIStackView {
-//                    stackView.setCustomSpacing(40, after: self.passwordRulesLabel)
-//                }
-//            }
-//            self.view.layoutIfNeeded()
-//        }
-//        guard let password = textField.text, let confirmPassword = confirmPasswordTextField.text else { return }
-//        continueButton.isEnabled = isValid && password == confirmPassword
-//    }
 
+    @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
+        let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)
+        
+        UIView.animate(withDuration: 0.25) {
+            if textField.text?.isEmpty ?? true {
+                // Hide when field is empty
+                self.passwordRulesLabel.isHidden = true
+                self.stackView.setCustomSpacing(10, after: self.newPasswordTextField)
+            } else if isValid {
+                // Hide when valid
+                self.passwordRulesLabel.isHidden = true
+                self.stackView.setCustomSpacing(10, after: self.newPasswordTextField)
+            } else {
+                // Show when invalid and not empty
+                self.passwordRulesLabel.isHidden = false
+                self.stackView.setCustomSpacing(20, after: self.passwordRulesLabel)
+            }
+            self.view.layoutIfNeeded()
+        }
+        
+        guard let password = textField.text,
+              let confirmPassword = confirmPasswordTextField.text else {
+            continueButton.isEnabled = false
+            return
+        }
+        
+        continueButton.isEnabled = isValid && password == confirmPassword
+        continueButton.alpha = continueButton.isEnabled ? 1 : 0.7
+    }
     
     @IBAction func continueButtonTapped(_ sender: Any) {
         switch currentStep {
@@ -170,8 +155,6 @@ class forgotPasswordViewController: UIViewController {
             newPasswordTextField.isHidden = false
             confirmPasswordTextField.isHidden = false
             continueButton.setTitle("Change Password", for: .normal)
-//            passwordRulesLabel.isHidden = false
-//            passwordRulesLabel = setupPasswordRulesLabel(in: view, below: newPasswordTextField, aboveButton: continueButton)
             continueButton.isEnabled = false
             
         case .changePassword:

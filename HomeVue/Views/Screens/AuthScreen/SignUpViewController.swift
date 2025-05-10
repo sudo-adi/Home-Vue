@@ -1,10 +1,3 @@
-//
-//  SignUpViewController.swift
-//  Auth
-//
-//  Created by student-2 on 04/12/24.
-//
-
 import UIKit
 
 class SignUpViewController: UIViewController {
@@ -55,7 +48,7 @@ class SignUpViewController: UIViewController {
         backNavigationItem.titleView?.tintColor = UIColor.white
         continueButton.addCornerRadius()
         
-        passwordRulesLabel = setupPasswordRulesLabel(in: view, below: passwordTextField, aboveButton: continueButton)
+        passwordRulesLabel = setupPasswordRulesLabel(in: stackView, below: passwordTextField)
                 
         // Add text field editing changed action
         passwordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)

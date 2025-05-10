@@ -39,7 +39,7 @@ func handleEmailLogin(from viewController: UIViewController, email: String?, pas
     }
 }
 
-func setupPasswordRulesLabel(in view: UIView, below textField: UITextField, aboveButton button: UIButton) -> UILabel {
+func setupPasswordRulesLabel(in stackView: UIStackView, below textField: UITextField) -> UILabel {
     let rulesLabel = UILabel()
     rulesLabel.text = "Password must contain at least 8 characters with both letters and numbers"
     rulesLabel.textColor = .red
@@ -48,13 +48,15 @@ func setupPasswordRulesLabel(in view: UIView, below textField: UITextField, abov
     rulesLabel.translatesAutoresizingMaskIntoConstraints = false
     rulesLabel.isHidden = true
     
-    view.addSubview(rulesLabel)
+//    stackView.addSubview(rulesLabel)
+    if let index = stackView.arrangedSubviews.firstIndex(of: textField) {
+        stackView.insertArrangedSubview(rulesLabel, at: index + 1)
+    }
     
     NSLayoutConstraint.activate([
         rulesLabel.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 4),
         rulesLabel.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
         rulesLabel.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
-        rulesLabel.bottomAnchor.constraint(lessThanOrEqualTo: button.topAnchor, constant: -8)
     ])
     
     return rulesLabel

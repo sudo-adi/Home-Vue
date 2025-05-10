@@ -1,10 +1,3 @@
-//
-//  VerifyViewController.swift
-//  Auth
-//
-//  Created by student-2 on 19/12/24.
-//
-
 import UIKit
 
 class VerifyViewController: UIViewController, UITextFieldDelegate {

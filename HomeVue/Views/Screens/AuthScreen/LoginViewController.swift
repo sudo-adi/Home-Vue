@@ -1,10 +1,3 @@
-//
-//  PracViewController.swift
-//  Auth
-//
-//  Created by student-2 on 13/12/24.
-//
-
 import UIKit
 
 class LoginViewController: UIViewController {

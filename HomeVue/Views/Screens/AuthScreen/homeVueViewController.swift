@@ -1,10 +1,3 @@
-//
-//  homeVueViewController.swift
-//  Auth
-//
-//  Created by student-2 on 04/12/24.
-//
-
 import UIKit
 
 class homeVueViewController: UIViewController {
