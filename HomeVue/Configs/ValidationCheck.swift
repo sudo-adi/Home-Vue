@@ -4,9 +4,9 @@ import UIKit
 
 // Password validation regex
 private let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$"
-
+let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
 func handleEmailLogin(from viewController: UIViewController, email: String?, password: String?) {
-    let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+//    let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
     let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
 
     guard let email = email, !email.isEmpty, emailPredicate.evaluate(with: email) else {
@@ -28,10 +28,10 @@ func handleEmailLogin(from viewController: UIViewController, email: String?, pas
     // Navigation logic
     if viewController is SignUpViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let verifyViewController = storyboard.instantiateViewController(withIdentifier: "VerifyViewController") as? VerifyViewController {
-            navigateToViewController(from: viewController, destinationVC: verifyViewController)
+        if let loginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController {
+            navigateToViewController(from: viewController, destinationVC: loginViewController)
         } else {
-            showAlert(on: viewController, message: "Unable to load verification screen. Please try again.")
+            showAlert(on: viewController, message: "Unable to load Login screen. Please try again.")
         }
     } else {
         let tabBarController = CustomTabBarController()
@@ -73,6 +73,17 @@ func validatePassword(_ password: String?, rulesLabel: UILabel) -> Bool  {
     return isValid
 }
 
+func isValidEmail(_ email: String) -> Bool {
+    let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+    return emailPredicate.evaluate(with: email)
+}
+
+func isValidOTP(_ otp: String) -> Bool {
+    let otpRegex = "^[0-9]{6}$"
+    let otpPredicate = NSPredicate(format: "SELF MATCHES %@", otpRegex)
+    return otpPredicate.evaluate(with: otp)
+}
+
 // Helper functions
 func showAlert(on viewController: UIViewController, title: String = "Error", message: String) {
     let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -88,3 +99,4 @@ func navigateToViewController(from viewController: UIViewController, destination
         viewController.present(destinationVC, animated: true, completion: nil)
     }
 }
+

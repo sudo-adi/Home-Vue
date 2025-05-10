@@ -1,10 +1,3 @@
-//
-//  PersonalInformationTableViewController.swift
-//  Home Vue
-//
-//  Created by student-2 on 11/12/24.
-//
-
 import UIKit
 
 // In PersonalInformationTableViewController.swift
@@ -22,6 +15,10 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
     
     let datePickerContainer = UIView()
     let datePicker = UIDatePicker()
+
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.selectionStyle = .none
+    }
 
     @IBAction func cameraButtonTapped(_ sender: UIButton) {
             let imagePicker = UIImagePickerController()
@@ -85,7 +82,7 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
         DateLabel.addGestureRecognizer(tapGesture)
         updateDateLabel(with: Date())
         ProfileImage?.addCornerRadius()
-        view.backgroundColor = .solidBackgroundColor
+//        view.backgroundColor = .solidBackgroundColor
 
         ProfileImage.image = User1.profilePicture
         NameLabel.text = User1.name

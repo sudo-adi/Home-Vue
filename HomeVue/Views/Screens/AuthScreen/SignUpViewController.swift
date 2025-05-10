@@ -11,11 +11,13 @@ class SignUpViewController: UIViewController {
 
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var continueButton: UIButton!
+    @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var reEnterPasswordTextField: UITextField!
     @IBOutlet weak var signUpView: UIView!
     @IBOutlet weak var backNavigationItem: UINavigationItem!
     @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var bgImageView: UIImageView!
     @IBOutlet weak var stackView: UIStackView!
     
     private var passwordRulesLabel: UILabel!
@@ -23,15 +25,21 @@ class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        signUpView.layer.borderColor = UIColor.black.cgColor
-        signUpView.layer.borderWidth = 0.5
+        bgImageView.applyOverlay()
         signUpView.addCornerRadius(20)
+        signUpView.applyGlassmorphism()
+        
+        nameTextField.configureText(
+            placeholder: "Enter Your Name",
+            placeholderColor: UIColor.lightGray)
+        nameTextField.setPadding(left: 10, right: 10)
+        nameTextField.addCornerRadius()
         
         emailTextField.configureText(
             placeholder: "hello@gmail.com",
             placeholderColor: UIColor.lightGray)
         emailTextField.setPadding(left: 10, right: 10)
-        emailTextField.addCornerRadius(17)
+        emailTextField.addCornerRadius()
         passwordTextField.configureText(
             placeholder: "Enter Password",
             placeholderColor: UIColor.lightGray)
@@ -53,35 +61,6 @@ class SignUpViewController: UIViewController {
         passwordTextField.addTarget(self, action: #selector(passwordTextFieldDidChange), for: .editingChanged)
        
     }
-    
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithTransparentBackground()
-//        appearance.backgroundColor = .clear
-//        appearance.shadowColor = .clear
-//
-//        navigationController?.navigationBar.standardAppearance = appearance
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-//        navigationController?.navigationBar.compactAppearance = appearance
-//
-//        navigationItem.title = "" // no title
-////        navigationItem.backButtonTitle = "" // cleaner back button
-//        navigationController?.navigationBar.tintColor = .white // or white depending on your UI
-//    }
-//
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithDefaultBackground() // Reset to system default
-//
-//        navigationController?.navigationBar.standardAppearance = appearance
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-//        navigationController?.navigationBar.compactAppearance = appearance
-//    }
-
 
     @objc private func passwordTextFieldDidChange(_ textField: UITextField) {
         let isValid = validatePassword(textField.text, rulesLabel: passwordRulesLabel)

@@ -23,19 +23,13 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
     @IBOutlet weak var profileView: UIImageView!
     @IBOutlet weak var lastBackgroundView: UIView!
     @IBOutlet weak var personName: UILabel!
-    @IBOutlet weak var personEmail: UILabel!
     
-   
-
         // MARK: - Data Source
         let tableData: [(section: String, rows: [(icon: String, title: String, isRed: Bool)])] = [
             ("Account", [
                 ("person.text.rectangle.fill", "Personal Information", false),
                 ("key.viewfinder", "Sign-in and Security", false),
                 ("heart.fill", "Favorites", false)
-            ]),
-            ("Log-in", [
-                ("rectangle.portrait.and.arrow.right", "Log out", true)
             ])
         ]
 
@@ -46,7 +40,6 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             customizeNavigationBar()
             profileView.image = User1.profilePicture
             personName.text = User1.name
-            personEmail.text = User1.email
         }
 
         override func viewWillAppear(_ animated: Bool) {
@@ -141,8 +134,6 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             cell.accessoryType = .disclosureIndicator
             cell.backgroundColor = .white
 
-             cell.accessoryType = rowData.title == "Log out" ? .none : .disclosureIndicator
-
             return cell
         }
 
@@ -172,8 +163,6 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
             } else {
                 performSegue(withIdentifier: segueIdentifier, sender: nil)
             }
-        } else if selectedItem == "Log out" {
-            handleLogout()
         } else {
             print("No segue found for \(selectedItem)")
         }
@@ -189,44 +178,42 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
     }
 
         // MARK: - Helper Functions
-    private func handleLogout() {
-        let alertController = UIAlertController(title: "Log Out",
-                                            message: "Are you sure you want to log out?",
-                                            preferredStyle: .alert)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let logoutAction = UIAlertAction(title: "Log Out", style: .destructive) { _ in
-            self.performLogout()
-        }
-        
-        alertController.addAction(cancelAction)
-        alertController.addAction(logoutAction)
-        
-        present(alertController, animated: true, completion: nil)
-    }
+//    private func handleLogout() {
+//        let alertController = UIAlertController(title: "Log Out",
+//                                            message: "Are you sure you want to log out?",
+//                                            preferredStyle: .alert)
+//        
+//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+//        let logoutAction = UIAlertAction(title: "Log Out", style: .destructive) { _ in
+//            self.performLogout()
+//        }
+//        
+//        alertController.addAction(cancelAction)
+//        alertController.addAction(logoutAction)
+//        
+//        present(alertController, animated: true, completion: nil)
+//    }
 
-    private func performLogout() {
-        print("Logging out...")
-
-        // Instantiate HomeVueViewController from storyboard
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let homeVueVC = storyboard.instantiateViewController(withIdentifier: "HomeVueViewController") as? homeVueViewController else {
-            print("Failed to instantiate HomeVueViewController")
-            return
-        }
-        
-        let navigationController = UINavigationController(rootViewController: homeVueVC)
-        
-        if let window = UIApplication.shared.windows.first {
-            window.rootViewController = navigationController
-            window.makeKeyAndVisible()
-        }
-    }
+//    private func performLogout() {
+//        print("Logging out...")
+//
+//        // Instantiate HomeVueViewController from storyboard
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        guard let homeVueVC = storyboard.instantiateViewController(withIdentifier: "HomeVueViewController") as? homeVueViewController else {
+//            print("Failed to instantiate HomeVueViewController")
+//            return
+//        }
+//        
+//        let navigationController = UINavigationController(rootViewController: homeVueVC)
+//        
+//        if let window = UIApplication.shared.windows.first {
+//            window.rootViewController = navigationController
+//            window.makeKeyAndVisible()
+//        }
+//    }
 
     @IBAction func unwindToLoginMainPage(_ segue: UIStoryboardSegue) {
         // Update the main page UI if needed
-        personEmail.text = User1.email
-//        personPhone.text = User1.phoneNumber
     }
 
     

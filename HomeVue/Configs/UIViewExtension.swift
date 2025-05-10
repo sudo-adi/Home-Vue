@@ -1,10 +1,3 @@
-//
-//  UIViewExtension.swift
-//  Home Vue
-//
-//  Created by student-2 on 09/12/24.
-//
-
 import Foundation
 import UIKit
 
@@ -15,13 +8,43 @@ extension UIView {
         self.layer.masksToBounds = true
     }
     
-    func addBlurEffect(style: UIBlurEffect.Style = .dark) {
-        let blurEffect = UIBlurEffect(style: style)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = self.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    func applyOverlay(alpha: CGFloat = 0.25) {
+        let overlay = UIView()
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(alpha)
+        overlay.translatesAutoresizingMaskIntoConstraints = false
 
-        self.addSubview(blurEffectView)
+        self.addSubview(overlay)
+
+        NSLayoutConstraint.activate([
+            overlay.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            overlay.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            overlay.topAnchor.constraint(equalTo: self.topAnchor),
+            overlay.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        ])
+    }
+    
+    func applyGlassmorphism() {
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialLight)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        blurView.layer.cornerRadius = 20
+        blurView.clipsToBounds = true
+        blurView.alpha = 0.7
+
+        self.insertSubview(blurView, at: 0)
+
+        NSLayoutConstraint.activate([
+            blurView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            blurView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            blurView.topAnchor.constraint(equalTo: self.topAnchor),
+            blurView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        ])
+
+        self.backgroundColor = UIColor.white.withAlphaComponent(0.15)
+        self.layer.cornerRadius = 20
+        self.layer.borderWidth = 1
+        self.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
+        self.clipsToBounds = true
     }
     
     func applyGradientBackground(startPoint: CGPoint = CGPoint(x: 0.0, y: 0.0), endPoint: CGPoint = CGPoint(x: 0.0, y: 1.0)) {

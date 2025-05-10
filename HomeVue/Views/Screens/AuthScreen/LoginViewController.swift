@@ -13,15 +13,16 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var continueButton: UIButton!
+    @IBOutlet weak var bgImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationController?.navigationBar.tintColor = UIColor.white
         
+        bgImageView.applyOverlay()
         loginView.addCornerRadius(20)
-        loginView.layer.borderColor = UIColor.black.cgColor
-        loginView.layer.borderWidth = 0.5
+        loginView.applyGlassmorphism()
         
         emailTextField.text = "test@gmail.com"
         passwordTextField.text = "test@12345"
@@ -40,15 +41,6 @@ class LoginViewController: UIViewController {
         
         continueButton.addCornerRadius()
     }
-
-    
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        // Ensure navigation bar is visible when this screen appears
-//        navigationController?.setNavigationBarHidden(false, animated: true)
-//        navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
-//        navigationController?.navigationBar.backgroundColor = .clear
-//    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -68,21 +60,6 @@ class LoginViewController: UIViewController {
         navigationController?.navigationBar.tintColor = .white // or white
     }
 
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-////        navigationController?.setNavigationBarHidden(false, animated: true)
-////        navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
-////        navigationController?.navigationBar.backgroundColor = .clear
-//        
-//        
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithDefaultBackground() // Reset to normal background (not transparent)
-//
-//        navigationController?.navigationBar.standardAppearance = appearance
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-//        navigationController?.navigationBar.compactAppearance = appearance
-//    }
-    
     @IBAction func continueButtonTapped(_ sender: Any) {
             // Email login validation & navigation
             handleEmailLogin(from: self, email: emailTextField.text, password: passwordTextField.text)

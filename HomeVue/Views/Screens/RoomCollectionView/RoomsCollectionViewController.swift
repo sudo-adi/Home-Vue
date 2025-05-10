@@ -37,6 +37,7 @@ class RoomsCollectionViewController: UICollectionViewController {
     
     private func setupSearch() {
         searchController = SearchController(
+            hostViewController: self,
             collectionView: collectionView,
             initialItems: [],
             filterPredicate: { room, searchText in

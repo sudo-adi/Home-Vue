@@ -187,12 +187,25 @@ class HomeViewController: UIViewController {
                let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index+1)", labelText: item.name)
                horizontalStackView.addArrangedSubview(cardView)
            }
+        
+        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
+            // iPad sizes
+            NSLayoutConstraint.activate([
+                horizontalScrollView.heightAnchor.constraint(equalToConstant: 380)
+            ])
+        } else {
+            // iPhone sizes
+            NSLayoutConstraint.activate([
+                horizontalScrollView.heightAnchor.constraint(equalToConstant: 210)
+            ])
+        }
+
 
        NSLayoutConstraint.activate([
            horizontalScrollView.topAnchor.constraint(equalTo: appBarStackView.bottomAnchor, constant: 30), // Increased from 10 to 16 for better spacing
            horizontalScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
            horizontalScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-           horizontalScrollView.heightAnchor.constraint(equalToConstant: 210),
+//           horizontalScrollView.heightAnchor.constraint(equalToConstant: 210),
            horizontalStackView.topAnchor.constraint(equalTo: horizontalScrollView.topAnchor),
            horizontalStackView.leadingAnchor.constraint(equalTo: horizontalScrollView.leadingAnchor, constant: 16),
            horizontalStackView.trailingAnchor.constraint(equalTo: horizontalScrollView.trailingAnchor, constant: -16),
@@ -255,11 +268,50 @@ class HomeViewController: UIViewController {
         imageButton.accessibilityIdentifier = item.name
 
         cardView.addSubview(imageButton)
+        
+        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
+            // iPad sizes
+            textLabel.font = UIFont.systemFont(ofSize: 26, weight: .semibold)
+            imageButton.layer.cornerRadius = 30
+
+            NSLayoutConstraint.activate([
+                cardView.widthAnchor.constraint(equalToConstant: 500),
+//                cardView.heightAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 0.835)
+                cardView.heightAnchor.constraint(equalToConstant: 360),
+                
+                textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 35),
+                textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -45),
+
+                // Image button constraints
+                imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 34),
+                imageButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 26),
+                imageButton.widthAnchor.constraint(equalToConstant: 60),
+                imageButton.heightAnchor.constraint(equalToConstant: 60)
+            ])
+        } else {
+            // iPhone sizes
+            NSLayoutConstraint.activate([
+                cardView.widthAnchor.constraint(equalToConstant: 300),
+                cardView.heightAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 0.66),
+                
+                textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+                textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
+
+                // Image button constraints
+                imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 24),
+                imageButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+                imageButton.widthAnchor.constraint(equalToConstant: 40),
+                imageButton.heightAnchor.constraint(equalToConstant: 40)
+
+            ])
+        }
+
 
         NSLayoutConstraint.activate([
-            cardView.widthAnchor.constraint(equalToConstant: 300),
-            cardView.heightAnchor.constraint(equalToConstant: 200),
+//            cardView.widthAnchor.constraint(equalToConstant: 300),
+//            cardView.heightAnchor.constraint(equalToConstant: 200),
 
+            
             // Background image constraints
             backgroundImageView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 20),
             backgroundImageView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
@@ -274,14 +326,14 @@ class HomeViewController: UIViewController {
 
 
             // Text label constraints
-            textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
-
-            // Image button constraints
-            imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 24),
-            imageButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            imageButton.widthAnchor.constraint(equalToConstant: 40),
-            imageButton.heightAnchor.constraint(equalToConstant: 40)
+//            textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+//            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
+//
+//            // Image button constraints
+//            imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 24),
+//            imageButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+//            imageButton.widthAnchor.constraint(equalToConstant: 40),
+//            imageButton.heightAnchor.constraint(equalToConstant: 40)
         ])
 
         return cardView
@@ -665,7 +717,7 @@ class RoomCardCell: UICollectionViewCell {
         
         // Update cell appearance based on room count
 //        isUserInteractionEnabled = roomCount > 0
-        alpha = roomCount > 0 ? 1.0 : 0.6
+//        alpha = roomCount > 0 ? 1.0 : 0.6
 
     }
 }

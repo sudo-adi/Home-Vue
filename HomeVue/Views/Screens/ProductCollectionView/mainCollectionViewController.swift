@@ -43,6 +43,7 @@ class mainCollectionViewController: UICollectionViewController {
         
         // Update the search controller with these items
         searchController = SearchController(
+            hostViewController: self,
             collectionView: collectionView,
             initialItems: items,
             filterPredicate: { item, text in

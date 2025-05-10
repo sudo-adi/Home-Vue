@@ -14,7 +14,7 @@ struct User {
     var email: String?
     var password: String
     var dateOfBirth: Date?
-    var phoneNumber: String?
+//    var phoneNumber: String?
     var profilePicture: UIImage?
     var createdDate: Date
     var isVerified: Bool
@@ -119,4 +119,4 @@ class UserDetails {
 
 
 
-var User1 = User(id:UUID(), name: "Tim Cook", email: "cookedtim@apple.com", password: "54321", dateOfBirth: Date(), phoneNumber: "0911911911", profilePicture: UIImage(named: "profileImage"), createdDate: Date(), isVerified: true, savedFurnitures: [], roomsByCategory: [:])
+var User1 = User(id:UUID(), name: "Tim Cook", email: "cookedtim@apple.com", password: "54321", dateOfBirth: Date(), profilePicture: UIImage(named: "profileImage"), createdDate: Date(), isVerified: true, savedFurnitures: [], roomsByCategory: [:])

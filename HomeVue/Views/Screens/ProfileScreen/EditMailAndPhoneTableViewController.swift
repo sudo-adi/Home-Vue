@@ -38,7 +38,7 @@ class EditMailAndPhoneTableViewController: UITableViewController {
            customizeNavigationBar()
            
            EmailTextField.text = User1.email
-           PhoneTextField.text = User1.phoneNumber
+//           PhoneTextField.text = User1.phoneNumber
            
            // Apply gradient background
            self.view.applyGradientBackground()
