@@ -20,34 +20,6 @@ struct WallControlView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("Wall Textures")
-                .font(.headline)
-                .foregroundColor(.black)
-                .padding(.bottom, 12)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 28) {
-                    ForEach(availableTextures, id: \.0) { textureName, textureID in
-                        VStack(spacing: 8) {
-                            WallTextureOption(
-                                name: textureName,
-                                textureName: textureID,
-                                isSelected: wallTexture == textureID,
-                                onSelect: {
-                                    wallTexture = textureID
-                                }
-                            )
-                            .frame(width: 70, height: 70)
-                            Text(textureName)
-                                .font(.subheadline)
-                                .foregroundColor(.black)
-                        }
-                    }
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 8)
-            }
-
             HStack {
                 Text("Show Walls")
                     .foregroundColor(.black)
@@ -59,8 +31,8 @@ struct WallControlView: View {
                 .labelsHidden()
                 .toggleStyle(SwitchToggleStyle(tint: Color.green))
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 30)
+            .padding(.vertical, 10)
 
             HStack {
                 Text("Wall Color")
@@ -70,36 +42,64 @@ struct WallControlView: View {
                 ColorPicker("", selection: $wallColor)
                     .labelsHidden()
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 30)
+            .padding(.vertical, 10)
+            VStack{
+                Text("Wall Textures")
+//                    .font(.headline)
+                    .foregroundColor(.black)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 20) {
+                        ForEach(availableTextures, id: \.0) { textureName, textureID in
+                            VStack(spacing: 5) {
+                                WallTextureOption(
+                                    name: textureName,
+                                    textureName: textureID,
+                                    isSelected: wallTexture == textureID,
+                                    onSelect: {
+                                        wallTexture = textureID
+                                    }
+                                )
+                                .frame(width: 70, height: 70)
+                                Text(textureName)
+                                    .font(.subheadline)
+                                    .foregroundColor(.black)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 8)
+                }
+            }
         }
         .frame(height: 300)
     }
 }
 
 enum ControlSegment: String, CaseIterable {
-    case floor = "Floor"
     case wall = "Wall"
+    case floor = "Floor"
 }
 
 struct FloorAndWallSegmentedControlView: View {
-    @Binding var floorTexture: String
     @Binding var wallTexture: String
     @Binding var wallColor: Color
     @Binding var showWalls: Bool
+    @Binding var floorTexture: String
     @Binding var isVisible: Bool
 
-    @State private var selectedSegment: ControlSegment = .floor
+    @State private var selectedSegment: ControlSegment = .wall
     @State private var dragOffset: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 0) {
-            // Drag indicator
-            RoundedRectangle(cornerRadius: 2.5)
+            
+            RoundedRectangle(cornerRadius: 3)
                 .fill(Color.black.opacity(0.15))
-                .frame(width: 40, height: 5)
+                .frame(width: 70, height: 5)
                 .padding(.top, 12)
-                .padding(.bottom, 8)
+                .padding(.bottom, 10)
 
             Picker("", selection: $selectedSegment) {
                 ForEach(ControlSegment.allCases, id: \.self) { segment in
@@ -108,20 +108,22 @@ struct FloorAndWallSegmentedControlView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 24)
-            .padding(.bottom, 12)
+//            .padding(.bottom, 12)
 
-            if selectedSegment == .floor {
-                FloorControlView(
-                    floorTexture: $floorTexture,
-                    isVisible: $isVisible
-                )
-            } else {
+            if selectedSegment == .wall{
                 WallControlView(
                     showWalls: $showWalls,
                     wallColor: $wallColor,
                     isVisible: $isVisible,
                     wallTexture: $wallTexture
                 )
+                .frame(height: 300)
+            } else {
+                FloorControlView(
+                    floorTexture: $floorTexture,
+                    isVisible: $isVisible
+                )
+                .frame(height: 200)
             }
         }
         .background(
@@ -165,25 +167,27 @@ struct WallTextureOption: View {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.green.opacity(0.15))
                 } else if textureName == "BrickTexture" {
-                    Image("PaintedBricks001_1K-JPG_Color")
+                    Image("PaintedBricks001")
                         .resizable()
                         .scaledToFill()
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 } else if textureName == "Tiles" {
-                    Image("Tiles039_1K-JPG_Color")
+                    Image("Tiles039")
                         .resizable()
                         .scaledToFill()
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 } else if textureName == "PavingStoneTexture" {
-                    Image("PavingStones128_1K-JPG_Color")
+                    Image("PavingStones128")
                         .resizable()
                         .scaledToFill()
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 3)
+//                RoundedRectangle(cornerRadius: 16)
+                Circle()
+                    .stroke(isSelected ? Color.white : Color.clear, lineWidth: 3)
             }
         }
         .frame(width: 70, height: 70)
+        .padding(20)
     }
 }

@@ -17,16 +17,16 @@ struct FloorControlView: View {
     ]
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 5) {
             Text("Floor Textures")
                 .font(.headline)
                 .foregroundColor(.black)
                 .padding(.bottom, 12)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 28) {
+                HStack(spacing: 20) {
                     ForEach(availableTextures, id: \.0) { textureName, textureID in
-                        VStack(spacing: 8) {
+                        VStack(spacing: 5) {
                             FloorTextureOption(
                                 name: textureName,
                                 textureName: textureID,
@@ -47,8 +47,8 @@ struct FloorControlView: View {
             }
         }
         .padding(8)
-        .frame(height:300)
-        .padding(.bottom,-33)
+        .frame(height:150)
+//        .padding(.bottom,-33)
     }
 }
 struct FloorTextureOption: View {
@@ -64,23 +64,23 @@ struct FloorTextureOption: View {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.green.opacity(0.15))
                 } else if textureName == "WoodFloor" {
-                    Image("WoodFloor054_1K-JPG_Color")
+                    Image("WoodFloor054")
                         .resizable()
                         .scaledToFill()
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 } else if textureName == "TileFloor" {
-                    Image("Tiles079_1K-JPG_Color")
+                    Image("Tiles079")
                         .resizable()
                         .scaledToFill()
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 } else if textureName == "MarbleFloor" {
-                    Image("Marble014_1K-JPG_Color")
+                    Image("Marble014")
                         .resizable()
                         .scaledToFill()
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 3)
+                Circle()
+                    .stroke(isSelected ? Color.white : Color.clear, lineWidth: 3)
             }
         }
         .frame(width: 70, height: 70)

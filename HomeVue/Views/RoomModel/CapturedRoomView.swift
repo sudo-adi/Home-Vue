@@ -269,10 +269,10 @@ struct CapturedRoomView: View {
                 VStack {
                     Spacer()
                     FloorAndWallSegmentedControlView(
-                        floorTexture: $floorTexture,
                         wallTexture: $wallTexture,
                         wallColor: $wallColor,
                         showWalls: $showWalls,
+                        floorTexture: $floorTexture,
                         isVisible: Binding(
                             get: { showWallControl || showFloorControl },
                             set: { newValue in
@@ -282,7 +282,6 @@ struct CapturedRoomView: View {
                         )
                     )
                 }
-                .padding(.bottom, -33)
                 .edgesIgnoringSafeArea(.bottom)
             }
         }
