@@ -25,15 +25,19 @@ struct CapturedRoomView: View {
     @State private var wallTexture: String = "DefaultTexture"
 
     @State private var selectedNode: SCNNode?
-    // @State private var addedFurniture: [SCNNode] = []
-    // @State private var addedFurnitureItems: [FurnitureItem] = []
     @State private var addedFurniture: [addFurniture] = []
     @State private var selectedFurnitureItem: FurnitureItem?
     @State private var rotationAngle: Double = 0
 
     @State private var showFloorControl = false
     @State private var floorTexture: String = "DefaultTexture"
-
+    @State private var showControlSheet: Bool = false
+    
+    @State private var showExportPopup = false
+    @State private var exportRoomName = ""
+    @State private var exportCategory: String = ""
+    private let exportCategories = ["Living Room", "Bedroom", "Kitchen", "Bathroom", "Other"]
+    
     var body: some View {
         ZStack {
             if let room {
@@ -76,9 +80,20 @@ struct CapturedRoomView: View {
                 Text("No room scanned.")
                     .foregroundColor(.gray)
             }
-
+            
             if !showFurnitureCatalogue {
                 VStack(alignment: .trailing, spacing: 12) {
+                    //
+                    Button(action: {
+                        showExportPopup = true
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(width: 60, height: 40)
+                            .background(Color(hex: "#4a4551"))
+                            .cornerRadius(20, corners: [.topLeft, .bottomLeft])
+                    }
                     ArrowButton(showFurnitureCatalogue: $showFurnitureCatalogue)
                         .frame(width: 60, height: 40)
                     Button(action: {
@@ -87,18 +102,6 @@ struct CapturedRoomView: View {
                         }
                     }) {
                         Image(systemName: "paintbrush")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 60, height: 40)
-                            .background(Color(hex: "#4a4551"))
-                            .cornerRadius(20, corners: [.topLeft, .bottomLeft])
-                    }
-                    Button(action: {
-                        withAnimation {
-                            showFloorControl = true
-                        }
-                    }) {
-                        Image(systemName: "square.grid.2x2")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.white)
                             .frame(width: 60, height: 40)
@@ -162,9 +165,125 @@ struct CapturedRoomView: View {
                 )
                 .transition(.move(edge: .trailing))
             }
-            WallControlView(showWalls: $showWalls, wallColor: $wallColor, isVisible: $showWallControl, wallTexture: $wallTexture)
-            if showFloorControl {
-                FloorControlView(floorTexture: $floorTexture, isVisible: $showFloorControl)
+            if showExportPopup {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                    .transition(.opacity)
+                VStack(spacing: 16) {
+                    Text("Export Room")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(Color(hex: "#393231"))
+                        .padding(.top, 10)
+
+                    // Room name text field
+                    TextField("Enter room name", text: $exportRoomName)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(hex: "#393231"), lineWidth: 1)
+                        )
+                        .foregroundColor(Color(hex: "#393231"))
+                        .font(.system(size: 15))
+
+                    // Category picker
+                    Menu {
+                        ForEach(exportCategories, id: \.self) { category in
+                            Button(category) { exportCategory = category }
+                        }
+                    } label: {
+                        HStack {
+                            Text(exportCategory.isEmpty ? "Select category" : exportCategory)
+                                .foregroundColor(exportCategory.isEmpty ? Color(hex: "#393231").opacity(0.6) : Color(hex: "#393231"))
+                                .font(.system(size: 15))
+                            Spacer()
+                            Image(systemName: "chevron.down")
+                                .foregroundColor(Color(hex: "#393231"))
+                        }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(hex: "#393231"), lineWidth: 1)
+                        )
+                    }
+
+                    HStack(spacing: 12) {
+                        Button(action: {
+                            showExportPopup = false
+                            exportRoomName = ""
+                            exportCategory = ""
+                        }) {
+                            Text("Cancel")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                                .background(Color(hex: "#635655"))
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .font(.system(size: 15, weight: .medium))
+                        }
+                        Button(action: {
+                            // Save/export logic here
+                            showExportPopup = false
+                        }) {
+                            Text("Save")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                                .background(Color(hex: "#393231"))
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .font(.system(size: 15, weight: .medium))
+                        }
+                    }
+                    .frame(height: 36)
+                }
+                .padding(20)
+                .background(Color.white)
+                .cornerRadius(14)
+                .frame(maxWidth: 300)
+                .shadow(radius: 10)
+                .padding(.horizontal, 24)
+                .transition(.scale)
+            }
+//            if showWallControl{
+//                VStack{
+//                    Spacer()
+//                    WallControlView(showWalls: $showWalls, wallColor: $wallColor, isVisible: $showWallControl, wallTexture: $wallTexture)
+//                }
+//                .padding(.bottom,-33)
+//                .edgesIgnoringSafeArea(.bottom)
+//            }
+//            if showFloorControl {
+//                VStack {
+//                    Spacer()
+//                    FloorControlView(floorTexture: $floorTexture, isVisible: $showFloorControl)
+//                }
+//                .padding(.bottom,-33)
+//                .edgesIgnoringSafeArea(.bottom)
+//            }
+            if showWallControl || showFloorControl {
+                VStack {
+                    Spacer()
+                    FloorAndWallSegmentedControlView(
+                        floorTexture: $floorTexture,
+                        wallTexture: $wallTexture,
+                        wallColor: $wallColor,
+                        showWalls: $showWalls,
+                        isVisible: Binding(
+                            get: { showWallControl || showFloorControl },
+                            set: { newValue in
+                                showWallControl = newValue
+                                showFloorControl = newValue
+                            }
+                        )
+                    )
+                }
+                .padding(.bottom, -33)
+                .edgesIgnoringSafeArea(.bottom)
             }
         }
         .background(Color(hex: "#635655"))

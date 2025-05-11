@@ -4,271 +4,155 @@
 ////  Created by Nishtha on 27/04/25.
 //
 //
-//import SwiftUI
-//
-//struct WallControlView: View {
-//    @Binding var showWalls: Bool
-//    @Binding var wallColor: Color
-//    @Binding var isVisible: Bool
-//    
-//    @Binding var wallTexture: String
-//    
-//    // Define available textures
-//    private let availableTextures = [
-//        ("Default", "DefaultTexture"),
-//        ("Tiles", "Tiles"),
-//        ("Brick", "BrickTexture"),
-//        ("Wood", "WoodTexture")
-//    ]
-//
-//    var body: some View {
-//        if isVisible {
-//            VStack(spacing: 6) {
-//                HStack {
-//                    Button(action: {
-//                        withAnimation {
-//                            isVisible = false
-//                        }
-//                    })
-//                    {   Text("×")
-//                        .font(.system(size: 20, weight: .bold))
-//                        .foregroundColor(.white)
-//                    }
-//                    Spacer()
-//                    Text("Wall Controls")
-//                        .font(.system(size: 16, weight: .bold))
-//                        .foregroundColor(.white)
-//                        .lineLimit(1)
-//                    
-//                  
-//                }
-//                .padding(.horizontal)
-//                .padding(.top,20)
-//
-//                Toggle(isOn: $showWalls) {
-//                    Text("Show Walls")
-//                        .foregroundColor(.white)
-//                }
-//                .padding(.horizontal)
-//
-//                HStack {
-//                    Text("Wall Color")
-//                        .foregroundColor(.white)
-//                    Spacer()
-//                    ColorPicker("", selection: $wallColor)
-//                        .labelsHidden()
-//                }
-//                .padding(.horizontal)
-//                
-//                VStack(alignment: .leading) {
-//                    Text("Wall Texture")
-//                        .foregroundColor(.white)
-//                        .padding(.horizontal)
-//                    
-//                    ScrollView(.horizontal, showsIndicators: false) {
-//                        HStack(spacing: 12) {
-//                            ForEach(availableTextures, id: \.1) { texture in
-//                                TextureOption(
-//                                    name: texture.0,
-//                                    textureName: texture.1,
-//                                    isSelected: wallTexture == texture.1,
-//                                    onSelect: {
-//                                        wallTexture = texture.1
-//                                    }
-//                                )
-//                            }
-//                        }
-//                        .padding(.horizontal)
-//                    }
-//                    .frame(height: 80)
-//                }
-//
-//                Spacer()
-//            }
-//            .frame(width: UIScreen.main.bounds.width * 0.40, height: 220) // Increased height for texture scroll
-//            .background(Color(hex: "#4a4551").opacity(0.9))
-//            .cornerRadius(12)
-//            .padding()
-//            .position(x: UIScreen.main.bounds.width - (UIScreen.main.bounds.width * 0.35 / 2) - 10,
-//                      y: 220 / 2 + 60) // Adjusted position for new height
-//            .transition(.move(edge: .trailing))
-//        }
-//    }
-//}
-//
-//// Texture option component for the horizontal scroll
-//// Update the TextureOption struct to display actual texture previews
-//struct TextureOption: View {
-//    let name: String
-//    let textureName: String
-//    let isSelected: Bool
-//    let onSelect: () -> Void
-//    
-//    var body: some View {
-//        Button(action: onSelect) {
-//            VStack {
-//                if textureName == "DefaultTexture" {
-//                    RoundedRectangle(cornerRadius: 8)
-//                        .fill(Color.gray)
-//                        .frame(width: 60, height: 60)
-//                } else if textureName == "Tiles" {
-//                    Image("Tiles012_1K-JPG_Color")
-//                        .resizable()
-//                        .scaledToFill()
-//                        .frame(width: 60, height: 60)
-//                        .cornerRadius(8)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 8)
-//                                .stroke(Color.gray, lineWidth: 1)
-//                        )
-//                } else if textureName == "BrickTexture" {
-//                    Image("Brick023_1K-JPG_Color")
-//                        .resizable()
-//                        .scaledToFill()
-//                        .frame(width: 60, height: 60)
-//                        .cornerRadius(8)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 8)
-//                                .stroke(Color.gray, lineWidth: 1)
-//                        )
-//                } else if textureName == "WoodTexture" {
-//                    Image("Wood026_1K-JPG_Color")
-//                        .resizable()
-//                        .scaledToFill()
-//                        .frame(width: 60, height: 60)
-//                        .cornerRadius(8)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 8)
-//                                .stroke(Color.gray, lineWidth: 1)
-//                        )
-//                }
-//                
-//                Text(name)
-//                    .font(.caption)
-//                    .foregroundColor(.white)
-//            }
-//            .padding(4)
-//            .background(
-//                RoundedRectangle(cornerRadius: 10)
-//                    .stroke(isSelected ? Color.white : Color.clear, lineWidth: 2)
-//            )
-//        }
-//    }
-//}
-//
-//
 import SwiftUI
-
 struct WallControlView: View {
     @Binding var showWalls: Bool
     @Binding var wallColor: Color
     @Binding var isVisible: Bool
     @Binding var wallTexture: String
 
-    // Define available textures
-//    private let availableTextures = [
-//        ("Brick", "BrickTexture"),
-//        ("Wood", "WoodTexture"),
-//        ("Wallpaper", "WallpaperTexture"),
-//        ("Paint", "DefaultTexture")
-//    ]
     private let availableTextures = [
-           ("Default", "DefaultTexture"),
-           ("Tiles", "Tiles"),
-           ("Brick", "BrickTexture"),
-           ("PavingStone", "PavingStoneTexture")
-       ]
+        ("Default", "DefaultTexture"),
+        ("Tiles", "Tiles"),
+        ("Brick", "BrickTexture"),
+        ("PavingStone", "PavingStoneTexture")
+    ]
 
     var body: some View {
-        if isVisible {
-            VStack(alignment: .leading, spacing: 24) {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        withAnimation {
-                            isVisible = false
+        VStack(spacing: 0) {
+            Text("Wall Textures")
+                .font(.headline)
+                .foregroundColor(.black)
+                .padding(.bottom, 12)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 28) {
+                    ForEach(availableTextures, id: \.0) { textureName, textureID in
+                        VStack(spacing: 8) {
+                            WallTextureOption(
+                                name: textureName,
+                                textureName: textureID,
+                                isSelected: wallTexture == textureID,
+                                onSelect: {
+                                    wallTexture = textureID
+                                }
+                            )
+                            .frame(width: 70, height: 70)
+                            Text(textureName)
+                                .font(.subheadline)
+                                .foregroundColor(.black)
                         }
-                    }) {
-                        Text("×")
-                            .font(.system(size: 30, weight: .bold))
-                            .foregroundColor(.gray)
                     }
                 }
-                .padding(.top, 30)
-                .padding(.trailing, 15)
-
-                // Hide Walls Toggle
-                HStack(spacing: 12) {
-                    Image(systemName: "eye")
-                        .foregroundColor(.primary)
-                        .font(.system(size: 22))
-                    Text("Hide Walls")
-                        .foregroundColor(.primary)
-                        .font(.system(size: 18))
-                    Spacer()
-                    Toggle(isOn: $showWalls) {
-                                        Text("Show Walls")
-                                            .foregroundColor(.white)
-                                    }
-                    .labelsHidden()
-                    .toggleStyle(SwitchToggleStyle(tint: Color.green))
-                }
-                .padding(.horizontal)
-
-                // Wall Color
-                HStack(spacing: 12) {
-                    Image(systemName: "paintpalette")
-                        .foregroundColor(.brown)
-                        .font(.system(size: 22))
-                    Text("Wall Color")
-                        .foregroundColor(.primary)
-                        .font(.system(size: 18))
-                    Spacer()
-                        .frame(width: 48, height: 48)
-                    ColorPicker("", selection: $wallColor)
-                                           .labelsHidden()
-                }
-                .padding(.horizontal)
-
-                // Wall Textures
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Wall Textures")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundColor(.primary)
-                        .padding(.leading, 12)
-
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 24) {
-                            ForEach(availableTextures, id: \.1) { texture in
-                                TextureOption(
-                                    name: texture.0,
-                                    textureName: texture.1,
-                                    isSelected: wallTexture == texture.1,
-                                    onSelect: {
-                                        wallTexture = texture.1
-                                    }
-                                )
-                            }
-                        }
-                        .padding(.horizontal, 12)
-                    }
-                    .frame(height: 100)
-                }
-                Spacer()
+                .padding(.horizontal, 24)
+                .padding(.vertical, 8)
             }
-            .frame(width: UIScreen.main.bounds.width * 0.95, height: 320)
-            .background(Color.white)
-            .cornerRadius(20)
-            .shadow(radius: 10)
-            .padding(.top, 24)
-            .padding(.horizontal, 8)
-            .transition(.move(edge: .bottom))
+
+            HStack {
+                Text("Show Walls")
+                    .foregroundColor(.black)
+                    .font(.system(size: 18))
+                Spacer()
+                Toggle(isOn: $showWalls) {
+                    EmptyView()
+                }
+                .labelsHidden()
+                .toggleStyle(SwitchToggleStyle(tint: Color.green))
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 8)
+
+            HStack {
+                Text("Wall Color")
+                    .foregroundColor(.black)
+                    .font(.system(size: 18))
+                Spacer()
+                ColorPicker("", selection: $wallColor)
+                    .labelsHidden()
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 8)
         }
+        .frame(height: 300)
     }
 }
 
-// Texture option component for the horizontal scroll
-struct TextureOption: View {
+enum ControlSegment: String, CaseIterable {
+    case floor = "Floor"
+    case wall = "Wall"
+}
+
+struct FloorAndWallSegmentedControlView: View {
+    @Binding var floorTexture: String
+    @Binding var wallTexture: String
+    @Binding var wallColor: Color
+    @Binding var showWalls: Bool
+    @Binding var isVisible: Bool
+
+    @State private var selectedSegment: ControlSegment = .floor
+    @State private var dragOffset: CGFloat = 0
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Drag indicator
+            RoundedRectangle(cornerRadius: 2.5)
+                .fill(Color.black.opacity(0.15))
+                .frame(width: 40, height: 5)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
+
+            Picker("", selection: $selectedSegment) {
+                ForEach(ControlSegment.allCases, id: \.self) { segment in
+                    Text(segment.rawValue).tag(segment)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.horizontal, 24)
+            .padding(.bottom, 12)
+
+            if selectedSegment == .floor {
+                FloorControlView(
+                    floorTexture: $floorTexture,
+                    isVisible: $isVisible
+                )
+            } else {
+                WallControlView(
+                    showWalls: $showWalls,
+                    wallColor: $wallColor,
+                    isVisible: $isVisible,
+                    wallTexture: $wallTexture
+                )
+            }
+        }
+        .background(
+            Color.white
+                .clipShape(RoundedCorner(radius: 24, corners: [.topLeft, .topRight]))
+        )
+        .padding(.top, 0)
+        .edgesIgnoringSafeArea(.bottom)
+        .shadow(radius: 5)
+        .frame(maxWidth: .infinity)
+        .transition(.move(edge: .bottom))
+        .offset(y: dragOffset)
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    if value.translation.height > 0 {
+                        dragOffset = value.translation.height
+                    }
+                }
+                .onEnded { value in
+                    if value.translation.height > 80 {
+                        isVisible = false
+                    }
+                    dragOffset = 0
+                }
+        )
+    }
+}
+
+// Reuse your existing FloorTextureOption and WallTextureOption views here
+struct WallTextureOption: View {
     let name: String
     let textureName: String
     let isSelected: Bool
@@ -276,47 +160,30 @@ struct TextureOption: View {
 
     var body: some View {
         Button(action: onSelect) {
-            VStack(spacing: 8) {
-                ZStack {
+            ZStack {
+                if textureName == "DefaultTexture" {
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(.systemGray6))
-                        .frame(width: 72, height: 72)
-                    if textureName == "DefaultTexture" {
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(.systemGray4))
-                            .frame(width: 64, height: 64)
-                    } else if textureName == "BrickTexture" {
-                        Image("PaintedBricks001_1K-JPG_Color")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 64, height: 64)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }
-                        else if textureName == "Tiles" {
-                        Image("Tiles039_1K-JPG_Color")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 64, height: 64)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }
-                    else if textureName == "PavingStoneTexture" {
-                        Image("PavingStones128_1K-JPG_Color")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 64, height: 64)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }
-                    if isSelected {
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.blue, lineWidth: 3)
-                            .frame(width: 72, height: 72)
-                    }
+                        .fill(Color.green.opacity(0.15))
+                } else if textureName == "BrickTexture" {
+                    Image("PaintedBricks001_1K-JPG_Color")
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                } else if textureName == "Tiles" {
+                    Image("Tiles039_1K-JPG_Color")
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                } else if textureName == "PavingStoneTexture" {
+                    Image("PavingStones128_1K-JPG_Color")
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                Text(name)
-                    .font(.caption)
-                    .foregroundColor(.primary)
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 3)
             }
         }
-        .buttonStyle(PlainButtonStyle())
+        .frame(width: 70, height: 70)
     }
 }

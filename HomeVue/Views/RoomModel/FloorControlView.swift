@@ -3,140 +3,89 @@
 //  HomeVue
 //
 //  Created by Nishtha on 02/05/25.
-
-
 import SwiftUI
 
 struct FloorControlView: View {
     @Binding var floorTexture: String
     @Binding var isVisible: Bool
-    
+
     private let availableTextures = [
         ("Default", "DefaultTexture"),
         ("Wood", "WoodFloor"),
         ("Tiles", "TileFloor"),
         ("Marble", "MarbleFloor")
     ]
-    
+
     var body: some View {
-        VStack {
-            HStack {
-                Text("Floor Textures")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                
-                Spacer()
-                
-                Button(action: {
-                    withAnimation {
-                        isVisible = false
-                    }
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.white)
-                        .font(.system(size: 22))
-                }
-            }
-            .padding(.horizontal)
-            .padding(.top, 12)
-            
+        VStack(spacing: 0) {
+            Text("Floor Textures")
+                .font(.headline)
+                .foregroundColor(.black)
+                .padding(.bottom, 12)
+
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                HStack(spacing: 28) {
                     ForEach(availableTextures, id: \.0) { textureName, textureID in
-                        FloorTextureOption(
-                            name: textureName,
-                            textureName: textureID,
-                            isSelected: floorTexture == textureID,
-                            onSelect: {
-                                floorTexture = textureID
-                            }
-                        )
+                        VStack(spacing: 8) {
+                            FloorTextureOption(
+                                name: textureName,
+                                textureName: textureID,
+                                isSelected: floorTexture == textureID,
+                                onSelect: {
+                                    floorTexture = textureID
+                                }
+                            )
+                            .frame(width: 70, height: 70)
+                            Text(textureName)
+                                .font(.subheadline)
+                                .foregroundColor(.black)
+                        }
                     }
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 24)
                 .padding(.vertical, 8)
             }
         }
-        .background(Color(hex: "#4a4551"))
-        .cornerRadius(12)
-        .shadow(radius: 5)
-        .padding()
-        .frame(maxWidth: .infinity)
-        .transition(.move(edge: .bottom))
+        .padding(8)
+        .frame(height:300)
+        .padding(.bottom,-33)
     }
 }
-
 struct FloorTextureOption: View {
     let name: String
     let textureName: String
     let isSelected: Bool
     let onSelect: () -> Void
-    
+
     var body: some View {
         Button(action: onSelect) {
-            VStack {
+            ZStack {
                 if textureName == "DefaultTexture" {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.green.opacity(0.7))
-                        .frame(width: 60, height: 60)
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.green.opacity(0.15))
                 } else if textureName == "WoodFloor" {
                     Image("WoodFloor054_1K-JPG_Color")
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 60, height: 60)
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
-                }
-                    //else if textureName == "TilesFloor2"{
-//                    Image("Tiles043_1K-JPG_Color")
-//                        .resizable()
-//                        .scaledToFill()
-//                        .frame(width: 60, height: 60)
-//                        .cornerRadius(8)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 8)
-//                                .stroke(Color.gray, lineWidth: 1)
-//                        )
-//                }
-                else if textureName == "TileFloor" {
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                } else if textureName == "TileFloor" {
                     Image("Tiles079_1K-JPG_Color")
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 60, height: 60)
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                 } else if textureName == "MarbleFloor" {
                     Image("Marble014_1K-JPG_Color")
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 60, height: 60)
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                
-                Text(name)
-                    .font(.caption)
-                    .foregroundColor(.white)
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 3)
             }
-            .padding(4)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(isSelected ? Color.white : Color.clear, lineWidth: 2)
-            )
         }
+        .frame(width: 70, height: 70)
     }
 }
-//#Preview {
-//    
-//}
+
 
 

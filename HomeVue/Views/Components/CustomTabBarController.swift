@@ -325,11 +325,21 @@ class CustomTabBarController: UITabBarController {
 
 // MARK: - UITabBarControllerDelegate
 extension CustomTabBarController: UITabBarControllerDelegate {
+//    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+//        if viewController.tabBarItem.image == UIImage(systemName: "camera") { // Camera tab
+//            showCustomAlert()
+//            return false // Prevent switching to the Camera tab
+//        }
+//        return true
+//    }
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if viewController.tabBarItem.image == UIImage(systemName: "camera") { // Camera tab
-            showCustomAlert()
-            return false // Prevent switching to the Camera tab
+            if viewController.tabBarItem.image == UIImage(systemName: "camera") {
+                let experienceVC = UIHostingController(rootView: ExperienceSelectionView())
+                experienceVC.modalPresentationStyle = .fullScreen
+                self.present(experienceVC, animated: true, completion: nil)
+                return false
+            }
+            return true
         }
-        return true
-    }
+
 }
