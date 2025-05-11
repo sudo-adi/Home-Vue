@@ -107,11 +107,11 @@ class forgotPasswordViewController: UIViewController {
             if textField.text?.isEmpty ?? true {
                 // Hide when field is empty
                 self.passwordRulesLabel.isHidden = true
-                self.stackView.setCustomSpacing(10, after: self.newPasswordTextField)
+                self.stackView.setCustomSpacing(20, after: self.newPasswordTextField)
             } else if isValid {
                 // Hide when valid
                 self.passwordRulesLabel.isHidden = true
-                self.stackView.setCustomSpacing(10, after: self.newPasswordTextField)
+                self.stackView.setCustomSpacing(20, after: self.newPasswordTextField)
             } else {
                 // Show when invalid and not empty
                 self.passwordRulesLabel.isHidden = false
@@ -154,7 +154,7 @@ class forgotPasswordViewController: UIViewController {
             otpTextField.isHidden = true
             newPasswordTextField.isHidden = false
             confirmPasswordTextField.isHidden = false
-            continueButton.setTitle("Change Password", for: .normal)
+            continueButton.setTitle("Confirm", for: .normal)
             continueButton.isEnabled = false
             
         case .changePassword:
