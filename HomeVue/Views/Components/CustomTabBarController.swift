@@ -25,7 +25,7 @@ class CustomTabBarController: UITabBarController {
         super.viewDidLoad()
         setupTabBar()
         setupViewControllers()
-        self.delegate = self // Set the delegate to handle tab selection
+//        self.delegate = self // Set the delegate to handle tab selection
     }
 
     private func setupTabBar() {
@@ -73,13 +73,13 @@ class CustomTabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "house.fill")
         )
         
-        // Second View Controller (Camera)
-        let cameraVC = UIViewController() // Placeholder, not used directly
-        cameraVC.tabBarItem = UITabBarItem(
-            title: "Scan", // Empty string to ensure no label is shown
-            image: UIImage(systemName: "camera"), // Outlined icon
-            selectedImage: UIImage(systemName: "camera.fill") // Filled icon for active state
-        )
+        let experienceVC = UIHostingController(rootView: ExperienceSelectionView()
+                    .environmentObject(PlacementSettings())
+                    .environmentObject(SessionSettings()))
+                experienceVC.tabBarItem = UITabBarItem(
+                    title: "AR",
+                    image: UIImage(systemName: "camera"),
+                    selectedImage: UIImage(systemName: "camera.fill"))
 
         // Third View Controller (Profile)
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
@@ -96,7 +96,7 @@ class CustomTabBarController: UITabBarController {
             )
             
             // Assuming `homeVC` and `cameraVC` are similarly instantiated or created
-            viewControllers = [nvc, cameraVC, profileNavigationController]
+            viewControllers = [nvc, experienceVC, profileNavigationController]
         } else {
             print("Error: Could not instantiate profileNavigationController or LoginMainPageViewController")
         }
@@ -324,7 +324,7 @@ class CustomTabBarController: UITabBarController {
 }
 
 // MARK: - UITabBarControllerDelegate
-extension CustomTabBarController: UITabBarControllerDelegate {
+//extension CustomTabBarController: UITabBarControllerDelegate {
 //    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 //        if viewController.tabBarItem.image == UIImage(systemName: "camera") { // Camera tab
 //            showCustomAlert()
@@ -332,14 +332,13 @@ extension CustomTabBarController: UITabBarControllerDelegate {
 //        }
 //        return true
 //    }
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-            if viewController.tabBarItem.image == UIImage(systemName: "camera") {
-                let experienceVC = UIHostingController(rootView: ExperienceSelectionView())
-                experienceVC.modalPresentationStyle = .fullScreen
-                self.present(experienceVC, animated: true, completion: nil)
-                return false
-            }
-            return true
-        }
-
-}
+//    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+//            if viewController.tabBarItem.image == UIImage(systemName: "camera") {
+//                let experienceVC = UIHostingController(rootView: ExperienceSelectionView())
+//                experienceVC.modalPresentationStyle = .fullScreen
+//                self.present(experienceVC, animated: true, completion: nil)
+//                return false
+//            }
+//            return true
+//        }
+//}

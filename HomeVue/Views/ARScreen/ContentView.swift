@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  ARFurniture
-//
-//  Created by student-2 on 03/04/25.
-//
-
 import SwiftUI
 import RealityKit
 import ARKit
@@ -24,7 +17,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack(alignment: .bottom) {
                 ARViewContainer()
                 
@@ -42,6 +35,8 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
+                        placementSettings.selectedModel = nil
+                        placementSettings.confirmedModel = nil
                         dismiss()
                     } label: {
                         HStack {
@@ -56,7 +51,7 @@ struct ContentView: View {
                 Color.clear
             })
         }
-        .navigationViewStyle(StackNavigationViewStyle())
+//        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
@@ -70,6 +65,9 @@ struct ARViewContainer: UIViewRepresentable {
         // Setup lighting when view is created
         arView.setupLighting()
         
+        // Perform full reset when view is created
+        arView.resetSession()
+        
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal, .vertical]
         arView.session.run(config, options: [])
@@ -77,10 +75,31 @@ struct ARViewContainer: UIViewRepresentable {
         self.placementSettings.sceneObserver = arView.scene.subscribe(to: SceneEvents.Update.self, { (event) in
             self.updateScene(for: arView)
         })
+        
+        // Store the ARView in the coordinator
+        context.coordinator.arView = arView
         return arView
     }
     
     func updateUIView(_ uiView: CustomARView, context: Context) {}
+    
+    // Add coordinator for better lifecycle management
+        func makeCoordinator() -> Coordinator {
+            Coordinator()
+        }
+        
+        static func dismantleUIView(_ uiView: CustomARView, coordinator: Coordinator) {
+            uiView.pauseSession()
+            coordinator.arView = nil
+        }
+        
+        class Coordinator {
+            var arView: CustomARView?
+            
+            deinit {
+                arView?.pauseSession()
+            }
+        }
     
     private func updateScene(for arView: CustomARView) {
         arView.focusEntity?.isEnabled = self.placementSettings.selectedModel != nil

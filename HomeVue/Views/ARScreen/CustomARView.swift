@@ -1,10 +1,3 @@
-//
-//  CustomARView.swift
-//  Temp
-//
-//  Created by Bhumi on 08/04/25.
-//
-
 import Foundation
 import ARKit
 import FocusEntity
@@ -52,8 +45,6 @@ class CustomARView: ARView {
 
         if ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh) {
             config.sceneReconstruction = .mesh
-            
-            // Ensure good quality mesh reconstruction for occlusion
             config.environmentTexturing = .automatic
             
             // Set the scene's physics origin to world space
@@ -63,6 +54,21 @@ class CustomARView: ARView {
         // Start with a clean session
         session.run(config, options: [.resetTracking, .removeExistingAnchors])
     }
+    
+    func pauseSession() {
+       session.pause()
+       focusEntity.isEnabled = false
+       print("AR session paused")
+   }
+   
+   func resetSession() {
+       let config = ARWorldTrackingConfiguration()
+       config.planeDetection = [.horizontal, .vertical]
+       config.sceneReconstruction = .mesh
+       config.environmentTexturing = .automatic
+       session.run(config, options: [.resetTracking, .removeExistingAnchors])
+       print("AR session reset")
+   }
     
     private func initializeSettings(){
         self.updatePeopleOcclusion(isEnabled: sessionSettings.isPeopleOcclusionEnabled)
@@ -170,7 +176,9 @@ class CustomARView: ARView {
         
         // Rerun the session to affect the configuration change
 //        self.session.run(configuration, options: [.resetSceneReconstruction])
-        self.session.run(configuration, options: [.resetTracking, .removeExistingAnchors, .resetSceneReconstruction])
+//        self.session.run(configuration, options: [.resetTracking, .removeExistingAnchors, .resetSceneReconstruction])
+        let options: ARSession.RunOptions = isEnabled ? [] : [.resetTracking, .removeExistingAnchors]
+        self.session.run(configuration, options: options)
     }
     
 

@@ -11,9 +11,10 @@ struct ExperienceSelectionView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var placementSettings: PlacementSettings
     @EnvironmentObject var sessionSettings: SessionSettings
+    @State private var showARView = false
 
     var body: some View {
-        NavigationStack {
+//        NavigationStack {
             ZStack(alignment: .topLeading) {
                 LinearGradient(
                     gradient: Gradient(colors: [
@@ -26,20 +27,20 @@ struct ExperienceSelectionView: View {
                 .ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 32) {
-                    HStack {
-                        Button(action: {
-                            presentationMode.wrappedValue.dismiss()
-                        }) {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(.white)
-                                .padding(10)
-                                .background(Color.black.opacity(0.3))
-                                .clipShape(Circle())
-                        }
-                        Spacer()
-                    }
-                    .padding(.leading, 16)
-                    .padding(.top, 16)
+//                    HStack {
+//                        Button(action: {
+//                            presentationMode.wrappedValue.dismiss()
+//                        }) {
+//                            Image(systemName: "chevron.left")
+//                                .foregroundColor(.white)
+//                                .padding(10)
+//                                .background(Color.black.opacity(0.3))
+//                                .clipShape(Circle())
+//                        }
+//                        Spacer()
+//                    }
+//                    .padding(.leading, 16)
+//                    .padding(.top, 16)
 
                     Text("Choose Your Experience")
                         .font(.system(size: 32, weight: .semibold))
@@ -60,30 +61,43 @@ struct ExperienceSelectionView: View {
                                 subtitle: "Scan and create detailed 3D model of your room"
                             )
                         }
-                        NavigationLink(destination:
-                                       ContentView(allowBrowse: true)
-                                           .environmentObject(PlacementSettings())
-                                           .environmentObject(SessionSettings())
-                        ) {
-                            ExperienceCard(
-                                icon: Image(systemName: "arkit"),
-                                title: "Try Furniture in AR",
-                                subtitle: "Instantly place furniture in your space using AR"
-                            )
-                        }
+                        // NavigationLink(destination:
+                        //                ContentView(allowBrowse: true)
+                        //                    .environmentObject(PlacementSettings())
+                        //                    .environmentObject(SessionSettings())
+                        // ) {
+                        //     ExperienceCard(
+                        //         icon: Image(systemName: "arkit"),
+                        //         title: "Try Furniture in AR",
+                        //         subtitle: "Instantly place furniture in your space using AR"
+                        //     )
+                        // }
+                        Button(action: { showARView = true }) {
+    ExperienceCard(
+        icon: Image(systemName: "arkit"),
+        title: "Try Furniture in AR",
+        subtitle: "Instantly place furniture in your space using AR"
+    )
+}
+.fullScreenCover(isPresented: $showARView) {
+    ContentView(allowBrowse: true)
+        .environmentObject(PlacementSettings())
+        .environmentObject(SessionSettings())
+}
                     }
                     .padding(.horizontal, 16)
                     Spacer()
                 }
+                .padding(.top, 30)
             }
             .navigationBarHidden(true)
-            .onAppear {
-                UINavigationBar.appearance().isHidden = true
-                        }
-            .onDisappear {
-                UINavigationBar.appearance().isHidden = false
-            }
-        }
+//            .onAppear {
+//                UINavigationBar.appearance().isHidden = true
+//                        }
+//            .onDisappear {
+//                UINavigationBar.appearance().isHidden = false
+//            }
+//        }
     }
 }
 
@@ -130,6 +144,5 @@ struct ExperienceSelectionView_Previews: PreviewProvider {
         NavigationStack {
             ExperienceSelectionView()
         }
-        .preferredColorScheme(.dark)
     }
 }
