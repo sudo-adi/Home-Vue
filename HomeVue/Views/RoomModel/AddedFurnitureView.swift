@@ -140,8 +140,8 @@ struct AddedFurnitureView: View {
             .padding(.trailing, 20)
             .fullScreenCover(isPresented: $showARView) {
                 ContentView(allowBrowse: true)
-                    .environmentObject(PlacementSettings())
-                    .environmentObject(SessionSettings())
+                    .environmentObject(placementSettings)
+                    .environmentObject(sessionSettings)
             }
         }
         .background(
@@ -150,6 +150,7 @@ struct AddedFurnitureView: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: -4)
         )
         .cornerRadius(24, corners: [.topLeft, .topRight])
+        .ignoresSafeArea(.keyboard)
         .padding(.horizontal, 0)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

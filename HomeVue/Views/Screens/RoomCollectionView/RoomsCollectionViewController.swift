@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SwiftUI
+import RoomPlan
 
 private let reuseIdentifier = "RoomCell"
 
@@ -121,14 +123,26 @@ class RoomsCollectionViewController: UICollectionViewController {
        let room = searchController.filteredItems[indexPath.item]
        cell.nameLabel.text = room.details.name
        cell.dateCreatedLabel?.text = "Created on : \(room.details.createdDate)"
-       cell.roomImage.image = UIImage(named:"model_img")
+//       cell.roomImage.image = UIImage(named:"model_img")
+       if let thumbnail = room.details.modelImage {
+           cell.roomImage.image = thumbnail
+       } else {
+           cell.roomImage.image = UIImage(named: "model_img")
+       }
        return cell
    }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let room = searchController.filteredItems[indexPath.item]
+        let capturedRoomView = CapturedRoomView(room: room.capturedRoom, onDismiss: { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        })
+        let hostingController = UIHostingController(rootView: capturedRoomView)
+        hostingController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+        self.present(hostingController, animated: true, completion: nil)
+    }
+    
     @IBAction func addButtonTapped(_ sender: Any) {
-        if let tabBarController = self.tabBarController as? CustomTabBarController {
-                tabBarController.showCustomAlert()
-            }
     }
     
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {

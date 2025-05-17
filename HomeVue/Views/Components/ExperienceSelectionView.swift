@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct ExperienceSelectionView: View {
-    @Environment(\.presentationMode) var presentationMode
+//    @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var placementSettings: PlacementSettings
     @EnvironmentObject var sessionSettings: SessionSettings
     @State private var showARView = false
+    @State private var showRoomScan = false
 
     var body: some View {
-//        NavigationStack {
+        NavigationStack {
             ZStack(alignment: .topLeading) {
                 LinearGradient(
                     gradient: Gradient(colors: [
@@ -54,12 +55,15 @@ struct ExperienceSelectionView: View {
                         .padding(.horizontal, 24)
 
                     VStack(spacing: 24) {
-                        NavigationLink(destination: RoomScanView()) {
+                        Button(action: { showRoomScan = true }) {
                             ExperienceCard(
                                 icon: Image(systemName: "cube"),
                                 title: "Create Room Model",
                                 subtitle: "Scan and create detailed 3D model of your room"
                             )
+                        }
+                        .fullScreenCover(isPresented: $showRoomScan) {
+                            RoomScanView()
                         }
                         // NavigationLink(destination:
                         //                ContentView(allowBrowse: true)
@@ -73,17 +77,17 @@ struct ExperienceSelectionView: View {
                         //     )
                         // }
                         Button(action: { showARView = true }) {
-    ExperienceCard(
-        icon: Image(systemName: "arkit"),
-        title: "Try Furniture in AR",
-        subtitle: "Instantly place furniture in your space using AR"
-    )
-}
-.fullScreenCover(isPresented: $showARView) {
-    ContentView(allowBrowse: true)
-        .environmentObject(PlacementSettings())
-        .environmentObject(SessionSettings())
-}
+                            ExperienceCard(
+                                icon: Image(systemName: "arkit"),
+                                title: "Try Furniture in AR",
+                                subtitle: "Instantly place furniture in your space using AR"
+                            )
+                        }
+                        .fullScreenCover(isPresented: $showARView) {
+                            ContentView(allowBrowse: true)
+                                .environmentObject(placementSettings)
+                                .environmentObject(sessionSettings)
+                        }
                     }
                     .padding(.horizontal, 16)
                     Spacer()
@@ -97,7 +101,7 @@ struct ExperienceSelectionView: View {
 //            .onDisappear {
 //                UINavigationBar.appearance().isHidden = false
 //            }
-//        }
+        }
     }
 }
 

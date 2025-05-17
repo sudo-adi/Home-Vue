@@ -12,7 +12,8 @@ struct RoomScanView: View {
     @State private var capturedRoom: CapturedRoom?
     @State private var navigateToModelView = false
     @State private var isAnimating = false
-
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -52,6 +53,16 @@ struct RoomScanView: View {
             .toolbarBackground(Color.clear, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Image(systemName: "chevron.left")
+                            Text("Back")
+                        }
+                    }
+                }
                 // Only show Cancel when not done scanning
 //                if !doneScanning {
 //                    ToolbarItem(placement: .navigationBarLeading) {
@@ -126,6 +137,17 @@ struct RoomScanView: View {
             }
         }
     }
+    
+//    private func setTabBarHidden(_ hidden: Bool) {
+//        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//              let window = windowScene.windows.first,
+//              let tabBarController = window.rootViewController as? CustomTabBarController else { return }
+//        if hidden {
+//            tabBarController.hideTabBar()
+//        } else {
+//            tabBarController.showTabBar()
+//        }
+//    }
 }
 
 #Preview {

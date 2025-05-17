@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import RoomPlan
 
 // MARK: - RoomCategoryType
 
@@ -69,12 +70,14 @@ class RoomModel {
     private(set) var addedFurniture: [FurnitureItem]
     let userId: UUID
     let category: RoomCategoryType
+    var capturedRoom: CapturedRoom? 
     
-    init(name: String, model3D: String?, modelImage: UIImage?, createdDate: Date, userId: UUID, category: RoomCategoryType) {
+    init(name: String, model3D: String?, modelImage: UIImage?, createdDate: Date, userId: UUID, category: RoomCategoryType, capturedRoom: CapturedRoom?) {
         self.details = RoomDetails(id: UUID(), name: name, model3D: model3D, modelImage: modelImage, createdDate: createdDate)
         self.addedFurniture = []
         self.userId = userId
         self.category = category
+        self.capturedRoom = capturedRoom
     }
 
     func addFurniture(_ furniture: FurnitureItem) {
