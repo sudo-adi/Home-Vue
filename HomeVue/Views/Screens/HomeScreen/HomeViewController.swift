@@ -1,16 +1,19 @@
 import UIKit
+import Supabase
 
 class HomeViewController: UIViewController {
     private let bottomSheetView = UIView()
     private let dragHandle = UIView()
-    private let appBarStackView = UIStackView() // App bar for avatar and label
+    private let appBarStackView = UIStackView()
     private let avatarImageView = UIImageView()
     private let userNameLabel = UILabel()
     private let exploreLabel = UILabel()
 
     private let roomCategories = RoomCategoryType.allCases
-    private let furnitureCategories = FurnitureCategoryType.allCases
-
+     private let furnitureCategories = FurnitureCategoryType.allCases
+    let authManager = AuthManager()
+    //1
+//     var furnitureCategories: [FurnitureCategoryType] = []
     // Horizontal Scroll View
     private let horizontalScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -52,8 +55,6 @@ class HomeViewController: UIViewController {
         let gradientLayer = CAGradientLayer()
 
         gradientLayer.colors = [
-//            UIColor(red: 135/255.0, green: 122/255.0, blue: 120/255.0, alpha: 1.0).cgColor,
-//            UIColor(red: 57/255.0, green: 50/255.0, blue: 49/255.0, alpha: 1.0).cgColor,
             UIColor.gradientStartColor.cgColor,
             UIColor.gradientEndColor.cgColor
         ]
@@ -67,12 +68,26 @@ class HomeViewController: UIViewController {
 
         view.layer.insertSublayer(gradientLayer, at: 0)
 
+        authManager.refreshUser { [weak self] result in
+        DispatchQueue.main.async {
+            switch result {
+            case .success:
+                self?.setupAppBar()
+            case .failure(let error):
+                print("Error refreshing user: \(error)")
+                self?.setupAppBar()
+            }
+        }
+    }
+
         setupAppBar()
         setupHorizontalScrollView()
         setupBottomSheet()
         setupPanGesture()
         setupGridCollectionView()
         setupSegmentedControl()
+        //1
+//        fetchFurnitureCategories()
 
         horizontalScrollView.isHidden = false
 
@@ -86,6 +101,11 @@ class HomeViewController: UIViewController {
 
         navigationController?.navigationBar.isTranslucent = false
         self.extendedLayoutIncludesOpaqueBars = true
+        authManager.refreshUser { [weak self] result in
+               DispatchQueue.main.async {
+                   self?.setupAppBar()
+               }
+           }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -93,17 +113,34 @@ class HomeViewController: UIViewController {
 
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
-
-
     private func setupAppBar() {
         appBarStackView.axis = .vertical
         appBarStackView.alignment = .leading
         appBarStackView.spacing = 8
         appBarStackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(appBarStackView)
+        
+       
+    let profileImageURLString = authManager.currentUser?.profilePicture ?? "Default"
 
-        // Avatar setup
-        avatarImageView.image = UIImage(named: "profileImage")
+    if let urlString = authManager.currentUser?.profilePicture,
+       let url = URL(string: urlString), !urlString.isEmpty {
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self, let data = data, error == nil,
+                  let image = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    self?.avatarImageView.image = UIImage(named: "Default")
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                self.avatarImageView.image = image
+            }
+        }.resume()
+    } else {
+        // Set placeholder image
+        avatarImageView.image = UIImage(named: "Default")
+    }
         avatarImageView.tintColor = .white
         avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.clipsToBounds = true
@@ -124,16 +161,12 @@ class HomeViewController: UIViewController {
         
         avatarImageView.layer.masksToBounds = true
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Add avatar to container
         avatarContainerView.addSubview(avatarImageView)
-
         avatarImageView.widthAnchor.constraint(equalToConstant: 60).isActive = true
         avatarImageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
-        // Add avatar directly to view instead of stack view
         view.addSubview(avatarImageView)
-
+        
+        let name = authManager.currentUser?.name ?? "User"
         let attributedUserName = NSMutableAttributedString(
             string: "Hi ",
             attributes: [
@@ -143,7 +176,7 @@ class HomeViewController: UIViewController {
         )
 
         attributedUserName.append(NSAttributedString(
-            string: User1.name,
+            string: "\(name)",
             attributes: [
                 .font: UIFont.systemFont(ofSize: 32, weight: .bold),
                 .foregroundColor: UIColor.white
@@ -158,8 +191,7 @@ class HomeViewController: UIViewController {
         exploreLabel.textColor = .white
         exploreLabel.alpha = 1
         exploreLabel.numberOfLines = 1
-
-        // Remove avatar from stack view
+        
         appBarStackView.addArrangedSubview(userNameLabel)
         appBarStackView.addArrangedSubview(exploreLabel)
 
@@ -168,7 +200,6 @@ class HomeViewController: UIViewController {
             appBarStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             appBarStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60),
             
-            // Position avatar on the right side
             avatarImageView.centerYAnchor.constraint(equalTo: appBarStackView.topAnchor, constant: 30),
             avatarImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -45)
         ])
@@ -181,6 +212,7 @@ class HomeViewController: UIViewController {
        horizontalScrollView.addSubview(horizontalStackView)
 
        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+//        let allCategories = furnitureCategories
            let topItems = allCategories.flatMap { $0.furnitureItems }.prefix(4)
            
            for (index, item) in topItems.enumerated() {
@@ -213,7 +245,7 @@ class HomeViewController: UIViewController {
        ])
    }
 
-//    // MARK: - Create Horizontal Card View
+   // MARK: - Create Horizontal Card View
     private func createHorizontalCardView(item: FurnitureItem, backgroundImageName: String, labelText: String) -> UIView {
         
         let cardView = UIView()
@@ -235,13 +267,14 @@ class HomeViewController: UIViewController {
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
         backgroundImageView.alpha = 0.90 // Set opacity to 90%
         cardView.addSubview(backgroundImageView)
+        
 
-        let furnitureImageView = UIImageView(image: item.image)
+        let furnitureImageView = UIImageView(image: UIImage(named: item.imageName))
         furnitureImageView.contentMode = .scaleAspectFit
         furnitureImageView.clipsToBounds = true
         furnitureImageView.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(furnitureImageView)
-
+        
         let textLabel = UILabel()
         textLabel.text = labelText
         textLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
@@ -262,9 +295,7 @@ class HomeViewController: UIViewController {
         imageButton.layer.cornerRadius = 20
         imageButton.clipsToBounds = true
         
-        // Add target-action for the ARKit button
         imageButton.addTarget(self, action: #selector(arButtonTapped(_:)), for: .touchUpInside)
-        // Store the furniture item's name in the button's accessibilityIdentifier for reference
         imageButton.accessibilityIdentifier = item.name
 
         cardView.addSubview(imageButton)
@@ -324,16 +355,6 @@ class HomeViewController: UIViewController {
             furnitureImageView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: 0.85), // narrower
             furnitureImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 1.0),  // taller, allows overflow from top
 
-
-            // Text label constraints
-//            textLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-//            textLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
-//
-//            // Image button constraints
-//            imageButton.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 24),
-//            imageButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-//            imageButton.widthAnchor.constraint(equalToConstant: 40),
-//            imageButton.heightAnchor.constraint(equalToConstant: 40)
         ])
 
         return cardView
@@ -493,7 +514,7 @@ class HomeViewController: UIViewController {
             )
 
             userNameText.append(NSAttributedString(
-                string: User1.name,
+                string: "Nish",
                 attributes: [
                     .font: isExpanded
                         ? UIFont.systemFont(ofSize: 16, weight: .semibold)
@@ -533,6 +554,21 @@ class HomeViewController: UIViewController {
         gridCollectionView.layer.add(transition, forKey: nil)
         gridCollectionView.reloadData()
     }
+
+    //1
+//     func fetchFurnitureCategories() {
+//        Task {
+//            do {
+//                furnitureCategories = try await SupabaseManager.shared.fetchFurnitureCategories()
+//                DispatchQueue.main.async {
+//                    self.gridCollectionView.reloadData()
+//                }
+//            } catch {
+//                print("Error fetching furniture categories: \(error)")
+//                // Handle the error appropriately, e.g., show an alert
+//            }
+//        }
+//    }
 }
 
 // MARK: - UICollectionView Delegate & Data Source
@@ -596,6 +632,14 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
                 let furnitureCategory = FurnitureCategory(category: selectedCategoryType, furnitureItems: furnitureItems)
                 destinationVC.furnitureCategory = furnitureCategory
                 navigationController?.pushViewController(destinationVC, animated: true)}
+                //1
+//                let selectedCategory = furnitureCategories[indexPath.item] // Get the selected category object
+//
+//                // Pass the selected category object to the destination VC
+//                destinationVC.furnitureCategory = selectedCategory // You'll need to add this property to mainCollectionViewController
+//
+//                navigationController?.pushViewController(destinationVC, animated: true)
+//            }
         }
     }
 }
@@ -762,20 +806,20 @@ class CatalogueCardCell: UICollectionViewCell {
         addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 8), // Add padding on top
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8), // Add padding on leading
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8), // Add padding on trailing
-            imageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.6) // Image takes 60% of the cell height
+            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            imageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.6)
         ])
 
         // Add title label
         addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8), // Add padding between image and label
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8) // Add padding on bottom
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
         ])
     }
 

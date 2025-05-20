@@ -5,37 +5,73 @@ import UIKit
 // Password validation regex
 private let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$"
 let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-func handleEmailLogin(from viewController: UIViewController, email: String?, password: String?) {
-//    let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-    let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
 
+func handleEmailLogin(from viewController: UIViewController, email: String?, password: String?) {
+    let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
     guard let email = email, !email.isEmpty, emailPredicate.evaluate(with: email) else {
         showAlert(on: viewController, message: "Please enter a valid email address.")
         return
     }
-    
     guard let password = password, !password.isEmpty else {
         showAlert(on: viewController, message: "Please enter your password.")
         return
     }
-    
     let passwordPredicate = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
     guard passwordPredicate.evaluate(with: password) else {
         showAlert(on: viewController, message: "Password must contain at least 8 characters with both letters and numbers.")
         return
     }
-
-    // Navigation logic
-    if viewController is SignUpViewController {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let loginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController {
-            navigateToViewController(from: viewController, destinationVC: loginViewController)
-        } else {
-            showAlert(on: viewController, message: "Unable to load Login screen. Please try again.")
+    
+    let authManager = AuthManager()
+    authManager.signIn(email: email, password: password) { result in
+        DispatchQueue.main.async {
+            switch result {
+            case .success:
+                let tabBarController = CustomTabBarController()
+                navigateToViewController(from: viewController, destinationVC: tabBarController)
+            case .failure(let error):
+                showAlert(on: viewController, message: "Login failed: \(error.localizedDescription)")
+            }
         }
-    } else {
-        let tabBarController = CustomTabBarController()
-        navigateToViewController(from: viewController, destinationVC: tabBarController)
+    }
+}
+
+// Updated handleEmailSignUp to use AuthManager's completion handler and pass name
+func handleEmailSignUp(from viewController: UIViewController, email: String?, password: String?, name: String?) {
+    let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+    guard let email = email, !email.isEmpty, emailPredicate.evaluate(with: email) else {
+        showAlert(on: viewController, message: "Please enter a valid email address.")
+        return
+    }
+    guard let password = password, !password.isEmpty else {
+        showAlert(on: viewController, message: "Please enter your password.")
+        return
+    }
+    guard let name = name, !name.isEmpty else {
+        showAlert(on: viewController, message: "Please enter your name.")
+        return
+    }
+    let passwordPredicate = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
+    guard passwordPredicate.evaluate(with: password) else {
+        showAlert(on: viewController, message: "Password must contain at least 8 characters with both letters and numbers.")
+        return
+    }
+    
+    let authManager = AuthManager()
+    authManager.signUp(email: email, password: password, name: name) { result in
+        DispatchQueue.main.async {
+            switch result {
+            case .success:
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let loginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController {
+                    navigateToViewController(from: viewController, destinationVC: loginViewController)
+                } else {
+                    showAlert(on: viewController, message: "Unable to load Login screen. Please try again.")
+                }
+            case .failure(let error):
+                showAlert(on: viewController, message: "Signup failed: \(error.localizedDescription)")
+            }
+        }
     }
 }
 

@@ -42,7 +42,8 @@ struct AddedFurnitureView: View {
                                     )
                                 
                                 // Furniture image
-                                if let image = item.image as? UIImage {
+                                let imageName = item.imageName
+                                if let image = UIImage(named: imageName) {
                                     Image(uiImage: image)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)

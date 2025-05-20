@@ -9,15 +9,68 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
-    var window: UIWindow?
-
-
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
-    }
+//    var window: UIWindow?
+//
+//
+//    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+//        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
+//        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
+//        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+////        guard let _ = (scene as? UIWindowScene) else { return }
+//        guard let windowScene = (scene as? UIWindowScene) else { return }
+//        let window = UIWindow(windowScene: windowScene)
+//        
+//        let authManager = AuthManager()
+//        if authManager.currentUser != nil {
+//            // Instantiate HomeViewController programmatically
+//            let homeVC = CustomTabBarController() // Make sure HomeViewController has a default initializer
+//            window.rootViewController = homeVC
+//        } else {
+//            // If your login screen IS in a storyboard, you can still use storyboard instantiation here
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            let navController = storyboard.instantiateViewController(withIdentifier: "FistNavigation") as! UINavigationController
+//            window.rootViewController = navController
+//        }
+//        self.window = window
+//        window.makeKeyAndVisible()
+//        
+//    }
+        var window: UIWindow?
+        var authManager = AuthManager()
+        
+        func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+            guard let windowScene = (scene as? UIWindowScene) else { return }
+            let window = UIWindow(windowScene: windowScene)
+            self.window = window
+            
+            // Check and restore session
+            authManager.checkAndRestoreSession { result in
+                switch result {
+                case .success(let user):
+                    DispatchQueue.main.async {
+                        if user != nil {
+                            // User is logged in, proceed to main screen
+                            let homeVC = CustomTabBarController()
+                            window.rootViewController = homeVC
+                        } else {
+                            // No user, show login screen
+                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                            let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginViewController") // Replace with your login VC identifier
+                            window.rootViewController = UINavigationController(rootViewController: loginVC)
+                        }
+                        window.makeKeyAndVisible()
+                    }
+                case .failure:
+                    DispatchQueue.main.async {
+                        // Error occurred, show login screen
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginViewController")
+                        window.rootViewController = UINavigationController(rootViewController: loginVC)
+                        window.makeKeyAndVisible()
+                    }
+                }
+            }
+        }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

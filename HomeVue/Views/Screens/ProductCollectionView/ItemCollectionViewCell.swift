@@ -33,7 +33,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
     
     func configure(with item: FurnitureItem, favoriteToggleAction: @escaping (FurnitureItem) -> Void,arButtonAction: @escaping (FurnitureItem) -> Void) {
         self.item = item
-        ProductImg?.image = item.image
+        ProductImg?.image = UIImage(named:item.imageName)
         ProductName?.text = item.name
         ProductBrandName?.text = item.brandName
         ProductDimension?.text = "\(Int(item.dimensions.width))W x \(Int(item.dimensions.height))H x \(Int(item.dimensions.depth))D"

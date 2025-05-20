@@ -14,7 +14,7 @@ struct ExperienceSelectionView: View {
     @State private var showARView = false
 
     var body: some View {
-//        NavigationStack {
+        NavigationStack {
             ZStack(alignment: .topLeading) {
                 LinearGradient(
                     gradient: Gradient(colors: [
@@ -97,7 +97,7 @@ struct ExperienceSelectionView: View {
 //            .onDisappear {
 //                UINavigationBar.appearance().isHidden = false
 //            }
-//        }
+        }
     }
 }
 

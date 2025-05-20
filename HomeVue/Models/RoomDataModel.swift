@@ -8,25 +8,6 @@
 import Foundation
 import UIKit
 
-// MARK: - RoomCategoryType
-
-enum RoomCategoryType: String, CaseIterable {
-    case livingRoom = "Living Room"
-    case bedroom = "Bedroom"
-    case kitchen = "Kitchen"
-    case bathroom = "Bathroom"
-    case others = "Other Spaces"
-    
-    var thumbnail: String {
-        switch self {
-        case .livingRoom: return "Living Room"
-        case .bedroom: return "Bedroom"
-        case .kitchen: return "Kitchen"
-        case .bathroom: return "Bathroom"
-        case .others: return "Other"
-        }
-    }
-}
 
 // MARK: - RoomCategory
 
@@ -55,40 +36,75 @@ class RoomCategory {
 }
 
 // MARK: - RoomModel
-
-struct RoomDetails {
+struct RoomDetails: Codable {
     let id: UUID
     let name: String
     let model3D: String?
-    let modelImage: UIImage?
+    let modelImageName: String?
     let createdDate: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case model3D = "model_3d"
+        case modelImageName = "model_image_name"
+        case createdDate = "created_date"
+    }
 }
-
-class RoomModel {
+// MARK: - RoomCategoryType
+enum RoomCategoryType: String, Codable, CaseIterable {
+    case livingRoom = "Living Room"
+    case bedroom = "Bedroom"
+    case kitchen = "Kitchen"
+    case bathroom = "Bathroom"
+    case others = "Other Spaces"
+    
+    var thumbnail: String {
+        switch self {
+        case .livingRoom: return "Living Room"
+        case .bedroom: return "Bedroom"
+        case .kitchen: return "Kitchen"
+        case .bathroom: return "Bathroom"
+        case .others: return "Other"
+        }
+    }
+}
+struct RoomModel: Codable, Identifiable {
     let details: RoomDetails
     private(set) var addedFurniture: [FurnitureItem]
     let userId: UUID
     let category: RoomCategoryType
     
-    init(name: String, model3D: String?, modelImage: UIImage?, createdDate: Date, userId: UUID, category: RoomCategoryType) {
-        self.details = RoomDetails(id: UUID(), name: name, model3D: model3D, modelImage: modelImage, createdDate: createdDate)
+    var id: UUID { details.id } // For Identifiable
+    
+    enum CodingKeys: String, CodingKey {
+        case details
+        case addedFurniture = "added_furniture"
+        case userId = "user_id"
+        case category
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        details = try container.decode(RoomDetails.self, forKey: .details)
+        addedFurniture = try container.decode([FurnitureItem].self, forKey: .addedFurniture)
+        userId = try container.decode(UUID.self, forKey: .userId)
+        category = try container.decode(RoomCategoryType.self, forKey: .category)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(details, forKey: .details)
+        try container.encode(addedFurniture, forKey: .addedFurniture)
+        try container.encode(userId, forKey: .userId)
+        try container.encode(category, forKey: .category)
+    }
+    
+    init(name: String, model3D: String?, modelImageName: String?, createdDate: Date, userId: UUID, category: RoomCategoryType) {
+        self.details = RoomDetails(id: UUID(), name: name, model3D: model3D, modelImageName: modelImageName, createdDate: createdDate)
         self.addedFurniture = []
         self.userId = userId
         self.category = category
-    }
-
-    func addFurniture(_ furniture: FurnitureItem) {
-        addedFurniture.append(furniture)
-    }
-
-    func removeFurniture(byId furnitureId: UUID) {
-        if let index = addedFurniture.firstIndex(where: { $0.id == furnitureId }) {
-            addedFurniture.remove(at: index)
-        }
-    }
-    
-    func listFurniture() -> [FurnitureItem] {
-        return addedFurniture
     }
 }
 

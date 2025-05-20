@@ -102,6 +102,68 @@ struct FurnitureCatalogueView: View {
         }
     }
 
+//    private func itemsView(for category: FurnitureCategoryType) -> some View {
+//        let items = furnitureDataProvider.fetchFurnitureItems(for: category)
+//
+//        return ScrollView {
+//            VStack(spacing: 10) {
+//                Button(action: {
+//                    withAnimation {
+//                        isShowingCategories = true
+//                    }
+//                }) {
+//                    HStack {
+//                        Image(systemName: "arrow.left")
+//                        Text("Back")
+//                    }
+//                    .foregroundColor(.white)
+//                    .frame(maxWidth: .infinity, alignment: .leading)
+//                    .padding(.leading, 10)
+//                }
+//
+//                ForEach(items, id: \.id) { item in
+//                    VStack {
+//                        HStack {
+//                            Button(action: {
+//                                onAddFurniture?(item)
+//                            }) {
+//                                Image(systemName: "plus")
+//                                    .foregroundColor(.white)
+//                                    .frame(width: 24, height: 24)
+//                                    .background(Color(hex: "#393231"))
+//                                    .cornerRadius(12)
+//                            }
+//                            Spacer()
+//                        }
+//                        .padding(.leading, 10)
+//
+//                        Image(uiImage: item.image)
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(height: 50)
+//                            .padding(.horizontal, 10)
+//
+//                        Text(item.name)
+//                            .font(.system(size: 12, weight: .medium))
+//                            .foregroundColor(.black)
+//                            .frame(maxWidth: .infinity)
+//                            .padding(4)
+//                            .background(Color(hex: "#F0F0F0"))
+//                            .cornerRadius(5)
+//                            .overlay(
+//                                RoundedRectangle(cornerRadius: 5)
+//                                    .stroke(Color.black, lineWidth: 1)
+//                            )
+//                            .padding(.horizontal, 10)
+//                    }
+//                    .frame(width: catalogueWidth - 20, height: 120)
+//                    .background(Color.white)
+//                    .cornerRadius(10)
+//                }
+//            }
+//            .padding(.horizontal, 10)
+//        }
+//    }
     private func itemsView(for category: FurnitureCategoryType) -> some View {
         let items = furnitureDataProvider.fetchFurnitureItems(for: category)
 
@@ -137,11 +199,20 @@ struct FurnitureCatalogueView: View {
                         }
                         .padding(.leading, 10)
 
-                        Image(uiImage: item.image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 50)
-                            .padding(.horizontal, 10)
+                        let imageName = item.imageName
+                        if let uiImage = UIImage(named: imageName) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 50)
+                                .padding(.horizontal, 10)
+                        } else {
+                            Image("placeholder")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 50)
+                                .padding(.horizontal, 10)
+                        }
 
                         Text(item.name)
                             .font(.system(size: 12, weight: .medium))
@@ -165,7 +236,12 @@ struct FurnitureCatalogueView: View {
         }
     }
 }
-
+extension String {
+    func removingFileExtension() -> String? {
+        let components = self.split(separator: ".")
+        return components.first.map { String($0) }
+    }
+}
 // Helper extensions and blur view
 extension Color {
     init(hex: String) {

@@ -11,7 +11,6 @@ import SceneKit
 class ProductInfoTableViewController: UITableViewController {
     var furnitureItem: FurnitureItem!
     
-    
     @IBOutlet weak var productSCNView: SCNView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var brandNameLabel: UILabel!
@@ -79,9 +78,9 @@ class ProductInfoTableViewController: UITableViewController {
             descriptionLabel.text = furnitureItem?.description ?? "N/A"
             
             if let dimensions = furnitureItem?.dimensions {
-                heightLabel.text = "\(dimensions.height) cm"
-                widthLabel.text = "\(dimensions.width) cm"
-                depthLabel.text = "\(dimensions.depth) cm"
+                heightLabel.text = "\(dimensions[0]) cm"
+                widthLabel.text = "\(dimensions[1]) cm"
+                depthLabel.text = "\(dimensions[2]) cm"
                 
             } else {
                 heightLabel.text = "N/A"
@@ -89,7 +88,7 @@ class ProductInfoTableViewController: UITableViewController {
                 depthLabel.text = "N/A"
             }
             
-            providersNameLabel.text = furnitureItem?.providers.map { $0.name }.joined(separator: ", ") ?? "N/A"
+            providersNameLabel.text = furnitureItem?.providers.map { $0 }.joined(separator: ", ") ?? "N/A"
         }
     
     @IBAction func closeButtonTapped(_ sender: UIButton) {
@@ -102,13 +101,13 @@ class ProductInfoTableViewController: UITableViewController {
         shareText += "Name: \(furnitureItem.name)\n"
         shareText += "Brand: \(furnitureItem.brandName)\n"
         shareText += "Description: \(furnitureItem.description)\n"
-        shareText += "Dimensions: \(furnitureItem.dimensions.height) x \(furnitureItem.dimensions.width) x \(furnitureItem.dimensions.depth) cm\n"
-        shareText += "Providers: \(furnitureItem.providers.map { $0.name }.joined(separator: ", "))"
+        shareText += "Dimensions: \(furnitureItem.dimensions[0]) x \(furnitureItem.dimensions[1]) x \(furnitureItem.dimensions[2]) cm\n"
+        shareText += "Providers: \(furnitureItem.providers.map { $0}.joined(separator: ", "))"
 
         var itemsToShare: [Any] = [shareText]
         
         // Optionally include the image if available
-            itemsToShare.append(furnitureItem.image)
+        itemsToShare.append(UIImage(named:furnitureItem.imageName)!)
         
         
         // Create the UIActivityViewController
