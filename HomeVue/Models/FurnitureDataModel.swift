@@ -105,7 +105,7 @@ class FurnitureDataProvider {
                         description: "Material: ABS plastic (lightweight, non-toxic)\nA sleek and minimalistic flower pot in matte black finish, perfect for modern interiors. Its lightweight yet durable construction makes it ideal for both artificial and real indoor plants.",
                         image: UIImage(named: "DecorImg.jpg")!,
                         availableColors: ["White", "Black", "Sandstone Beige"],
-                        dimensions: Dimension(depth: 15, width: 20, height: 15),
+                        dimensions: Dimension(depth: 80, width: 100, height: 70),
                         providers: [Provider(name: "Urban Outfitters Home")]
                     )
                 ]
@@ -121,7 +121,7 @@ class FurnitureDataProvider {
                         description: "Material: \nArm & Base: Faux leather (PU)\nSeat & Backrest: High-resilience fabric (polyester blend)\nFrame: Solid wood with MDF reinforcement\nLegs: Wood (walnut finish)",
                         image: UIImage(named: "SeatingFurnitureImg.jpg")!,
                         availableColors: ["Brown", "Beige", "Velvet"],
-                        dimensions: Dimension(depth: 85, width: 90, height: 110),
+                        dimensions: Dimension(depth: 85, width: 85, height: 100),
                         providers: [Provider(name: "Pepperfry"), Provider(name: "Amazon")]
                     )
                 ]
@@ -137,7 +137,7 @@ class FurnitureDataProvider {
                         description: "Material: \n Drawer Fronts: Engineered wood with natural oak veneer\nFrame: MDF with matte white laminate\nLegs: Solid pine (white finish)\nA minimalist, Scandinavian-style chest with four spacious drawers, ideal for bedrooms or modern living spaces.",
                         image: UIImage(named: "CabinetsAndShelvesImg.jpg")!,
                         availableColors: ["Oak & White", "Walnut & Black", "Ash Gray & White"],
-                        dimensions: Dimension(depth: 45, width: 90, height: 180),
+                        dimensions: Dimension(depth: 25, width: 50, height: 90),
                         providers: [Provider(name: "Wayfair"), Provider(name: "Urban Ladder")]
                     )
                 ]
@@ -153,7 +153,7 @@ class FurnitureDataProvider {
                         description: "Material: Seat: PU Leather, Legs: Stainless steel (chrome finish)\nA modern, ergonomic swivel lounge chair with a contoured seat and high backrest, perfect for office or lounge settings. The minimalistic design is complemented by polished chrome legs and smooth leather upholstery.",
                         image: UIImage(named: "ChairImg.jpg")!,
                         availableColors: ["Tan Brown", "Charcoal Gray", "Off-White"],
-                        dimensions: Dimension(depth: 70, width: 68, height: 105),
+                        dimensions: Dimension(depth: 75, width: 75, height: 80),
                         providers: [Provider(name: "IKEA"), Provider(name: "Urban Ladder"), Provider(name: "Wayfair"), Provider(name: "Pepperfry")]
                     ),
                     FurnitureItemManager.createFurnitureItem(
@@ -164,7 +164,7 @@ class FurnitureDataProvider {
                         description: "Material: MDF with laminate finish\nSturdy metal legs for durability\nSpacious surface for a laptop and documents\nModern design, perfect for office or study",
                         image: UIImage(named: "TableImg.jpg")!,
                         availableColors: ["Black", "White"],
-                        dimensions: Dimension(depth: 160, width: 80, height: 75),
+                        dimensions: Dimension(depth: 150, width: 90, height: 75),
                         providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
                     )
                 ]
@@ -180,7 +180,7 @@ class FurnitureDataProvider {
                         description: "Material: Solid wood with a durable finish\nSimple, modern design that fits any dining room\nComfortable for up to four people\nEasy to clean surface for everyday use\nAvailable in various colors to suit your decor",
                         image: UIImage(named: "DiningImg.jpg")!,
                         availableColors: ["Wood", "Black", "White"],
-                        dimensions: Dimension(depth: 200, width: 100, height: 75),
+                        dimensions: Dimension(depth: 220, width: 120, height: 75),
                         providers: [Provider(name: "Ikea"), Provider(name: "Wayfair")]
                     )
                 ]
@@ -195,7 +195,7 @@ class FurnitureDataProvider {
                         description: "Display: 4K Ultra HD resolution for crystal-clear visuals\nSound: Dolby Atmos surround sound for an immersive audio experience\nSmart Features: Built-in streaming apps like Netflix, YouTube, and Prime Video\nVoice Control: Compatible with Alexa, Google Assistant, and Siri for hands-free operation\nDesign: Slim, bezel-less frame for a modern and stylish look\nConnectivity: Multiple HDMI and USB ports for seamless device integration\n",
                         image: UIImage(named: "OthersImg.jpg")!,
                         availableColors:[],
-                        dimensions: Dimension(depth: 7.5, width: 43.5, height: 72.4),
+                        dimensions: Dimension(depth: 5, width: 25, height: 20),
                         providers: [Provider(name: "Samsung"),Provider(name: "Sony")]
                     )
                 ]
@@ -212,7 +212,7 @@ class FurnitureDataProvider {
                         description: "Material: Stainless steel sink with wooden cabinetry\nGranite countertop for durability and elegance\nAmple storage space with soft-close drawers\nPerfect for central kitchen islands\nModern, sleek design that complements any kitchen",
                         image: UIImage(named: "KitchenFurnitureImg.jpg")!,
                         availableColors: ["Black", "White"],
-                        dimensions: Dimension(depth: 220, width: 90, height: 100),
+                        dimensions: Dimension(depth: 180, width: 80, height: 80),
                         providers: [Provider(name: "Home Depot")]
                     )
                 ]
@@ -228,7 +228,7 @@ class FurnitureDataProvider {
                         description: "Material: High-quality wooden frame with memory foam mattress\nSoft, breathable linen cover for ultimate comfort\nMemory foam provides pressure relief for better sleep\nElegant, neutral-colored fabric to complement any room\nPerfect for couples or individuals who need extra comfort",
                         image: UIImage(named: "BedImg.jpg")!,
                         availableColors: ["Brown", "Beige"],
-                        dimensions: Dimension(depth: 210, width: 160, height: 35),
+                        dimensions: Dimension(depth: 220, width: 180, height: 45),
                         providers: [Provider(name: "Tempur-Pedic"), Provider(name: "Amazon")]
                     )
                 ]

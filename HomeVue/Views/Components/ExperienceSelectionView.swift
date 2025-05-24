@@ -10,7 +10,7 @@ import SwiftUI
 struct ExperienceSelectionView: View {
 //    @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var placementSettings: PlacementSettings
-    @EnvironmentObject var sessionSettings: SessionSettings
+//    @EnvironmentObject var sessionSettings: SessionSettings
     @State private var showARView = false
     @State private var showRoomScan = false
 
@@ -86,7 +86,7 @@ struct ExperienceSelectionView: View {
                         .fullScreenCover(isPresented: $showARView) {
                             ContentView(allowBrowse: true)
                                 .environmentObject(placementSettings)
-                                .environmentObject(sessionSettings)
+//                                .environmentObject(sessionSettings)
                         }
                     }
                     .padding(.horizontal, 16)

@@ -13,7 +13,7 @@ class ARViewPresenter {
     static func presentARView(for furnitureItem: FurnitureItem? = nil, allowBrowse: Bool, from viewController: UIViewController) {
         // Create placement settings
         let placementSettings = PlacementSettings()
-        let sessionSettings = SessionSettings()
+//        let sessionSettings = SessionSettings()
         
         // If a furniture item is provided, set up the model
         if let furnitureItem = furnitureItem {
@@ -30,7 +30,7 @@ class ARViewPresenter {
         // Create content view with the specified allowBrowse value
         let contentView = ContentView(allowBrowse: allowBrowse)
             .environmentObject(placementSettings)
-            .environmentObject(sessionSettings)
+//            .environmentObject(sessionSettings)
         
         // Present the SwiftUI view modally
         viewController.presentFullScreen(contentView)

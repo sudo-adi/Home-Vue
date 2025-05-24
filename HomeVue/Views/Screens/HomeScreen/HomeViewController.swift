@@ -83,9 +83,11 @@ class HomeViewController: UIViewController {
         super.viewWillAppear(animated)
 
         navigationController?.setNavigationBarHidden(true, animated: false)
-
         navigationController?.navigationBar.isTranslucent = false
         self.extendedLayoutIncludesOpaqueBars = true
+        
+        // Refresh room counts when view appears
+        refreshRoomCounts()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -585,6 +587,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
            let storyboard = UIStoryboard(name: "RoomScreen", bundle: nil)
            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "RoomScreenVC") as? RoomsCollectionViewController {
                destinationVC.roomCategory = roomCategory
+               destinationVC.delegate = self
                print("Passing roomCategory: \(roomCategory.category.rawValue)")
                navigationController?.pushViewController(destinationVC, animated: true)}
         } else {
@@ -710,15 +713,9 @@ class RoomCardCell: UICollectionViewCell {
         imageView.image = UIImage(named: category.thumbnail)
         roomNameLabel.text = category.rawValue
 
-
         // Get room count for this category
         let roomCount = RoomDataProvider.shared.getRooms(for: category).count
         countLabel.text = "\(roomCount)"
-        
-        // Update cell appearance based on room count
-//        isUserInteractionEnabled = roomCount > 0
-//        alpha = roomCount > 0 ? 1.0 : 0.6
-
     }
 }
 
@@ -782,5 +779,20 @@ class CatalogueCardCell: UICollectionViewCell {
     func configure(with category: FurnitureCategoryType) {
         imageView.image = UIImage(named: category.thumbnail)
         titleLabel.text = category.rawValue
+    }
+}
+
+extension HomeViewController {
+    func refreshRoomCounts() {
+        // Reload the collection view to update all cell counts
+        gridCollectionView.reloadData()
+    }
+}
+
+// Add this extension to implement RoomCollectionDelegate
+extension HomeViewController: RoomCollectionDelegate {
+    func roomCollectionDidUpdate() {
+        // Refresh the room counts in the collection view
+        refreshRoomCounts()
     }
 }

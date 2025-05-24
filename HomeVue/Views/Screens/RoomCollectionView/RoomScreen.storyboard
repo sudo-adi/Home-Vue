@@ -94,17 +94,7 @@
                             <outlet property="delegate" destination="Njj-wv-a7z" id="PYS-nD-qt9"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="Living Room" id="MF5-NX-hno">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="5w5-8Y-ibc">
-                            <color key="tintColor" systemColor="labelColor"/>
-                            <connections>
-                                <action selector="addButtonTapped:" destination="Njj-wv-a7z" id="SLu-ex-X5C"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="addBarButton" destination="5w5-8Y-ibc" id="Gcq-Sy-mfa"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="Living Room" id="MF5-NX-hno"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zie-oi-a6O" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -113,11 +103,8 @@
     </scenes>
     <resources>
         <image name="Image" width="1418" height="1059"/>
-        <systemColor name="labelColor">
-            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="secondarySystemBackgroundColor">
-            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

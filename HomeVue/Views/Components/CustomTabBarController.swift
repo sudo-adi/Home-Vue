@@ -75,7 +75,7 @@ class CustomTabBarController: UITabBarController {
         
         let experienceVC = UIHostingController(rootView: ExperienceSelectionView()
                     .environmentObject(PlacementSettings())
-                    .environmentObject(SessionSettings()))
+                    /*.environmentObject(SessionSettings())*/)
                 experienceVC.tabBarItem = UITabBarItem(
                     title: "AR",
                     image: UIImage(systemName: "camera"),

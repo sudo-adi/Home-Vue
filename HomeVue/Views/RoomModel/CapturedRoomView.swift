@@ -9,6 +9,10 @@ import RoomPlan
 import simd
 import UIKit
 
+protocol CapturedRoomViewDelegate: AnyObject {
+    func roomWasSaved()
+}
+
 struct addFurniture{
     let id : UUID
     let node : SCNNode
@@ -18,9 +22,12 @@ struct addFurniture{
 struct CapturedRoomView: View {
     var room: CapturedRoom?
     var onDismiss: (() -> Void)? = nil
+    weak var delegate: CapturedRoomViewDelegate?
 
     @State private var scene = SCNScene()
     @State private var showFurnitureCatalogue = false
+    @State private var showShareSheet = false
+    @State private var shareURL: URL?
 
     @State private var showWalls = true
     @State private var wallColor: Color = Color(hex: "#f7f7f7")
@@ -90,30 +97,20 @@ struct CapturedRoomView: View {
             
             if !showFurnitureCatalogue {
                 VStack(alignment: .trailing, spacing: 12) {
-                    //
-                    Button(action: {
-                        showExportPopup = true
-                    }) {
-                        Image(systemName: "square.and.arrow.down")
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 60, height: 40)
-                            .background(Color(hex: "#4a4551"))
-                            .cornerRadius(20, corners: [.topLeft, .bottomLeft])
+                    CustomIconButton(imageName: "square.and.arrow.up") {
+                        shareScene()
                     }
-                    ArrowButton(showFurnitureCatalogue: $showFurnitureCatalogue)
-                        .frame(width: 60, height: 40)
-                    Button(action: {
+
+                    CustomIconButton(imageName: "chevron.left") {
+                        withAnimation {
+                            showFurnitureCatalogue = true
+                        }
+                    }
+
+                    CustomIconButton(imageName: "paintbrush") {
                         withAnimation {
                             showWallControl = true
                         }
-                    }) {
-                        Image(systemName: "paintbrush")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 60, height: 40)
-                            .background(Color(hex: "#4a4551"))
-                            .cornerRadius(20, corners: [.topLeft, .bottomLeft])
                     }
                 }
                 .padding(.top, 10)
@@ -257,14 +254,18 @@ struct CapturedRoomView: View {
                                 .font(.system(size: 15, weight: .medium))
                         }
                         Button(action: {
+                            if exportRoomName.isEmpty || exportCategory.isEmpty {
+                                saveError = "Please enter both room name and category"
+                                showSaveConfirmation = true
+                            } else {
                                 let thumbnail = snapshotScene()
                                 let category = RoomCategoryType(rawValue: exportCategory) ?? .others
                                 let newRoom = RoomModel(
                                     name: exportRoomName,
-                                    model3D: nil, // or provide if available
+                                    model3D: nil,
                                     modelImage: thumbnail,
                                     createdDate: Date(),
-                                    userId: UUID(), // Replace with actual user ID if available
+                                    userId: UUID(),
                                     category: category,
                                     capturedRoom: room 
                                 )
@@ -273,7 +274,11 @@ struct CapturedRoomView: View {
                                 exportRoomName = ""
                                 exportCategory = ""
                                 showSaveConfirmation = true
-
+                                saveError = nil
+                                
+                                // Notify delegate that a room was saved
+                                delegate?.roomWasSaved()
+                            }
                         }) {
                             Text("Save")
                                 .frame(maxWidth: .infinity)
@@ -368,6 +373,21 @@ struct CapturedRoomView: View {
         .background(Color(hex: "#635655"))
         .navigationTitle("Captured Room")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    showExportPopup = true
+                }) {
+                    Text("Save")
+                        .font(.system(size: 16, weight: .medium))
+                }
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let url = shareURL {
+                ShareSheet(activityItems: [url])
+            }
+        }
     }
     private func addFurnitureItemToScene(_ item: FurnitureItem, at position: SCNVector3) {
         guard let sceneSource = SCNScene(named: item.model3D) else {
@@ -385,25 +405,40 @@ struct CapturedRoomView: View {
         let modelWidth = CGFloat(abs(maxVec.x - minVec.x))
         let modelHeight = CGFloat(abs(maxVec.y - minVec.y))
         let modelDepth = CGFloat(abs(maxVec.z - minVec.z))
+        
+        // Convert dimensions from centimeters to meters (divide by 100)
         let itemWidth = CGFloat(item.dimensions.width) / 100.0
         let itemHeight = CGFloat(item.dimensions.height) / 100.0
         let itemDepth = CGFloat(item.dimensions.depth) / 100.0
+        
+        // Ensure we don't divide by zero
         let safeModelWidth = modelWidth > 0 ? modelWidth : 0.01
         let safeModelHeight = modelHeight > 0 ? modelHeight : 0.01
         let safeModelDepth = modelDepth > 0 ? modelDepth : 0.01
+        
+        // Calculate scale factors
         let scaleX = itemWidth / safeModelWidth
         let scaleY = itemHeight / safeModelHeight
         let scaleZ = itemDepth / safeModelDepth
-        let uniformScale = [scaleX, scaleY, scaleZ].min() ?? 1.0
+        
+        // Use the maximum scale to ensure the furniture is at least as large as specified
+        let uniformScale = [scaleX, scaleY, scaleZ].max() ?? 1.0
+        
+        // Apply the scale
         furnitureNode.scale = SCNVector3(uniformScale, uniformScale, uniformScale)
 
+        // Adjust the position to account for the model's origin
         for child in furnitureNode.childNodes {
             child.position.y -= minVec.y * Float(uniformScale)
         }
+        
+        // Set the position
         furnitureNode.position = position
 
+        // Add to scene
         scene.rootNode.addChildNode(furnitureNode)
 
+        // Add to tracking array
         let furniture = addFurniture(id: UUID(), node: furnitureNode, item: item)
         addedFurniture.append(furniture)
     }
@@ -581,27 +616,62 @@ struct CapturedRoomView: View {
 
         return material
     }
+
+    private func exportSceneToUSDZ() -> URL? {
+        let tempDir = FileManager.default.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent("room_model.usdz")
+        
+        do {
+            try scene.write(to: fileURL, options: nil, delegate: nil, progressHandler: nil)
+            return fileURL
+        } catch {
+            print("Error exporting scene: \(error)")
+            return nil
+        }
+    }
+
+    private func shareScene() {
+        if let url = exportSceneToUSDZ() {
+            shareURL = url
+            showShareSheet = true
+        }
+    }
 }
 
-// MARK: - Arrow Button, WallControlView, etc.
+// MARK: - Custom Button, WallControlView, etc.
 
-struct ArrowButton: View {
-   @Binding var showFurnitureCatalogue: Bool
+//struct ArrowButton: View {
+//   @Binding var showFurnitureCatalogue: Bool
+//
+//   var body: some View {
+//       Button(action: {
+//           withAnimation {
+//               showFurnitureCatalogue = true
+//           }
+//       }) {
+//           Image(systemName: "chevron.left")
+//               .font(.system(size: 18, weight: .bold))
+//               .foregroundColor(.white)
+//               .frame(width: 60, height: 40)
+//               .background(Color(hex: "#4a4551"))
+//               .cornerRadius(20, corners: [.topLeft, .bottomLeft])
+//       }
+//   }
+//}
+struct CustomIconButton: View {
+    let imageName: String
+    let action: () -> Void
 
-   var body: some View {
-       Button(action: {
-           withAnimation {
-               showFurnitureCatalogue = true
-           }
-       }) {
-           Image(systemName: "chevron.left")
-               .font(.system(size: 18, weight: .bold))
-               .foregroundColor(.white)
-               .frame(width: 60, height: 40)
-               .background(Color(hex: "#4a4551"))
-               .cornerRadius(20, corners: [.topLeft, .bottomLeft])
-       }
-   }
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: imageName)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.white)
+                .frame(width: 60, height: 40)
+                .background(Color(hex: "#4a4551"))
+                .cornerRadius(20, corners: [.topLeft, .bottomLeft])
+        }
+    }
 }
 
 extension View {
@@ -621,5 +691,20 @@ struct RoundedCorner: Shape {
            cornerRadii: CGSize(width: radius, height: radius))
        return Path(path.cgPath)
    }
+}
+
+// Add ShareSheet view for sharing functionality
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(
+            activityItems: activityItems,
+            applicationActivities: nil
+        )
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 

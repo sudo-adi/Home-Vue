@@ -1,10 +1,3 @@
-//
-//  PlacementSettings.swift
-//  Temp
-//
-//  Created by Bhumi on 07/04/25.
-//
-
 import SwiftUI
 import RealityKit
 import Combine

@@ -89,18 +89,18 @@ struct RoomScanView: View {
                     }
                 }
                 if doneScanning {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Scan Again") {
-                            withAnimation(.easeInOut) {
-                                isAnimating = false
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                startScanning()
-                            }
-                        }
-                        .foregroundColor(.black)
-                        .transition(.scale.combined(with: .opacity))
-                    }
+//                    ToolbarItem(placement: .navigationBarLeading) {
+//                        Button("Scan Again") {
+//                            withAnimation(.easeInOut) {
+//                                isAnimating = false
+//                            }
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//                                startScanning()
+//                            }
+//                        }
+//                        .foregroundColor(.black)
+//                        .transition(.scale.combined(with: .opacity))
+//                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Edit Model") {
                             withAnimation(.spring()) {}

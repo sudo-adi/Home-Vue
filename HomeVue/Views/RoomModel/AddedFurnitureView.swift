@@ -11,12 +11,8 @@ struct AddedFurnitureView: View {
     var onRemove: (FurnitureItem) -> Void
     var onSelect: (FurnitureItem) -> Void
 
-    @State private var showARView = false
     @State private var isAnimating = false
     @State private var selectedItemIndex: Int? = nil
-    
-    @EnvironmentObject var placementSettings: PlacementSettings
-    @EnvironmentObject var sessionSettings: SessionSettings
     
     var body: some View {
         HStack {
@@ -42,13 +38,13 @@ struct AddedFurnitureView: View {
                                     )
                                 
                                 // Furniture image
-                                if let image = item.image as? UIImage {
+                                let image = item.image
                                     Image(uiImage: image)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 50, height: 50)
                                         .padding(8)
-                                }
+                                
                                 
                                 // Remove button
                                 Button(action: {
@@ -98,51 +94,6 @@ struct AddedFurnitureView: View {
                 .padding(.vertical, 10)
             }
             .frame(height: 130)
-
-            Button(action: {
-                withAnimation(.spring()) {
-                    // Trigger button animation
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    showARView = true
-                }
-            })
-            {
-                Divider().frame(height: 100)
-                VStack(spacing: 4) {
-                    Image(systemName: "arkit")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                        .padding(12)
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color(UIColor.gradientStartColor),
-                                    Color(UIColor.gradientEndColor)
-                                ]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .foregroundColor(.white)
-                        .clipShape(Circle())
-                        .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 3)
-                    
-                    Text("AR View")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(.gray)
-                }
-                .scaleEffect(isAnimating ? 1.0 : 0.5)
-                .opacity(isAnimating ? 1.0 : 0.0)
-                .animation(.spring().delay(0.3), value: isAnimating)
-            }
-            .padding(.trailing, 20)
-            .fullScreenCover(isPresented: $showARView) {
-                ContentView(allowBrowse: true)
-                    .environmentObject(placementSettings)
-                    .environmentObject(sessionSettings)
-            }
         }
         .background(
             Color(.systemGray6)
