@@ -235,13 +235,13 @@ class Model {
     static func getScaleCompensation(_ model3D: String) -> Float {
         switch model3D {
         case "Table.usdz":
-            return 9.0
+            return 8.0
         case "SeatingFurniture.usdz":
             return 0.40
         case "Bed.usdz":
             return 0.28
         case "CabinetsAndShelves.usdz":
-            return 0.28
+            return 0.30
         case "Dining.usdz":
             return 0.50
         default:
@@ -283,7 +283,7 @@ struct Models{
         let bed = Model(name: "Bed", category: .bed, scaleCompensation: Model.getScaleCompensation("Bed.usdz"))
         let cabinetsAndShelves = Model(name: "CabinetsAndShelves", category: .cabinetsAndShelves, scaleCompensation: Model.getScaleCompensation("CabinetsAndShelves.usdz"))
         let seatingFurniture = Model(name: "SeatingFurniture", category: .seatingFurniture, scaleCompensation: Model.getScaleCompensation("SeatingFurniture.usdz"))
-        let decoration = Model(name: "Decor", category: .decor, scaleCompensation: Model.getScaleCompensation("Decoration.usdz"))
+        let decoration = Model(name: "Decoration", category: .decor, scaleCompensation: Model.getScaleCompensation("Decoration.usdz"))
         let dining = Model(name: "Dining", category: .dining, scaleCompensation: Model.getScaleCompensation("Dining.usdz"))
         let kitchenFurniture = Model(name: "KitchenFurniture", category: .kitchenFurniture, scaleCompensation: Model.getScaleCompensation("KitchenFurniture.usdz"))
         let others = Model(name: "Others", category: .others, scaleCompensation: Model.getScaleCompensation("Others.usdz"))
@@ -296,3 +296,4 @@ struct Models{
         return all.filter { $0.category == category }
     }
 }
+

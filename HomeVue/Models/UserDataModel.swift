@@ -106,14 +106,14 @@ class UserDetails {
             let savedFurnitureIds = savedFurnitureIdsStrings.compactMap { UUID(uuidString: $0) }
             
             var savedFurnitures: [FurnitureItem] = []
-            let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
-            for category in allCategories {
-                for item in category.furnitureItems {
-                    if savedFurnitureIds.contains(item.id) {
-                        savedFurnitures.append(item)
-                    }
-                }
-            }
+//            let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+//            for category in allCategories {
+//                for item in category.furnitureItems {
+//                    if savedFurnitureIds.contains(item.id) {
+//                        savedFurnitures.append(item)
+//                    }
+//                }
+//            }
             var updatedUser = user
             updatedUser.savedFurnitures = savedFurnitures
             self.user = updatedUser
@@ -156,7 +156,7 @@ class UserDetails {
     private func saveUserData() {
         guard let user = user else { return }
         let defaults = UserDefaults.standard
-        let savedFurnitureIdsStrings = user.savedFurnitures?.map { $0.id.uuidString } ?? []
+        let savedFurnitureIdsStrings = user.savedFurnitures?.map { $0.id!.uuidString } ?? []
         defaults.set(savedFurnitureIdsStrings, forKey: "savedFurnitureIds_\(user.id.uuidString)")
         defaults.synchronize()
     }

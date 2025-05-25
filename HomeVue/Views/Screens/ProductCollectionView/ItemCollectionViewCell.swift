@@ -33,10 +33,19 @@ class ItemCollectionViewCell: UICollectionViewCell {
     
     func configure(with item: FurnitureItem, favoriteToggleAction: @escaping (FurnitureItem) -> Void,arButtonAction: @escaping (FurnitureItem) -> Void) {
         self.item = item
-        ProductImg?.image = UIImage(named:item.imageName)
-        ProductName?.text = item.name
-        ProductBrandName?.text = item.brandName
-        ProductDimension?.text = "\(Int(item.dimensions.width))W x \(Int(item.dimensions.height))H x \(Int(item.dimensions.depth))D"
+        if let url = URL(string: item.imageURL!) {
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.ProductImg?.image = image
+                    }
+                }
+            }.resume()
+        }
+//        ProductImg?.image = UIImage(named:item.imageName)x
+        ProductName?.text = item.name!
+        ProductBrandName?.text = item.brandName!
+        ProductDimension?.text = "\(Int(item.dimensions[0]))W x \(Int(item.dimensions[1]))H x \(Int(item.dimensions[2]))D"
         self.favoriteToggleAction = favoriteToggleAction
         self.arButtonAction = arButtonAction
         
@@ -46,7 +55,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
     
     func updateFavoriteButtonAppearance() {
         guard let item = item else { return }
-        let isFavorite = UserDetails.shared.isFavoriteFurniture(furnitureID: item.id)
+        let isFavorite = UserDetails.shared.isFavoriteFurniture(furnitureID: item.id!)
         let imageName = isFavorite ? "heart.fill" : "heart"
         let tintColor = isFavorite ? UIColor.systemRed : UIColor.systemGray
         
@@ -58,7 +67,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
         print("button tapped")
         guard let item = item, let action = favoriteToggleAction else { return }
         action(item)
-        print("Item ID: \(item.id), Is favorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id))")
+        print("Item ID: \(item.id), Is favorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id!))")
         // Update button appearance
         updateFavoriteButtonAppearance()
         

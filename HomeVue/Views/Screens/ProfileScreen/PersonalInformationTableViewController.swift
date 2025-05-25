@@ -13,6 +13,7 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
     
     let datePickerContainer = UIView()
     let datePicker = UIDatePicker()
+    var activityIndicator: UIActivityIndicatorView?
     var authManager = AuthManager()
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -205,27 +206,84 @@ class PersonalInformationTableViewController: UITableViewController, UIImagePick
              present(alert, animated: true)
              return
             }
+//            let newImage = ProfileImage.image
+
+//            if let imageToUpload = newImage {
+//                authManager.uploadProfileImage(userId: authManager.currentUser!.id, image: imageToUpload) { result in
+//                    switch result {
+//                    case .success(let imageURL):
+//                        print("Profile image updated successfully: \(imageURL)")
+//                    case .failure(let error):
+//                        print("Error uploading profile image: \(error)")
+//                    }
+//                }
+//            }
+//            delegate?.didUpdatePersonalInformation(
+//                profileImage: newImage,
+//                name: newName,
+//                dateOfBirth: dateText
+//            )
+//            navigationController?.popViewController(animated: true)
+        // ... existing code ...
             let newImage = ProfileImage.image
 
-            if let imageToUpload = newImage {
+        if let imageToUpload = newImage {
+                // Show loading indicator here
+                showLoadingIndicator()
                 authManager.uploadProfileImage(userId: authManager.currentUser!.id, image: imageToUpload) { result in
-                    switch result {
-                    case .success(let imageURL):
-                        print("Profile image updated successfully: \(imageURL)")
-                    case .failure(let error):
-                        print("Error uploading profile image: \(error)")
+                    DispatchQueue.main.async {
+                        self.hideLoadingIndicator()
+                        switch result {
+                        case .success(let imageURL):
+                            print("Profile image updated successfully: \(imageURL)")
+                            // Update local user model
+                            let cacheBustedURL = "\(imageURL)?t=\(Int(Date().timeIntervalSince1970))"
+                            self.authManager.currentUser?.profilePicture = cacheBustedURL
+//                            self.authManager.currentUser?.profilePicture = imageURL
+                            self.ProfileImage.image = imageToUpload // Ensure UI uses the new image
+                            self.delegate?.didUpdatePersonalInformation(
+                                profileImage: newImage,
+                                name: newName,
+                                dateOfBirth: dateText
+                            )
+                            self.navigationController?.popViewController(animated: true)
+                        case .failure(let error):
+                            print("Error uploading profile image: \(error)")
+                            // Show error to user
+                        }
                     }
                 }
+            } else {
+                delegate?.didUpdatePersonalInformation(
+                    profileImage: newImage,
+                    name: newName,
+                    dateOfBirth: dateText
+                )
+                navigationController?.popViewController(animated: true)
             }
-            delegate?.didUpdatePersonalInformation(
-                profileImage: newImage,
-                name: newName,
-                dateOfBirth: dateText
-            )
-            navigationController?.popViewController(animated: true)
 }
+    func showLoadingIndicator() {
+            if activityIndicator == nil {
+                let indicator = UIActivityIndicatorView(style: .large)
+                indicator.translatesAutoresizingMaskIntoConstraints = false
+                ProfileImage.addSubview(indicator)
+                NSLayoutConstraint.activate([
+                    indicator.centerXAnchor.constraint(equalTo: ProfileImage.centerXAnchor),
+                    indicator.centerYAnchor.constraint(equalTo: ProfileImage.centerYAnchor)
+                ])
+                activityIndicator = indicator
+            }
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
+            activityIndicator?.startAnimating()
+            ProfileImage.isUserInteractionEnabled = false
+        }
 
-    // Helper function to save UIImage to disk
+        func hideLoadingIndicator() {
+            activityIndicator?.stopAnimating()
+            ProfileImage.isUserInteractionEnabled = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }
+////     Helper function to save UIImage to disk
 //    private func saveImageToDisk(image: UIImage) -> String? {
 //        guard let data = image.jpegData(compressionQuality: 1.0) else {
 //            print("Failed to convert image to JPEG data")

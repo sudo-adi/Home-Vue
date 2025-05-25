@@ -1,10 +1,3 @@
-//
-//  PlacementView.swift
-//  Temp
-//
-//  Created by Bhumi on 07/04/25.
-//
-
 import SwiftUI
 
 struct PlacementView: View {

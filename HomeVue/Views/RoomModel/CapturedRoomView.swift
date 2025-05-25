@@ -7,6 +7,11 @@ import SwiftUI
 import SceneKit
 import RoomPlan
 import simd
+
+protocol CapturedRoomViewDelegate: AnyObject {
+    func roomWasSaved()
+}
+
 struct addFurniture{
     let id : UUID
     let node : SCNNode
@@ -15,12 +20,16 @@ struct addFurniture{
 
 struct CapturedRoomView: View {
     var room: CapturedRoom?
+    var onDismiss: (() -> Void)? = nil
+    weak var delegate: CapturedRoomViewDelegate?
 
     @State private var scene = SCNScene()
     @State private var showFurnitureCatalogue = false
+    @State private var showShareSheet = false
+    @State private var shareURL: URL?
 
     @State private var showWalls = true
-    @State private var wallColor: Color = Color(hex: "#cccccc")
+    @State private var wallColor: Color = Color(hex: "#f7f7f7")
     @State private var showWallControl = false
     @State private var wallTexture: String = "DefaultTexture"
 
@@ -37,6 +46,10 @@ struct CapturedRoomView: View {
     @State private var exportRoomName = ""
     @State private var exportCategory: String = ""
     private let exportCategories = ["Living Room", "Bedroom", "Kitchen", "Bathroom", "Other"]
+    
+    // Added states for save feedback
+    @State private var showSaveConfirmation = false
+    @State private var saveError: String? = nil
     
     var body: some View {
         ZStack {
@@ -83,36 +96,44 @@ struct CapturedRoomView: View {
             
             if !showFurnitureCatalogue {
                 VStack(alignment: .trailing, spacing: 12) {
-                    //
-                    Button(action: {
-                        showExportPopup = true
-                    }) {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 60, height: 40)
-                            .background(Color(hex: "#4a4551"))
-                            .cornerRadius(20, corners: [.topLeft, .bottomLeft])
+                    CustomIconButton(imageName: "square.and.arrow.up") {
+                        shareScene()
                     }
-                    ArrowButton(showFurnitureCatalogue: $showFurnitureCatalogue)
-                        .frame(width: 60, height: 40)
-                    Button(action: {
+
+                    CustomIconButton(imageName: "chevron.left") {
+                        withAnimation {
+                            showFurnitureCatalogue = true
+                        }
+                    }
+
+                    CustomIconButton(imageName: "paintbrush") {
                         withAnimation {
                             showWallControl = true
                         }
-                    }) {
-                        Image(systemName: "paintbrush")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 60, height: 40)
-                            .background(Color(hex: "#4a4551"))
-                            .cornerRadius(20, corners: [.topLeft, .bottomLeft])
                     }
                 }
                 .padding(.top, 10)
                 .padding(.leading, 20)
                 .frame(maxWidth: .infinity, alignment: .topTrailing)
             }
+            
+            if let onDismiss = onDismiss {
+                VStack {
+                    HStack {
+                        Button(action: { onDismiss() }) {
+                            Image(systemName: "xmark")
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.black.opacity(0.5))
+                                .clipShape(Circle())
+                        }
+                        Spacer()
+                    }
+                    Spacer()
+                }
+                .padding()
+            }
+            
             VStack {
                 Spacer()
                 if selectedNode != nil {
@@ -153,8 +174,129 @@ struct CapturedRoomView: View {
                         }
                     }
                 )
-            }.padding(.bottom, -33)
+            }
+            .padding(.bottom, -33)
+            .ignoresSafeArea(.keyboard)
 
+//            if showFurnitureCatalogue {
+//                FurnitureCatalogueView(
+//                    isToolbarVisible: $showFurnitureCatalogue,
+//                    onAddFurniture: { item in
+//                        selectedFurnitureItem = item
+//                        showFurnitureCatalogue = false
+//                    }
+//                )
+//                .transition(.move(edge: .trailing))
+//            }
+//            if showExportPopup {
+//                Color.black.opacity(0.3)
+//                    .edgesIgnoringSafeArea(.all)
+//                    .transition(.opacity)
+//                VStack(spacing: 16) {
+//                    Text("Export Room")
+//                        .font(.system(size: 18, weight: .semibold))
+//                        .foregroundColor(Color(hex: "#393231"))
+//                        .padding(.top, 10)
+//
+//                    // Room name text field
+//                    TextField("Enter room name", text: $exportRoomName)
+//                        .padding(.vertical, 8)
+//                        .padding(.horizontal, 12)
+//                        .background(Color.white)
+//                        .cornerRadius(8)
+//                        .overlay(
+//                            RoundedRectangle(cornerRadius: 8)
+//                                .stroke(Color(hex: "#393231"), lineWidth: 1)
+//                        )
+//                        .foregroundColor(Color(hex: "#393231"))
+//                        .font(.system(size: 15))
+//
+//                    // Category picker
+//                    Menu {
+//                        ForEach(exportCategories, id: \.self) { category in
+//                            Button(category) { exportCategory = category }
+//                        }
+//                    } label: {
+//                        HStack {
+//                            Text(exportCategory.isEmpty ? "Select category" : exportCategory)
+//                                .foregroundColor(exportCategory.isEmpty ? Color(hex: "#393231").opacity(0.6) : Color(hex: "#393231"))
+//                                .font(.system(size: 15))
+//                            Spacer()
+//                            Image(systemName: "chevron.down")
+//                                .foregroundColor(Color(hex: "#393231"))
+//                        }
+//                        .padding(.vertical, 8)
+//                        .padding(.horizontal, 12)
+//                        .background(Color.white)
+//                        .cornerRadius(8)
+//                        .overlay(
+//                            RoundedRectangle(cornerRadius: 8)
+//                                .stroke(Color(hex: "#393231"), lineWidth: 1)
+//                        )
+//                    }
+//
+//                    HStack(spacing: 12) {
+//                        Button(action: {
+//                            showExportPopup = false
+//                            exportRoomName = ""
+//                            exportCategory = ""
+//                        }) {
+//                            Text("Cancel")
+//                                .frame(maxWidth: .infinity)
+//                                .padding(.vertical, 8)
+//                                .background(Color(hex: "#635655"))
+//                                .foregroundColor(.white)
+//                                .cornerRadius(8)
+//                                .font(.system(size: 15, weight: .medium))
+//                        }
+//                        Button(action: {
+//                            // Save/export logic here
+//                            showExportPopup = false
+//                        }) {
+//                            Text("Save")
+//                                .frame(maxWidth: .infinity)
+//                                .padding(.vertical, 8)
+//                                .background(Color(hex: "#393231"))
+//                                .foregroundColor(.white)
+//                                .cornerRadius(8)
+//                                .font(.system(size: 15, weight: .medium))
+//                        }
+//                    }
+//                    .frame(height: 36)
+//                }
+//                .padding(20)
+//                .background(Color.white)
+//                .cornerRadius(14)
+//                .frame(maxWidth: 300)
+//                .shadow(radius: 10)
+//                .padding(.horizontal, 24)
+//                .transition(.scale)
+//            }
+//            if showWallControl || showFloorControl {
+//                VStack {
+//                    Spacer()
+//                    FloorAndWallSegmentedControlView(
+//                        wallTexture: $wallTexture,
+//                        wallColor: $wallColor,
+//                        showWalls: $showWalls,
+//                        floorTexture: $floorTexture,
+//                        isVisible: Binding(
+//                            get: { showWallControl || showFloorControl },
+//                            set: { newValue in
+//                                showWallControl = newValue
+//                                showFloorControl = newValue
+//                            }
+//                        )
+//                    )
+//                }
+//                .edgesIgnoringSafeArea(.bottom)
+//            }
+//        }
+//        .background(Color(hex: "#635655"))
+//        .navigationTitle("Captured Room")
+//        .navigationBarTitleDisplayMode(.inline)
+//
+//    }
             if showFurnitureCatalogue {
                 FurnitureCatalogueView(
                     isToolbarVisible: $showFurnitureCatalogue,
@@ -169,6 +311,9 @@ struct CapturedRoomView: View {
                 Color.black.opacity(0.3)
                     .edgesIgnoringSafeArea(.all)
                     .transition(.opacity)
+                    .onTapGesture {
+                        showExportPopup = false
+                    }
                 VStack(spacing: 16) {
                     Text("Export Room")
                         .font(.system(size: 18, weight: .semibold))
@@ -227,8 +372,31 @@ struct CapturedRoomView: View {
                                 .font(.system(size: 15, weight: .medium))
                         }
                         Button(action: {
-                            // Save/export logic here
-                            showExportPopup = false
+                            if exportRoomName.isEmpty || exportCategory.isEmpty {
+                                saveError = "Please enter both room name and category"
+                                showSaveConfirmation = true
+                            } else {
+                                let thumbnail = snapshotScene()
+                                let category = RoomCategoryType(rawValue: exportCategory) ?? .others
+                                let newRoom = RoomModel(
+                                    name: exportRoomName,
+                                    model3D: nil,
+                                    modelImage: thumbnail,
+                                    createdDate: Date(),
+                                    userId: UUID(),
+                                    category: category,
+                                    capturedRoom: room
+                                )
+                                RoomDataProvider.shared.addRoom(to: category, room: newRoom)
+                                showExportPopup = false
+                                exportRoomName = ""
+                                exportCategory = ""
+                                showSaveConfirmation = true
+                                saveError = nil
+                                
+                                // Notify delegate that a room was saved
+                                delegate?.roomWasSaved()
+                            }
                         }) {
                             Text("Save")
                                 .frame(maxWidth: .infinity)
@@ -249,22 +417,6 @@ struct CapturedRoomView: View {
                 .padding(.horizontal, 24)
                 .transition(.scale)
             }
-//            if showWallControl{
-//                VStack{
-//                    Spacer()
-//                    WallControlView(showWalls: $showWalls, wallColor: $wallColor, isVisible: $showWallControl, wallTexture: $wallTexture)
-//                }
-//                .padding(.bottom,-33)
-//                .edgesIgnoringSafeArea(.bottom)
-//            }
-//            if showFloorControl {
-//                VStack {
-//                    Spacer()
-//                    FloorControlView(floorTexture: $floorTexture, isVisible: $showFloorControl)
-//                }
-//                .padding(.bottom,-33)
-//                .edgesIgnoringSafeArea(.bottom)
-//            }
             if showWallControl || showFloorControl {
                 VStack {
                     Spacer()
@@ -284,37 +436,136 @@ struct CapturedRoomView: View {
                 }
                 .edgesIgnoringSafeArea(.bottom)
             }
+            
+            // Save confirmation alert
+            if showSaveConfirmation {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                    .transition(.opacity)
+                
+                VStack(spacing: 16) {
+                    if let error = saveError {
+                        Text("Error Saving Room")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(Color(hex: "#393231"))
+                            .padding(.top, 10)
+                        
+                        Text(error)
+                            .font(.system(size: 15))
+                            .foregroundColor(Color(hex: "#393231"))
+                            .multilineTextAlignment(.center)
+                    } else {
+                        Text("Room Saved")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(Color(hex: "#393231"))
+                            .padding(.top, 10)
+                        
+                        Text("Your room has been saved successfully.")
+                            .font(.system(size: 15))
+                            .foregroundColor(Color(hex: "#393231"))
+                            .multilineTextAlignment(.center)
+                    }
+                    
+                    Button(action: {
+                        showSaveConfirmation = false
+                        saveError = nil
+                    }) {
+                        Text("OK")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color(hex: "#393231"))
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                            .font(.system(size: 15, weight: .medium))
+                    }
+                }
+                .padding(20)
+                .background(Color.white)
+                .cornerRadius(14)
+                .frame(maxWidth: 300)
+                .shadow(radius: 10)
+                .padding(.horizontal, 24)
+                .transition(.scale)
+            }
         }
         .background(Color(hex: "#635655"))
         .navigationTitle("Captured Room")
         .navigationBarTitleDisplayMode(.inline)
-
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    showExportPopup = true
+                }) {
+                    Text("Save")
+                        .font(.system(size: 16, weight: .medium))
+                }
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let url = shareURL {
+                ShareSheet(activityItems: [url])
+            }
+        }
     }
+    
     private func addFurnitureItemToScene(_ item: FurnitureItem, at position: SCNVector3) {
-        guard let sceneSource = SCNScene(named: item.model3D) else {
-            print("DEBUG: Failed to load furniture model: \(item.model3D)")
+        // Load the 3D model from a remote URL (Supabase)
+        guard let modelURLString = item.model3D, let modelURL = URL(string: modelURLString) else {
+            print("DEBUG: Invalid or missing model3DURL for item: \(item.name ?? "")")
             return
         }
+        // Use ModelIO to load remote USDZ/OBJ/GLTF if needed, or download and cache locally
+        let sceneSource: SCNScene?
+        if modelURL.isFileURL {
+            sceneSource = SCNScene(named: modelURL.path)
+        } else {
+            // Download the model data synchronously (for demo; use async in production)
+            if let data = try? Data(contentsOf: modelURL), let tempURL = try? saveTempModel(data: data, fileExtension: modelURL.pathExtension) {
+//                sceneSource = SCNScene(url: tempURL, options: nil)
+                do {
+                    sceneSource = try SCNScene(url: tempURL, options: nil)
+                } catch {
+                    print("❌ Failed to load scene from URL: \(error)")
+                    return
+                }
+            } else {
+                print("DEBUG: Failed to download or load model from URL: \(modelURL)")
+                return
+            }
+        }
         let furnitureNode = SCNNode()
-        for child in sceneSource.rootNode.childNodes {
+        for child in sceneSource?.rootNode.childNodes ?? [] {
             furnitureNode.addChildNode(child)
         }
-
-        furnitureNode.name = "furniture_\(item.name)"
-
+        furnitureNode.name = "furniture_\(item.name ?? "")"
+        // guard let sceneSource = SCNScene(named: item.model3D) else {
+        //     print("DEBUG: Failed to load furniture model: \(item.model3D)")
+        //     return
+        // }
+        // let furnitureNode = SCNNode()
+        // for child in sceneSource.rootNode.childNodes {
+        //     furnitureNode.addChildNode(child)
+        // }
+        
+        // furnitureNode.name = "furniture_\(item.name!)"
+        
         let (minVec, maxVec) = furnitureNode.boundingBox
         let modelWidth = CGFloat(abs(maxVec.x - minVec.x))
         let modelHeight = CGFloat(abs(maxVec.y - minVec.y))
         let modelDepth = CGFloat(abs(maxVec.z - minVec.z))
-        let itemWidth = CGFloat(item.dimensions.width) / 100.0
-        let itemHeight = CGFloat(item.dimensions.height) / 100.0
-        let itemDepth = CGFloat(item.dimensions.depth) / 100.0
+        
+        let itemWidth = CGFloat(item.dimensions[0]) / 100.0
+        let itemHeight = CGFloat(item.dimensions[1]) / 100.0
+        let itemDepth = CGFloat(item.dimensions[2]) / 100.0
+        
         let safeModelWidth = modelWidth > 0 ? modelWidth : 0.01
         let safeModelHeight = modelHeight > 0 ? modelHeight : 0.01
         let safeModelDepth = modelDepth > 0 ? modelDepth : 0.01
+        
         let scaleX = itemWidth / safeModelWidth
         let scaleY = itemHeight / safeModelHeight
         let scaleZ = itemDepth / safeModelDepth
+        
         let uniformScale = [scaleX, scaleY, scaleZ].min() ?? 1.0
         furnitureNode.scale = SCNVector3(uniformScale, uniformScale, uniformScale)
 
@@ -328,7 +579,13 @@ struct CapturedRoomView: View {
         let furniture = addFurniture(id: UUID(), node: furnitureNode, item: item)
         addedFurniture.append(furniture)
     }
-
+    private func snapshotScene() -> UIImage? {
+        let renderer = SCNRenderer(device: nil, options: nil)
+        renderer.scene = scene
+        let size = CGSize(width: 300, height: 200) // Adjust as needed
+        let image = renderer.snapshot(atTime: 0, with: size, antialiasingMode: .multisampling4X)
+        return image
+    }
 
     private func moveFurnitureNode(_ node: SCNNode, to position: SCNVector3) {
         if addedFurniture.firstIndex(where: { $0.node === node }) != nil {
@@ -352,10 +609,10 @@ struct CapturedRoomView: View {
                                        contents: UIColor.brown)
         doors.forEach { scene.rootNode.addChildNode($0) }
 
-        let windowThickness: CGFloat = 0.11
+        let windowThickness: CGFloat = 0.09
         let windows = createSurfaceNodes(for: room.windows,
                                          length: windowThickness,
-                                         contents: UIColor.cyan.withAlphaComponent(0.5))
+                                         contents: UIColor.clear)
         windows.forEach { scene.rootNode.addChildNode($0) }
 
         let openingThickness: CGFloat = 0.11
@@ -377,6 +634,7 @@ struct CapturedRoomView: View {
             scene.rootNode.addChildNode(furniture.node)
         }
     }
+    
     private func createSurfaceNodes(for surfaces: [CapturedRoom.Surface], length: CGFloat, contents: Any?) -> [SCNNode] {
         var nodes: [SCNNode] = []
         for surface in surfaces {
@@ -441,7 +699,12 @@ struct CapturedRoomView: View {
 
         return nodes
     }
-
+ private func saveTempModel(data: Data, fileExtension: String) throws -> URL {
+        let tempDir = FileManager.default.temporaryDirectory
+        let tempFile = tempDir.appendingPathComponent(UUID().uuidString).appendingPathExtension(fileExtension)
+        try data.write(to: tempFile)
+        return tempFile
+ }
     private func loadModel(for category: FurnitureCategoryType) -> SCNNode? {
         var modelName: String
         switch category {
@@ -495,27 +758,41 @@ struct CapturedRoomView: View {
 
         return material
     }
+    private func exportSceneToUSDZ() -> URL? {
+        let tempDir = FileManager.default.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent("room_model.usdz")
+        
+        do {
+            try scene.write(to: fileURL, options: nil, delegate: nil, progressHandler: nil)
+            return fileURL
+        } catch {
+            print("Error exporting scene: \(error)")
+            return nil
+        }
+    }
+
+    private func shareScene() {
+        if let url = exportSceneToUSDZ() {
+            shareURL = url
+            showShareSheet = true
+        }
+    }
 }
 
-// MARK: - Arrow Button, WallControlView, etc.
+struct CustomIconButton: View {
+    let imageName: String
+    let action: () -> Void
 
-struct ArrowButton: View {
-   @Binding var showFurnitureCatalogue: Bool
-
-   var body: some View {
-       Button(action: {
-           withAnimation {
-               showFurnitureCatalogue = true
-           }
-       }) {
-           Image(systemName: "chevron.left")
-               .font(.system(size: 18, weight: .bold))
-               .foregroundColor(.white)
-               .frame(width: 60, height: 40)
-               .background(Color(hex: "#4a4551"))
-               .cornerRadius(20, corners: [.topLeft, .bottomLeft])
-       }
-   }
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: imageName)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.white)
+                .frame(width: 60, height: 40)
+                .background(Color(hex: "#4a4551"))
+                .cornerRadius(20, corners: [.topLeft, .bottomLeft])
+        }
+    }
 }
 
 extension View {
@@ -535,5 +812,20 @@ struct RoundedCorner: Shape {
            cornerRadii: CGSize(width: radius, height: radius))
        return Path(path.cgPath)
    }
+}
+
+// Add ShareSheet view for sharing functionality
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(
+            activityItems: activityItems,
+            applicationActivities: nil
+        )
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 

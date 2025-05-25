@@ -12,9 +12,6 @@ enum Constants{
     static let projectAPIKeyString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkZ25kamRrc29wb3ZjenFkZWJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxMjgxMTAsImV4cCI6MjA2MjcwNDExMH0.SMe_3Ebz2P1oc-poMLYBTaDn6s7ew8AHqRrPbPdlzUY"
 }
 
-//let supabase = SupabaseClient(supabaseURL: URL(string: Constants.projectURLString)!,
-//                              supabaseKey: Constants.projectAPIKeyString)
-
 class SupabaseManager{
     static let shared = SupabaseManager()
     private let client: SupabaseClient
@@ -24,35 +21,23 @@ class SupabaseManager{
                                 supabaseKey: Constants.projectAPIKeyString)
     }
     
-    func fetchFurnitureCategories() async throws -> [FurnitureCategory] {
-        let response: [FurnitureCategory] = try await client
-            .from("furniture_categories")
-            .select()
-            .execute()
-            .value
-        
-        return response
-    }
-    
     func fetchFurnitureItems(for categoryType: FurnitureCategoryType) async throws -> [FurnitureItem] {
-        let response: [FurnitureItem] = try await client
-            .from("furniture_items")
-            .select()
-            .eq("furniture_category", value: categoryType.rawValue)
-            .execute()
-            .value
-        
-        return response
-    }
-    
-//    func fetchFurnitureItems(for categoryId: UUID) async throws -> [FurnitureItem] {
-//        let response: [FurnitureItem] = try await client
-//            .from("furniture_items")
-//            .select()
-//            .eq("furniture_category", value: categoryId.uuidString)
-//            .execute()
-//            .value
-//        
-//        return response
-//    }
+    print("Fetching furniture items for category: \(categoryType.rawValue)")
+    let response: [FurnitureItem] = try await client
+        .from("furniture_items")
+        .select()
+        .eq("furniture_category", value: "\(categoryType.rawValue)")
+        .execute()
+        .value
+    print("Fetched \(response.count) items")
+    return response
+}
+//    func download3DModel(from path: String) async throws -> Data {
+//            print("Downloading 3D model from path: \(path)")
+//            let data: Data = try await client
+//                .storage
+//                .from("furniture") // Replace with your Supabase storage bucket name
+//                .download(path: path)
+//            return data
+//        }
 }

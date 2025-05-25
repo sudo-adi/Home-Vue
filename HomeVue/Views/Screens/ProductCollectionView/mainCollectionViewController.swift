@@ -4,18 +4,20 @@ import SwiftUI
 private let reuseIdentifier = "ItemCollectionViewCell"
 
 class mainCollectionViewController: UICollectionViewController {
-    var furnitureCategory: FurnitureCategory?
+//    var furnitureCategory: FurnitureCategory?
+    var furnitureCategory: FurnitureCategoryType?
+    private var items: [FurnitureItem] = []
     private var searchController: SearchController<FurnitureItem>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigationBarAppearance()
-        fetchItemsForCategory()
+        fetchItems()
         setupCollectionView()
         
         navigationController?.navigationBar.barTintColor = .white
-        self.title = furnitureCategory?.category.rawValue
+        self.title = furnitureCategory?.rawValue
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshCollection), name: NSNotification.Name("FavoriteToggled"), object: nil)
     }
@@ -31,31 +33,61 @@ class mainCollectionViewController: UICollectionViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationBarAppearance()
-        fetchItemsForCategory()
+//        fetchItemsForCategory()
         collectionView.reloadData()
     }
     
-    func fetchItemsForCategory() {
-        guard let categoryType = furnitureCategory?.category else { return }
-        
-        // Fetch furniture items
-        let items = FurnitureDataProvider.shared.fetchFurnitureItems(for: categoryType)
-        
-        // Update the search controller with these items
-        searchController = SearchController(
-            hostViewController: self,
-            collectionView: collectionView,
-            initialItems: items,
-            filterPredicate: { item, text in
-                item.name.lowercased().contains(text.lowercased()) ||
-                item.brandName.lowercased().contains(text.lowercased())
-            },
-            placeholder: "Search furniture..."
-        )
-        
-        collectionView.reloadData()
+//    func fetchItemsForCategory() {
+//        guard let categoryType = furnitureCategory else { return }
+//        Task {
+//            do {
+//                let items = try await SupabaseManager.shared.fetchFurnitureItems(for: categoryType)
+//                searchController = SearchController(
+//                    hostViewController: self,
+//                    collectionView: collectionView,
+//                    initialItems: items,
+//                    filterPredicate: { item, text in
+//                        item.name!.lowercased().contains(text.lowercased()) ||
+//                        item.brandName!.lowercased().contains(text.lowercased())
+//                    },
+//                    placeholder: "Search furniture..."
+//                )
+//                collectionView.reloadData() // Only reload after items are fetched and searchController is set
+//            } catch {
+//                print("Failed to fetch items: \(error)")
+//            }
+//        }
+//        // Remove this line:
+//        // collectionView.reloadData()
+//    }
+    func fetchItems() {
+        guard let categoryType = furnitureCategory else { return }
+        Task {
+            do {
+                let fetchedItems = try await SupabaseManager.shared.fetchFurnitureItems(for: categoryType)
+
+                if searchController == nil {
+                    searchController = SearchController(
+                        hostViewController: self,
+                        collectionView: collectionView,
+                        initialItems: fetchedItems,
+                        filterPredicate: { item, text in
+                            item.name?.lowercased().contains(text.lowercased()) ?? false ||
+                            item.brandName?.lowercased().contains(text.lowercased()) ?? false
+                        },
+                        placeholder: "Search furniture..."
+                    )
+                } else {
+                    searchController.updateItems(fetchedItems)
+                }
+
+                collectionView.reloadData()
+            } catch {
+                print("Failed to fetch items: \(error)")
+            }
+        }
     }
-    
+
     private func setupCollectionView() {
         collectionView.collectionViewLayout = createLayout()
     }
@@ -98,7 +130,7 @@ class mainCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return searchController.filteredItems.count
+        return searchController?.filteredItems.count ?? 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -112,7 +144,7 @@ class mainCollectionViewController: UICollectionViewController {
         }, arButtonAction: { [weak self] furnitureItem in
             ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self!)
         })
-        print("Item: \(item.name), ID: \(item.id), IsFavorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id))")
+        print("Item: \(item.name!), ID: \(item.id!), IsFavorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id!))")
         return cell
     }
     

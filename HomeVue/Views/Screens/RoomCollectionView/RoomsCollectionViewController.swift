@@ -1,4 +1,4 @@
- //
+//
 //  RoomsCollectionViewController.swift
 //  ProductDisplay
 //
@@ -6,17 +6,21 @@
 //
 
 import UIKit
+import SwiftUI
+import RoomPlan
 
 private let reuseIdentifier = "RoomCell"
 
-class RoomsCollectionViewController: UICollectionViewController {
-    
-    @IBOutlet weak var addBarButton: UIBarButtonItem!
-    
+protocol RoomCollectionDelegate: AnyObject {
+    func roomCollectionDidUpdate()
+}
+
+class RoomsCollectionViewController: UICollectionViewController, CapturedRoomViewDelegate {
     var roomCategory :RoomCategory!
     var rooms:[RoomModel] = []
     private var searchController: SearchController<RoomModel>!
     private var emptyStateView: EmptyStateView!
+    weak var delegate: RoomCollectionDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,7 +60,6 @@ class RoomsCollectionViewController: UICollectionViewController {
        appearance.backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.black]
        UINavigationBar.appearance().standardAppearance = appearance
        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-       addBarButton.tintColor = .black
    }
 
 
@@ -64,7 +67,7 @@ class RoomsCollectionViewController: UICollectionViewController {
     private func setupEmptyStateView() {
         emptyStateView = EmptyStateView(
             icon: UIImage(systemName: "house.fill"),
-            message: "No rooms available.\nAdd a new room to get started!"
+            message: "No rooms available.\nAdd a new room to get started! Click the Camera button below to scan the room."
         )
         collectionView.addSubview(emptyStateView)
         
@@ -121,14 +124,28 @@ class RoomsCollectionViewController: UICollectionViewController {
        let room = searchController.filteredItems[indexPath.item]
        cell.nameLabel.text = room.details.name
        cell.dateCreatedLabel?.text = "Created on : \(room.details.createdDate)"
-       cell.roomImage.image = UIImage(named:"model_img")
+//       cell.roomImage.image = UIImage(named:"model_img")
+       
+//       if let thumbnail = room.details.modelImage {
+//           cell.roomImage.image = thumbnail
+//       }
+       if let thumbnailData = room.details.modelImage, let thumbnail = UIImage(data: thumbnailData) {
+           cell.roomImage.image = thumbnail
+       } else {
+           cell.roomImage.image = UIImage(named: "model_img")
+       }
        return cell
    }
     
-    @IBAction func addButtonTapped(_ sender: Any) {
-        if let tabBarController = self.tabBarController as? CustomTabBarController {
-                tabBarController.showCustomAlert()
-            }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let room = searchController.filteredItems[indexPath.item]
+        var capturedRoomView = CapturedRoomView(room: room.capturedRoom, onDismiss: { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        })
+        capturedRoomView.delegate = self
+        let hostingController = UIHostingController(rootView: capturedRoomView)
+        hostingController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+        self.present(hostingController, animated: true, completion: nil)
     }
     
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
@@ -172,8 +189,27 @@ class RoomsCollectionViewController: UICollectionViewController {
             self.searchController.updateItems(updatedRooms)
             
             self.collectionView.reloadData()
+            
+            // Notify delegate that rooms have been updated
+            self.delegate?.roomCollectionDidUpdate()
         }))
         
         present(alert, animated: true, completion: nil)
+    }
+    
+    // Add this method to handle room addition
+    func roomWasAdded() {
+        // Update the rooms array
+        rooms = RoomDataProvider.shared.getRooms(for: roomCategory.category)
+        searchController.updateItems(rooms)
+        collectionView.reloadData()
+        
+        // Notify delegate that rooms have been updated
+        delegate?.roomCollectionDidUpdate()
+    }
+    
+    // Add CapturedRoomViewDelegate implementation
+    func roomWasSaved() {
+        roomWasAdded()
     }
 }

@@ -10,7 +10,7 @@ class HomeViewController: UIViewController {
     private let exploreLabel = UILabel()
 
     private let roomCategories = RoomCategoryType.allCases
-     private let furnitureCategories = FurnitureCategoryType.allCases
+    private let furnitureCategories = FurnitureCategoryType.allCases
     let authManager = AuthManager()
     //1
 //     var furnitureCategories: [FurnitureCategoryType] = []
@@ -211,14 +211,14 @@ class HomeViewController: UIViewController {
        
        horizontalScrollView.addSubview(horizontalStackView)
 
-       let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+//       let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
 //        let allCategories = furnitureCategories
-           let topItems = allCategories.flatMap { $0.furnitureItems }.prefix(4)
+//           let topItems = allCategories.flatMap { $0.furnitureItems }.prefix(4)
            
-           for (index, item) in topItems.enumerated() {
-               let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index+1)", labelText: item.name)
-               horizontalStackView.addArrangedSubview(cardView)
-           }
+//           for (index, item) in topItems.enumerated() {
+//               let cardView = createHorizontalCardView(item: item, backgroundImageName: "Ad Cards\(index+1)", labelText: item.name)
+//               horizontalStackView.addArrangedSubview(cardView)
+//           }
         
         if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
             // iPad sizes
@@ -268,8 +268,17 @@ class HomeViewController: UIViewController {
         backgroundImageView.alpha = 0.90 // Set opacity to 90%
         cardView.addSubview(backgroundImageView)
         
-
-        let furnitureImageView = UIImageView(image: UIImage(named: item.imageName))
+        var furnitureImageView = UIImageView()
+        if let url = URL(string: item.imageURL!) {
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                    furnitureImageView = UIImageView(image: image)
+                    }
+                }
+            }.resume()
+        }
+      
         furnitureImageView.contentMode = .scaleAspectFit
         furnitureImageView.clipsToBounds = true
         furnitureImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -363,18 +372,18 @@ class HomeViewController: UIViewController {
     @objc private func horizontalCardTapped(_ gesture: UITapGestureRecognizer) {
         guard let cardView = gesture.view,
               let itemName = cardView.accessibilityIdentifier else { return }
+        //1
+//        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+//        let allItems = allCategories.flatMap { $0.furnitureItems }
         
-        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
-        let allItems = allCategories.flatMap { $0.furnitureItems }
-        
-        guard let tappedItem = allItems.first(where: { $0.name == itemName }) else { return }
-        
-        let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
-        if let destinationVC = storyboard.instantiateViewController(withIdentifier: "ProductInfoTableViewController") as? ProductInfoTableViewController {
-            destinationVC.furnitureItem = tappedItem
-            destinationVC.modalPresentationStyle = .fullScreen
-            present(destinationVC, animated: true)
-        }
+//        guard let tappedItem = allItems.first(where: { $0.name == itemName }) else { return }
+//        
+//        let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
+//        if let destinationVC = storyboard.instantiateViewController(withIdentifier: "ProductInfoTableViewController") as? ProductInfoTableViewController {
+//            destinationVC.furnitureItem = tappedItem
+//            destinationVC.modalPresentationStyle = .fullScreen
+//            present(destinationVC, animated: true)
+//        }
     }
     
     @objc private func arButtonTapped(_ sender: UIButton) {
@@ -382,16 +391,16 @@ class HomeViewController: UIViewController {
             print("Error: Could not retrieve furniture item name")
             return
         }
+//        //1
+//        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
+//        let allItems = allCategories.flatMap { $0.furnitureItems }
         
-        let allCategories = FurnitureDataProvider.shared.getFurnitureCategories()
-        let allItems = allCategories.flatMap { $0.furnitureItems }
+//        guard let furnitureItem = allItems.first(where: { $0.name == itemName }) else {
+//            print("Error: Furniture item \(itemName) not found")
+//            return
+//        }
         
-        guard let furnitureItem = allItems.first(where: { $0.name == itemName }) else {
-            print("Error: Furniture item \(itemName) not found")
-            return
-        }
-        
-        ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self)
+//        ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self)
     }
     
     // MARK: - Bottom Sheet Setup
@@ -502,7 +511,7 @@ class HomeViewController: UIViewController {
             self.appBarStackView.axis = isExpanded ? .horizontal : .vertical
             self.appBarStackView.spacing = isExpanded ? 4 : 8
             self.appBarStackView.alignment = isExpanded ? .fill : .leading
-
+            let name = self.authManager.currentUser?.name ?? "User"
             let userNameText = NSMutableAttributedString(
                 string: "Hi ",
                 attributes: [
@@ -514,7 +523,7 @@ class HomeViewController: UIViewController {
             )
 
             userNameText.append(NSAttributedString(
-                string: "Nish",
+                string: "\(name)",
                 attributes: [
                     .font: isExpanded
                         ? UIFont.systemFont(ofSize: 16, weight: .semibold)
@@ -625,13 +634,21 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
                navigationController?.pushViewController(destinationVC, animated: true)}
         } else {
             //Catalouge Card
+//            let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
+//            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
+//                let selectedCategoryType = furnitureCategories[indexPath.item] // FurnitureCategoryType
+////                let furnitureItems = FurnitureDataProvider.shared.fetchFurnitureItems(for: selectedCategoryType)
+////                let furnitureCategory = FurnitureCategory(category: selectedCategoryType, furnitureItems: furnitureItems)
+////                let furnitureCategory = FurnitureCategory(category: selectedCategoryType)
+//                destinationVC.furnitureCategory = selectedCategoryType
+//                navigationController?.pushViewController(destinationVC, animated: true)}
+            let selectedCategory = furnitureCategories[indexPath.item]
             let storyboard = UIStoryboard(name: "ProductDisplay", bundle: nil)
-            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController {
-                let selectedCategoryType = furnitureCategories[indexPath.item] // FurnitureCategoryType
-                let furnitureItems = FurnitureDataProvider.shared.fetchFurnitureItems(for: selectedCategoryType)
-                let furnitureCategory = FurnitureCategory(category: selectedCategoryType, furnitureItems: furnitureItems)
-                destinationVC.furnitureCategory = furnitureCategory
-                navigationController?.pushViewController(destinationVC, animated: true)}
+            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "MainCollectionViewController") as? mainCollectionViewController{
+                destinationVC.furnitureCategory = selectedCategory
+                navigationController?.pushViewController(destinationVC, animated: true)
+            }
+            
                 //1
 //                let selectedCategory = furnitureCategories[indexPath.item] // Get the selected category object
 //

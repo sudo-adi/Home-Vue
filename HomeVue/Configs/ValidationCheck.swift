@@ -22,18 +22,18 @@ func handleEmailLogin(from viewController: UIViewController, email: String?, pas
         return
     }
     
-    let authManager = AuthManager()
-    authManager.signIn(email: email, password: password) { result in
-        DispatchQueue.main.async {
-            switch result {
-            case .success:
-                let tabBarController = CustomTabBarController()
-                navigateToViewController(from: viewController, destinationVC: tabBarController)
-            case .failure(let error):
-                showAlert(on: viewController, message: "Login failed: \(error.localizedDescription)")
-            }
-        }
-    }
+//    let authManager = AuthManager()
+//    authManager.signIn(email: email, password: password) { result in
+//        DispatchQueue.main.async {
+//            switch result {
+//            case .success:
+//                let tabBarController = CustomTabBarController()
+//                navigateToViewController(from: viewController, destinationVC: tabBarController)
+//            case .failure(let error):
+//                showAlert(on: viewController, message: "Login failed: \(error.localizedDescription)")
+//            }
+//        }
+//    }
 }
 
 // Updated handleEmailSignUp to use AuthManager's completion handler and pass name

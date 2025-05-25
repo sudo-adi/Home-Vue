@@ -65,7 +65,7 @@ class FavoritesCollectionViewController: UICollectionViewController {
     private func fetchFavoriteItems() {
         favoriteItems = UserDetails.shared.getFavoriteFurnitures()
         updateEmptyStateVisibility()
-        print("Fetched favorites: \(favoriteItems.map { "\($0.name): \($0.id), IsFavorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: $0.id))" })")
+        print("Fetched favorites: \(favoriteItems.map { "\($0.name!): \(String(describing: $0.id!)), IsFavorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: $0.id!))" })")
     }
     
     private func setupCollectionView() {
@@ -120,7 +120,7 @@ class FavoritesCollectionViewController: UICollectionViewController {
         }, arButtonAction: { [weak self] furnitureItem in
             ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self!)
         })
-        print("Cell for item: \(item.name), ID: \(item.id), IsFavorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id))")
+        print("Cell for item: \(item.name!), ID: \(item.id!), IsFavorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id!))")
         return cell
     }
     

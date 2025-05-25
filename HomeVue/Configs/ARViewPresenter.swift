@@ -13,13 +13,13 @@ class ARViewPresenter {
     static func presentARView(for furnitureItem: FurnitureItem? = nil, allowBrowse: Bool, from viewController: UIViewController) {
         // Create placement settings
         let placementSettings = PlacementSettings()
-        let sessionSettings = SessionSettings()
+//        let sessionSettings = SessionSettings()
         
         // If a furniture item is provided, set up the model
         if let furnitureItem = furnitureItem {
-            let modelCategory = Model.getCategoryFromModel3D(furnitureItem.model3D)
-            let scaleCompensation = Model.getScaleCompensation(furnitureItem.model3D)
-            let model = Model(name: furnitureItem.model3D.replacingOccurrences(of: ".usdz", with: ""), category: modelCategory, scaleCompensation: scaleCompensation)
+            let modelCategory = Model.getCategoryFromModel3D(furnitureItem.model3D!)
+            let scaleCompensation = Model.getScaleCompensation(furnitureItem.model3D!)
+            let model = Model(name: furnitureItem.model3D!.replacingOccurrences(of: ".usdz", with: ""), category: modelCategory, scaleCompensation: scaleCompensation)
             model.asyncLoadModelEntity()
             placementSettings.selectedModel = model
             print("Presenting AR view for: \(furnitureItem.name), model: \(furnitureItem.model3D)")
@@ -30,7 +30,7 @@ class ARViewPresenter {
         // Create content view with the specified allowBrowse value
         let contentView = ContentView(allowBrowse: allowBrowse)
             .environmentObject(placementSettings)
-            .environmentObject(sessionSettings)
+//            .environmentObject(sessionSettings)
         
         // Present the SwiftUI view modally
         viewController.presentFullScreen(contentView)

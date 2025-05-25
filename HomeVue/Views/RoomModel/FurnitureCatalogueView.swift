@@ -1,13 +1,250 @@
 import SwiftUI
-
+//
+//struct FurnitureCatalogueView: View {
+//    @State private var isShowingCategories = true
+//    @State private var currentCategory: FurnitureCategoryType?
+//    @Binding var isToolbarVisible: Bool
+//
+//    private let furnitureDataProvider = FurnitureDataProvider.shared
+//
+//    // Callback to parent when a furniture item is added
+//    var onAddFurniture: ((FurnitureItem) -> Void)? = nil
+//
+//    private let catalogueWidth = UIScreen.main.bounds.width * 0.35
+//    private let catalogueHeight = UIScreen.main.bounds.height * 0.5
+//
+//    var body: some View {
+//        ZStack {
+//            if isToolbarVisible {
+//                toolbarContent
+//                    .transition(.move(edge: .trailing))
+//            }
+//        }
+//    }
+//
+//    private var toolbarContent: some View {
+//        VStack(spacing: 0) {
+//            toolbarHeader
+//            Divider().background(Color.white.opacity(0.5))
+//
+//            if isShowingCategories {
+//                categoriesView
+//            } else if let category = currentCategory {
+//                itemsView(for: category)
+//            }
+//        }
+//        .frame(width: catalogueWidth, height: catalogueHeight)
+//        .background(
+//            Color(hex: "#4a4551").opacity(0.8)
+//                .background(BlurView(style: .dark))
+//        )
+//        .cornerRadius(12)
+//        .padding(.top, 60)
+//        .position(x: UIScreen.main.bounds.width - (catalogueWidth / 2) - 10,
+//                  y: catalogueHeight / 2 + 60)
+//    }
+//
+//    private var toolbarHeader: some View {
+//        HStack {
+//            Button(action: {
+//                withAnimation {
+//                    isToolbarVisible = false
+//                }
+//            }) {
+//                Text("×")
+//                    .font(.system(size: 22, weight: .bold))
+//                    .foregroundColor(.white)
+//            }
+//            Spacer()
+//            Text("Inventory")
+//                .font(.system(size: 16, weight: .bold))
+//                .foregroundColor(.white)
+//                .lineLimit(1)
+//            Spacer()
+//        }
+//        .padding()
+//        .padding(.leading,0)
+//    }
+//
+//    private var categoriesView: some View {
+//        ScrollView {
+//            VStack(spacing: 10) {
+//                ForEach(FurnitureCategoryType.allCases, id: \.self) { category in
+//                    Button(action: {
+//                        withAnimation {
+//                            currentCategory = category
+//                            isShowingCategories = false
+//                        }
+//                    }) {
+//                        VStack {
+//                            Image(category.thumbnail)
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(height: 80)
+//                                .padding(.horizontal, 8)
+//
+//                            Text(category.rawValue)
+//                                .font(.system(size: 12, weight: .medium))
+//                                .foregroundColor(.black)
+//                                .frame(maxWidth: .infinity)
+//                                .padding(4)
+//                                .background(Color(hex: "#F0F0F0"))
+//                                .cornerRadius(5)
+//                        }
+//                        .frame(width: catalogueWidth - 20, height: 120)
+//                        .background(Color.white)
+//                        .cornerRadius(10)
+//                    }
+//                }
+//            }
+//            .padding(.horizontal, 10)
+//            .padding(.bottom, 20)
+//        }
+//    }
+//
+////    private func itemsView(for category: FurnitureCategoryType) -> some View {
+////        let items = furnitureDataProvider.fetchFurnitureItems(for: category)
+////
+////        return ScrollView {
+////            VStack(spacing: 10) {
+////                Button(action: {
+////                    withAnimation {
+////                        isShowingCategories = true
+////                    }
+////                }) {
+////                    HStack {
+////                        Image(systemName: "arrow.left")
+////                        Text("Back")
+////                    }
+////                    .foregroundColor(.white)
+////                    .frame(maxWidth: .infinity, alignment: .leading)
+////                    .padding(.leading, 10)
+////                }
+////
+////                ForEach(items, id: \.id) { item in
+////                    VStack {
+////                        HStack {
+////                            Button(action: {
+////                                onAddFurniture?(item)
+////                            }) {
+////                                Image(systemName: "plus")
+////                                    .foregroundColor(.white)
+////                                    .frame(width: 24, height: 24)
+////                                    .background(Color(hex: "#393231"))
+////                                    .cornerRadius(12)
+////                            }
+////                            Spacer()
+////                        }
+////                        .padding(.leading, 10)
+////
+////                        Image(uiImage: item.image)
+////                            .resizable()
+////                            .scaledToFit()
+////                            .frame(height: 50)
+////                            .padding(.horizontal, 10)
+////
+////                        Text(item.name)
+////                            .font(.system(size: 12, weight: .medium))
+////                            .foregroundColor(.black)
+////                            .frame(maxWidth: .infinity)
+////                            .padding(4)
+////                            .background(Color(hex: "#F0F0F0"))
+////                            .cornerRadius(5)
+////                            .overlay(
+////                                RoundedRectangle(cornerRadius: 5)
+////                                    .stroke(Color.black, lineWidth: 1)
+////                            )
+////                            .padding(.horizontal, 10)
+////                    }
+////                    .frame(width: catalogueWidth - 20, height: 120)
+////                    .background(Color.white)
+////                    .cornerRadius(10)
+////                }
+////            }
+////            .padding(.horizontal, 10)
+////        }
+////    }
+//    private func itemsView(for category: FurnitureCategoryType) -> some View {
+//        let items = furnitureDataProvider.fetchFurnitureItems(for: category)
+//
+//        return ScrollView {
+//            VStack(spacing: 10) {
+//                Button(action: {
+//                    withAnimation {
+//                        isShowingCategories = true
+//                    }
+//                }) {
+//                    HStack {
+//                        Image(systemName: "arrow.left")
+//                        Text("Back")
+//                    }
+//                    .foregroundColor(.white)
+//                    .frame(maxWidth: .infinity, alignment: .leading)
+//                    .padding(.leading, 10)
+//                }
+//
+//                ForEach(items, id: \.id) { item in
+//                    VStack {
+//                        HStack {
+//                            Button(action: {
+//                                onAddFurniture?(item)
+//                            }) {
+//                                Image(systemName: "plus")
+//                                    .foregroundColor(.white)
+//                                    .frame(width: 24, height: 24)
+//                                    .background(Color(hex: "#393231"))
+//                                    .cornerRadius(12)
+//                            }
+//                            Spacer()
+//                        }
+//                        .padding(.leading, 10)
+//
+//                        let imageName = item.imageName
+//                        if let uiImage = UIImage(named: imageName) {
+//                            Image(uiImage: uiImage)
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(height: 50)
+//                                .padding(.horizontal, 10)
+//                        } else {
+//                            Image("placeholder")
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(height: 50)
+//                                .padding(.horizontal, 10)
+//                        }
+//
+//                        Text(item.name)
+//                            .font(.system(size: 12, weight: .medium))
+//                            .foregroundColor(.black)
+//                            .frame(maxWidth: .infinity)
+//                            .padding(4)
+//                            .background(Color(hex: "#F0F0F0"))
+//                            .cornerRadius(5)
+//                            .overlay(
+//                                RoundedRectangle(cornerRadius: 5)
+//                                    .stroke(Color.black, lineWidth: 1)
+//                            )
+//                            .padding(.horizontal, 10)
+//                    }
+//                    .frame(width: catalogueWidth - 20, height: 120)
+//                    .background(Color.white)
+//                    .cornerRadius(10)
+//                }
+//            }
+//            .padding(.horizontal, 10)
+//        }
+//    }
+//}
 struct FurnitureCatalogueView: View {
     @State private var isShowingCategories = true
     @State private var currentCategory: FurnitureCategoryType?
+    @State private var furnitureItems: [FurnitureItem] = [] // Store fetched items
+    @State private var isLoading = false
     @Binding var isToolbarVisible: Bool
 
-    private let furnitureDataProvider = FurnitureDataProvider.shared
+    // private let furnitureDataProvider = FurnitureDataProvider.shared
 
-    // Callback to parent when a furniture item is added
     var onAddFurniture: ((FurnitureItem) -> Void)? = nil
 
     private let catalogueWidth = UIScreen.main.bounds.width * 0.35
@@ -15,13 +252,57 @@ struct FurnitureCatalogueView: View {
 
     var body: some View {
         ZStack {
-            if isToolbarVisible {
-                toolbarContent
-                    .transition(.move(edge: .trailing))
+                    if isToolbarVisible {
+                        toolbarContent
+                            .transition(.move(edge: .trailing))
+                    }
+                }
             }
-        }
-    }
-
+        
+//            private var toolbarContent: some View {
+//                VStack(spacing: 0) {
+//                    toolbarHeader
+//                    Divider().background(Color.white.opacity(0.5))
+//        
+//                    if isShowingCategories {
+//                        categoriesView
+//                    } else if let category = currentCategory {
+//                        itemsView(for: category)
+//                    }
+//                }
+//                .frame(width: catalogueWidth, height: catalogueHeight)
+//                .background(
+//                    Color(hex: "#4a4551").opacity(0.8)
+//                        .background(BlurView(style: .dark))
+//                )
+//                .cornerRadius(12)
+//                .padding(.top, 60)
+//                .position(x: UIScreen.main.bounds.width - (catalogueWidth / 2) - 10,
+//                          y: catalogueHeight / 2 + 60)
+//            }
+//        
+//            private var toolbarHeader: some View {
+//                HStack {
+//                    Button(action: {
+//                        withAnimation {
+//                            isToolbarVisible = false
+//                        }
+//                    }) {
+//                        Text("×")
+//                            .font(.system(size: 22, weight: .bold))
+//                            .foregroundColor(.white)
+//                    }
+//                    Spacer()
+//                    Text("Inventory")
+//                        .font(.system(size: 16, weight: .bold))
+//                        .foregroundColor(.white)
+//                        .lineLimit(1)
+//                    Spacer()
+//                }
+//                .padding()
+//                .padding(.leading,0)
+//            }
+//        
     private var toolbarContent: some View {
         VStack(spacing: 0) {
             toolbarHeader
@@ -74,6 +355,7 @@ struct FurnitureCatalogueView: View {
                         withAnimation {
                             currentCategory = category
                             isShowingCategories = false
+                            loadFurnitureItems(for: category)
                         }
                     }) {
                         VStack {
@@ -102,76 +384,13 @@ struct FurnitureCatalogueView: View {
         }
     }
 
-//    private func itemsView(for category: FurnitureCategoryType) -> some View {
-//        let items = furnitureDataProvider.fetchFurnitureItems(for: category)
-//
-//        return ScrollView {
-//            VStack(spacing: 10) {
-//                Button(action: {
-//                    withAnimation {
-//                        isShowingCategories = true
-//                    }
-//                }) {
-//                    HStack {
-//                        Image(systemName: "arrow.left")
-//                        Text("Back")
-//                    }
-//                    .foregroundColor(.white)
-//                    .frame(maxWidth: .infinity, alignment: .leading)
-//                    .padding(.leading, 10)
-//                }
-//
-//                ForEach(items, id: \.id) { item in
-//                    VStack {
-//                        HStack {
-//                            Button(action: {
-//                                onAddFurniture?(item)
-//                            }) {
-//                                Image(systemName: "plus")
-//                                    .foregroundColor(.white)
-//                                    .frame(width: 24, height: 24)
-//                                    .background(Color(hex: "#393231"))
-//                                    .cornerRadius(12)
-//                            }
-//                            Spacer()
-//                        }
-//                        .padding(.leading, 10)
-//
-//                        Image(uiImage: item.image)
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(height: 50)
-//                            .padding(.horizontal, 10)
-//
-//                        Text(item.name)
-//                            .font(.system(size: 12, weight: .medium))
-//                            .foregroundColor(.black)
-//                            .frame(maxWidth: .infinity)
-//                            .padding(4)
-//                            .background(Color(hex: "#F0F0F0"))
-//                            .cornerRadius(5)
-//                            .overlay(
-//                                RoundedRectangle(cornerRadius: 5)
-//                                    .stroke(Color.black, lineWidth: 1)
-//                            )
-//                            .padding(.horizontal, 10)
-//                    }
-//                    .frame(width: catalogueWidth - 20, height: 120)
-//                    .background(Color.white)
-//                    .cornerRadius(10)
-//                }
-//            }
-//            .padding(.horizontal, 10)
-//        }
-//    }
     private func itemsView(for category: FurnitureCategoryType) -> some View {
-        let items = furnitureDataProvider.fetchFurnitureItems(for: category)
-
-        return ScrollView {
+        ScrollView {
             VStack(spacing: 10) {
                 Button(action: {
                     withAnimation {
                         isShowingCategories = true
+                        furnitureItems = []
                     }
                 }) {
                     HStack {
@@ -183,7 +402,7 @@ struct FurnitureCatalogueView: View {
                     .padding(.leading, 10)
                 }
 
-                ForEach(items, id: \.id) { item in
+                ForEach(furnitureItems, id: \.id) { item in
                     VStack {
                         HStack {
                             Button(action: {
@@ -199,22 +418,20 @@ struct FurnitureCatalogueView: View {
                         }
                         .padding(.leading, 10)
 
-                        let imageName = item.imageName
-                        if let uiImage = UIImage(named: imageName) {
-                            Image(uiImage: uiImage)
+                        // Load image from URL
+                        AsyncImage(url: URL(string: item.imageURL!)) { image in
+                            image
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 50)
                                 .padding(.horizontal, 10)
-                        } else {
-                            Image("placeholder")
-                                .resizable()
-                                .scaledToFit()
+                        } placeholder: {
+                            ProgressView()
                                 .frame(height: 50)
                                 .padding(.horizontal, 10)
                         }
 
-                        Text(item.name)
+                        Text(item.name!)
                             .font(.system(size: 12, weight: .medium))
                             .foregroundColor(.black)
                             .frame(maxWidth: .infinity)
@@ -233,6 +450,24 @@ struct FurnitureCatalogueView: View {
                 }
             }
             .padding(.horizontal, 10)
+        }
+    }
+    private func loadFurnitureItems(for category: FurnitureCategoryType) {
+        isLoading = true
+        Task {
+            do {
+                let items = try await SupabaseManager.shared.fetchFurnitureItems(for: category)
+                await MainActor.run {
+                    self.furnitureItems = items
+                    self.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    print("Error fetching items: \(error)")
+                    self.furnitureItems = []
+                    self.isLoading = false
+                }
+            }
         }
     }
 }
@@ -277,3 +512,20 @@ struct BlurView: UIViewRepresentable {
         uiView.effect = UIBlurEffect(style: style)
     }
 }
+// class FurnitureDataProvider {
+//     static let shared = FurnitureDataProvider()
+
+//     private init() {}
+
+//     func fetchFurnitureItems(for category: FurnitureCategoryType) -> [FurnitureItem] {
+//         var items: [FurnitureItem] = []
+//         Task {
+//             do {
+//                 items = try await SupabaseManager.shared.fetchFurnitureItems(for: category)
+//             } catch {
+//                 print("Error fetching items: \(error)")
+//             }
+//         }
+//         return items
+//     }
+// }

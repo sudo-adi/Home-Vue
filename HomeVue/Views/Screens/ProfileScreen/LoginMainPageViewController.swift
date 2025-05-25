@@ -75,7 +75,6 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        customizeNavigationBar()
         // Refresh user data
         authManager.refreshUser { result in
             DispatchQueue.main.async {
@@ -89,6 +88,7 @@ class LoginMainPageViewController: UIViewController, UITableViewDataSource, UITa
                 }
             }
         }
+        customizeNavigationBar()
     }
 
     // MARK: - Setup Methods
