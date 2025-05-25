@@ -32,12 +32,5 @@ class SupabaseManager{
     print("Fetched \(response.count) items")
     return response
 }
-//    func download3DModel(from path: String) async throws -> Data {
-//            print("Downloading 3D model from path: \(path)")
-//            let data: Data = try await client
-//                .storage
-//                .from("furniture") // Replace with your Supabase storage bucket name
-//                .download(path: path)
-//            return data
-//        }
+    
 }

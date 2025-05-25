@@ -130,6 +130,8 @@ class forgotPasswordViewController: UIViewController {
         continueButton.alpha = continueButton.isEnabled ? 1 : 0.7
     }
     
+    private let authService = SupabaseAuthService()
+    
     @IBAction func continueButtonTapped(_ sender: Any) {
         switch currentStep {
         case .enterEmail:
@@ -137,32 +139,68 @@ class forgotPasswordViewController: UIViewController {
                 showAlert(on: self, message: "Please enter a valid email address.")
                 return
             }
-            // Proceed to OTP step
-            currentStep = .enterOTP
-            enterEmailTextField.isHidden = false
-            otpTextField.isHidden = false
-            continueButton.setTitle("Verify OTP", for: .normal)
-            continueButton.isEnabled = false
-            
+            Task {
+                do {
+                    try await authService.sendPasswordResetMagicLink(email: email)
+                    DispatchQueue.main.async {
+                        self.currentStep = .enterOTP
+                        self.enterEmailTextField.isHidden = false
+                        self.otpTextField.isHidden = false
+                        self.continueButton.setTitle("Verify OTP", for: .normal)
+                        self.continueButton.isEnabled = false
+                        showAlert(on: self, message: "OTP sent to your email.")
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        showAlert(on: self, message: "Failed to send OTP: \(error.localizedDescription)")
+                    }
+                }
+            }
         case .enterOTP:
-            guard let otp = otpTextField.text, isValidOTP(otp) else {
+            guard let email = enterEmailTextField.text, let otp = otpTextField.text, isValidOTP(otp) else {
                 showAlert(on: self, message: "Please enter a valid OTP (4-6 digits).")
                 return
             }
-            // Proceed to password change step
-            currentStep = .changePassword
-            otpTextField.isHidden = true
-            newPasswordTextField.isHidden = false
-            confirmPasswordTextField.isHidden = false
-            continueButton.setTitle("Confirm", for: .normal)
-            continueButton.isEnabled = false
-            
+            Task {
+                do {
+                    try await authService.verifyOTPWithToken(email: email, token: otp)
+                    DispatchQueue.main.async {
+                        self.currentStep = .changePassword
+                        self.otpTextField.isHidden = true
+                        self.newPasswordTextField.isHidden = false
+                        self.confirmPasswordTextField.isHidden = false
+                        self.continueButton.setTitle("Confirm", for: .normal)
+                        self.continueButton.isEnabled = false
+                        showAlert(on: self, message: "OTP verified. Please enter your new password.")
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        showAlert(on: self, message: "OTP verification failed: \(error.localizedDescription)")
+                    }
+                }
+            }
         case .changePassword:
-            
-            if let navigationController = self.navigationController {
-                navigationController.popViewController(animated: true)
-            } else {
-                dismiss(animated: true, completion: nil)
+            guard let email = enterEmailTextField.text,
+                      let newPassword = newPasswordTextField.text,
+                      let confirmPassword = confirmPasswordTextField.text,
+                      newPassword == confirmPassword else {
+                showAlert(on: self, message: "Passwords do not match.")
+                return
+            }
+            authService.updatePasswordAfterReset(email: email, newPassword: newPassword) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success:
+                        showAlert(on: self, message: "Password updated successfully.")
+                        if let navigationController = self.navigationController {
+                            navigationController.popViewController(animated: true)
+                        } else {
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    case .failure(let error):
+                        showAlert(on: self, message: "Failed to update password: \(error.localizedDescription)")
+                    }
+                }
             }
         }
     }

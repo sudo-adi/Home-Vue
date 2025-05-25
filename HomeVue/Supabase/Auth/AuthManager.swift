@@ -210,4 +210,36 @@ class AuthManager {
             }
         }
     }
+    func getCurrentUser(completion: @escaping (Result<User?, Error>) -> Void) {
+           authServices.getCurrentUser { result in
+               switch result {
+               case .success(let user):
+                   self.currentUser = user
+                   if let user = user {
+                       UserDetails.shared.setUser(user)
+                   } else {
+                       UserDetails.shared.setUser(nil)
+                   }
+                   completion(.success(user))
+               case .failure(let error):
+                   print("GetCurrentUser Error: \(error)")
+                   self.currentUser = nil
+                   UserDetails.shared.setUser(nil)
+                   completion(.failure(error))
+               }
+           }
+       }
+//    func deleteCurrentUser(completion: @escaping (Result<Void, Error>) -> Void) {
+//            authServices.deleteCurrentUser { result in
+//                switch result {
+//                case .success:
+//                    self.currentUser = nil
+//                    UserDetails.shared.setUser(nil)
+//                    completion(.success(()))
+//                case .failure(let error):
+//                    print("DeleteCurrentUser Error: \(error)")
+//                    completion(.failure(error))
+//                }
+//            }
+//        }
 }

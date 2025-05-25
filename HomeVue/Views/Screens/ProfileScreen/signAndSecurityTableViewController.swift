@@ -141,9 +141,85 @@ class signAndSecurityTableViewController: UITableViewController, EditMailDelegat
         present(errorAlert, animated: true)
     }
 
+//    private func handleAccountDeletion() {
+//        // TODO: Add backend account deletion logic here
+//        guard let user = authManager.currentUser,
+//        let session = authManager.currentSession else {
+//        showErrorAlert(message: "User not authenticated.")
+//        return
+//    }
+//    let url = URL(string: "https://idgndjdksopovczqdeby.supabase.co/functions/v1/dynamic-processor")!
+//    var request = URLRequest(url: url)
+//    request.httpMethod = "POST"
+//    request.setValue("Bearer \(session.accessToken)", forHTTPHeaderField: "Authorization")
+//    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//    let body: [String: Any] = ["user_id": user.id]
+//    request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+//
+//    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//        DispatchQueue.main.async {
+//            if let error = error {
+//                self.showErrorAlert(message: "Account deletion failed: \(error.localizedDescription)")
+//                return
+//            }
+//            self.redirectToHome()
+//        }
+//    }
+//    task.resume()
+//        redirectToHome()
+//    }
+//    private func handleAccountDeletion() {
+//        authManager.refreshUser { [weak self] result in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let user):
+//                    guard let user = user, let session = self?.authManager.che else {
+//                        self?.showErrorAlert(message: "User not authenticated.")
+//                        return
+//                    }
+//                    let url = URL(string: "https://idgndjdksopovczqdeby.supabase.co/functions/v1/dynamic-processor")!
+//                    var request = URLRequest(url: url)
+//                    request.httpMethod = "POST"
+//                    request.setValue("Bearer \(session.accessToken)", forHTTPHeaderField: "Authorization")
+//                    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//                    let body: [String: Any] = ["user_id": user.id]
+//                    request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+//
+//                    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//                        DispatchQueue.main.async {
+//                            if let error = error {
+//                                self?.showErrorAlert(message: "Account deletion failed: \(error.localizedDescription)")
+//                                return
+//                            }
+//                            self?.redirectToHome()
+//                        }
+//                    }
+//                    task.resume()
+//                case .failure(let error):
+//                    self?.showErrorAlert(message: "Failed to fetch user: \(error.localizedDescription)")
+//                }
+//            }
+//        }
     private func handleAccountDeletion() {
-        // TODO: Add backend account deletion logic here
-        redirectToHome()
+        Task {
+                let result = await SupabaseAuthService().deleteUser()
+                switch result {
+                case .success:
+                    print("User deleted and signed out.")
+                    DispatchQueue.main.async {
+                        // For example: Navigate to login screen
+                        let loginVC = LoginViewController() // Replace with your actual login view controller
+                        self.navigationController?.setViewControllers([loginVC], animated: true)
+                    }
+                case .failure(let error):
+                    print("Failed to delete user: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+                    }
+                }
+            }
     }
     
     private func redirectToHome() {

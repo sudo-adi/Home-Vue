@@ -18,7 +18,37 @@ struct SupabaseAuthService {
             supabaseKey: Constants.projectAPIKeyString
         )
     }
-    
+    func deleteUser() async -> Result<Void, Error> {
+        do {
+            let session = try await client.auth.session
+            let accessToken = session.accessToken
+
+            guard let functionUrl = URL(string: "https://idgndjdksopovczqdeby.supabase.co/functions/v1/dynamic-processor") else {
+                return .failure(NSError(domain: "Invalid URL", code: 400))
+            }
+
+            var request = URLRequest(url: functionUrl)
+            request.httpMethod = "POST"
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try JSONSerialization.data(withJSONObject: [:])
+
+            let (_, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                return .failure(NSError(domain: "Delete failed", code:500))
+            }
+
+            try await client.auth.signOut()
+            UserDefaults.standard.removeObject(forKey: "supabaseAuthId")
+            return .success(())
+
+        } catch {
+            return .failure(error)
+        }
+    }
+
     // Signup with email, password, and name
     func signUp(email: String, password: String, name: String, completion: @escaping (Result<User, Error>) -> Void) {
         Task {
@@ -210,6 +240,7 @@ struct SupabaseAuthService {
 
 
     }
+   
 
     // Read: Fetch the profile image URL from the profiles table
     func fetchProfileImageURL(userId: UUID, completion: @escaping (Result<String?, Error>) -> Void) {
@@ -292,4 +323,74 @@ struct SupabaseAuthService {
             .upsert(user)
             .execute()
     }
-}
+        
+//        func deleteCurrentUser(completion: @escaping (Result<Void, Error>) -> Void) {
+//            getCurrentUser { result in
+//                switch result {
+//                case .success(let user):
+//                    guard let user = user else {
+//                        completion(.failure(NSError(domain: "Supabase", code: 404, userInfo: [NSLocalizedDescriptionKey: "No current user found."])));
+//                        return
+//                    }
+//                    Task {
+//                        do {
+//                            // Delete user profile from 'profiles' table
+//                            _ = try await client
+//                                .from("profiles")
+//                                .delete()
+//                                .eq("id", value: user.id.uuidString)
+//                                .execute()
+//                            // Optionally: delete from other tables if needed
+//                            // Sign out
+//                            try await client.auth.signOut()
+//                            UserDefaults.standard.removeObject(forKey: "supabaseAuthId")
+//                            completion(.success(()))
+//                        } catch {
+//                            completion(.failure(error))
+//                        }
+//                    }
+//                case .failure(let error):
+//                    completion(.failure(error))
+//                }
+//            }
+//        }
+    func sendPasswordResetMagicLink(email: String) async throws {
+            print("Sending magic link for password reset to: \(email)")
+            
+            do {
+                // Try using the resetPasswordForEmail method which should be available
+                try await client.auth.resetPasswordForEmail(email)
+                print("Password reset email sent successfully")
+            } catch {
+                print("Error sending password reset email: \(error.localizedDescription)")
+                throw error
+            }
+        }
+        func verifyOTPWithToken(email: String, token: String) async throws {
+            do {
+                // Use the token provided by the user
+                try await client.auth.verifyOTP(
+                    email: email,
+                    token: token,
+                    type: .magiclink
+                )
+                print("OTP verification successful with token")
+            } catch {
+                print("Error verifying OTP with token: \(error)")
+                throw error
+            }
+        }
+    func updatePasswordAfterReset(email: String, newPassword: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            Task {
+                do {
+                    // Update user table
+                    try await client.auth.update(user: UserAttributes(password: newPassword))
+                    completion(.success(()))
+                } catch {
+                    print("❌ Error updating user table password: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            }
+        }
+  }
+
