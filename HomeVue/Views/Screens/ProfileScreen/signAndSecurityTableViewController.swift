@@ -131,7 +131,7 @@ class signAndSecurityTableViewController: UITableViewController {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let homeVC = storyboard.instantiateViewController(withIdentifier: "HomeVueViewController")
+            let homeVC = storyboard.instantiateViewController(withIdentifier: "LoginViewController")
             window.rootViewController = UINavigationController(rootViewController: homeVC)
             window.makeKeyAndVisible()
         }

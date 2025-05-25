@@ -74,4 +74,10 @@ class LoginViewController: UIViewController {
             present(alert, animated: true, completion: nil)
         }
 
+    @IBAction func SkipButtonTapped(_ sender: UIBarButtonItem) {
+        let customTabBarController = CustomTabBarController()
+        customTabBarController.modalPresentationStyle = .fullScreen
+            present(customTabBarController, animated: true, completion: nil)
+        
+    }
 }

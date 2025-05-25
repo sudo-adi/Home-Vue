@@ -174,7 +174,7 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access the camera for scanning the room ";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save the screenshot to the photo library.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = SplashScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -205,7 +205,7 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access the camera for scanning the room ";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save the screenshot to the photo library.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = SplashScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
