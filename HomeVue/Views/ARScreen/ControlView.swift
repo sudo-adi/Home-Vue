@@ -38,6 +38,8 @@ struct ControlView: View {
 
 struct ControlButtonBar: View {
     @Binding var showBrowse: Bool
+    @EnvironmentObject var modelDeletionManager: ModelDeletionManager
+    @ObservedObject private var arSessionManager = ARSessionManager.shared
     var allowBrowse: Bool
     let onScreenshot: (String) -> Void
     
@@ -60,6 +62,22 @@ struct ControlButtonBar: View {
                 }
                 .sheet(isPresented: $showBrowse) {
                     BrowseView(showBrowse: $showBrowse)
+                }
+                
+                Spacer()
+                // Only show delete button when allowBrowse is true and there are models in the scene
+                if !arSessionManager.anchorEntities.isEmpty {
+                    ControlButton(systemIconName: "trash") {
+                        print("Clear Scene button pressed.")
+                        modelDeletionManager.deleteAllModels()
+                    }
+                } else {
+                    // Disabled delete button when no models
+                    ControlButton(systemIconName: "trash") {
+                        // No action when disabled
+                    }
+                    .disabled(true)
+                    .opacity(0.5)
                 }
             }
             

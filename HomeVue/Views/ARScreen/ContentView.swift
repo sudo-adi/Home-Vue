@@ -4,6 +4,7 @@ import ARKit
 
 struct ContentView: View {
     @EnvironmentObject var placementSettings: PlacementSettings
+    @EnvironmentObject var modelDeletionManager: ModelDeletionManager
     @Environment(\.dismiss) private var dismiss
     @State private var showBrowse: Bool = false
     var allowBrowse: Bool
@@ -15,13 +16,21 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
-                ARViewContainer()
+                ARViewContainer(allowBrowse: allowBrowse)
                 
-                if self.placementSettings.selectedModel == nil {
-                    ControlView(showBrowse: $showBrowse, allowBrowse: allowBrowse)
-                } else {
-                    PlacementView()
+                // Show appropriate view based on state
+                Group {
+                    if self.placementSettings.selectedModel != nil {
+                        PlacementView()
+                    } else if  self.modelDeletionManager.entitySelectedForDeletion != nil && allowBrowse {
+                        DeletionView()
+                    } else {
+                        ControlView(showBrowse: $showBrowse, allowBrowse: allowBrowse)
+                    }
                 }
+                .transition(.opacity)
+                .animation(.easeInOut, value: modelDeletionManager.entitySelectedForDeletion != nil)
+                .animation(.easeInOut, value: placementSettings.selectedModel != nil)
             }
             .edgesIgnoringSafeArea(.all)
             .navigationBarBackButtonHidden(true)
@@ -31,8 +40,9 @@ struct ContentView: View {
     
     private var backButton: some View {
         Button(action: {
-            // Pause AR session before navigating back
+            // Pause AR session and clear any selected models before navigating back
             ARSessionManager.shared.pauseSession()
+            modelDeletionManager.entitySelectedForDeletion = nil
             dismiss()
         }) {
             HStack {
@@ -45,9 +55,16 @@ struct ContentView: View {
 
 struct ARViewContainer: UIViewRepresentable {
     @EnvironmentObject var placementSettings: PlacementSettings
+    @EnvironmentObject var modelDeletionManager: ModelDeletionManager
+    var allowBrowse: Bool
     
     func makeUIView(context: Context) -> CustomARView {
         let arView = ARSessionManager.shared.setupARView(frame: .zero)
+        arView.modelDeletionManager = modelDeletionManager
+        arView.allowBrowse = allowBrowse
+        if allowBrowse {
+            arView.enableObjectDeletion()
+        }
         
         // Subscribe to sceneEvents.update
         self.placementSettings.sceneObserver = arView.scene.subscribe(to: SceneEvents.Update.self, { (event) in
@@ -57,6 +74,9 @@ struct ARViewContainer: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: CustomARView, context: Context) {
+        // Update the modelDeletionManager reference if needed
+        uiView.modelDeletionManager = modelDeletionManager
+        uiView.allowBrowse = allowBrowse
     }
     
     private func updateScene(for arView: CustomARView) {

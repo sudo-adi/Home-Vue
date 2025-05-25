@@ -12,8 +12,12 @@ class ARSessionManager: ObservableObject {
     private var configuration: ARWorldTrackingConfiguration?
     private var cancellables = Set<AnyCancellable>()
     
+    // Model tracking
+    @Published var anchorEntities: [AnchorEntity] = []
+    
     private init() {
         setupConfiguration()
+        arView?.enableObjectDeletion()
     }
     
     private func setupConfiguration() {
@@ -56,10 +60,21 @@ class ARSessionManager: ObservableObject {
     
     func addAnchor(_ anchor: AnchorEntity) {
         arView?.scene.addAnchor(anchor)
+        anchorEntities.append(anchor)
     }
     
     func removeAnchor(_ anchor: AnchorEntity) {
         arView?.scene.removeAnchor(anchor)
+        if let index = anchorEntities.firstIndex(where: { $0 === anchor }) {
+            anchorEntities.remove(at: index)
+        }
+    }
+    
+    func removeAllAnchors() {
+        for anchor in anchorEntities {
+            arView?.scene.removeAnchor(anchor)
+        }
+        anchorEntities.removeAll()
     }
     
     func performRaycast(at point: CGPoint) -> (simd_float4x4, simd_float3)? {
@@ -81,4 +96,4 @@ class ARSessionManager: ObservableObject {
         
         return (firstResult.worldTransform, position)
     }
-} 
+}

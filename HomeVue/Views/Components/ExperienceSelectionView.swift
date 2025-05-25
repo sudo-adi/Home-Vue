@@ -10,7 +10,7 @@ import SwiftUI
 struct ExperienceSelectionView: View {
 //    @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var placementSettings: PlacementSettings
-//    @EnvironmentObject var sessionSettings: SessionSettings
+    @StateObject var modelDeletionManager = ModelDeletionManager()
     @State private var showARView = false
     @State private var showRoomScan = false
 
@@ -86,6 +86,7 @@ struct ExperienceSelectionView: View {
                         .fullScreenCover(isPresented: $showARView) {
                             ContentView(allowBrowse: true)
                                 .environmentObject(placementSettings)
+                                .environmentObject(modelDeletionManager)
 //                                .environmentObject(sessionSettings)
                         }
                     }
@@ -140,13 +141,5 @@ struct ExperienceCard: View {
                         .stroke(Color.white.opacity(0.15), lineWidth: 1)
                 )
         )
-    }
-}
-
-struct ExperienceSelectionView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            ExperienceSelectionView()
-        }
     }
 }
