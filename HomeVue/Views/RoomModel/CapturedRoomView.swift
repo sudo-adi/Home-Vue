@@ -52,6 +52,8 @@ struct CapturedRoomView: View {
     @State private var showSaveConfirmation = false
     @State private var saveError: String? = nil
     
+    @State private var showTutorial = true
+    
     var body: some View {
         ZStack {
             if let room {
@@ -388,6 +390,9 @@ struct CapturedRoomView: View {
                 ShareSheet(activityItems: [url])
             }
         }
+        .sheet(isPresented: $showTutorial) {
+            RoomTutorialView(isPresented: $showTutorial)
+        }
     }
     private func addFurnitureItemToScene(_ item: FurnitureItem, at position: SCNVector3) {
         guard let sceneSource = SCNScene(named: item.model3D) else {
@@ -707,4 +712,3 @@ struct ShareSheet: UIViewControllerRepresentable {
     
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
-
