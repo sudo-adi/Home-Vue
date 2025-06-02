@@ -213,9 +213,9 @@ class ProductInfoTableViewController: UITableViewController {
         brandNameLabel.text = furnitureItem?.brandName ?? "N/A"
         descriptionLabel.text = furnitureItem?.description ?? "N/A"
         if let dimensions = furnitureItem?.dimensions {
-            heightLabel.text = "\(dimensions[0]) cm"
+            heightLabel.text = "\(dimensions[2]) cm"
             widthLabel.text = "\(dimensions[1]) cm"
-            depthLabel.text = "\(dimensions[2]) cm"
+            depthLabel.text = "\(dimensions[0]) cm"
         } else {
             heightLabel.text = "N/A"
             widthLabel.text = "N/A"
@@ -292,7 +292,14 @@ class ProductInfoTableViewController: UITableViewController {
     }
     
     @IBAction func ARButtonTapped(_ sender: Any) {
-        ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self)
+//        ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self)
+        Task {
+                    await ARViewPresenter.presentARView(
+                        for: furnitureItem,
+                        allowBrowse: false,
+                        from: self
+                    )
+                }
     }
 }
 

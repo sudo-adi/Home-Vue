@@ -1,299 +1,328 @@
-////
-////  Model.swift
-////  Temp
-////
-////  Created by Bhumi on 07/04/25.
-////
+//////  Model.swift
+//////  Temp
+//////
+//////  Created by Bhumi on 07/04/25.
 //
 //import SwiftUI
 //import RealityKit
 //import Combine
 //
-//enum ModelCategory: CaseIterable{
-//    case tablesAndChairs
-//    case seatingFurniture
-//    case kitchenFurniture
-//    case bed
-//    case decor
-//    case cabinetsAndShelves
-//    case dining
-//    case others
+//enum ModelCategory: String, CaseIterable, Codable {
+//    case tablesAndChairs = "Tables and Chairs"
+//    case seatingFurniture = "Seating Furniture"
+//    case kitchenFurniture = "Kitchen Furniture"
+//    case bed = "Bed"
+//    case decor = "Decor"
+//    case cabinetAndShelves = "Cabinet and Shelves"
+//    case dining = "Dining"
+//    case others = "Others"
 //    
-//    var label: String{
+//    var label: String {
 //        switch self {
-//        case .tablesAndChairs:
-//            return "Tables and Chairs"
-//        case .decor:
-//            return "Decoration"
-//        case .seatingFurniture:
-//            return "Seating Furniture"
-//        case .kitchenFurniture:
-//            return "Kitchen Furniture"
-//        case .bed:
-//            return "Bed"
-//        case .cabinetsAndShelves:
-//            return "Cabinets and Shelves"
-//        case .dining:
-//            return "Dining"
-//        case .others:
-//            return "Others"
+//        case .tablesAndChairs: return "Tables and Chairs"
+//        case .decor: return "Decoration"
+//        case .seatingFurniture: return "Seating Furniture"
+//        case .kitchenFurniture: return "Kitchen Furniture"
+//        case .bed: return "Bed"
+//        case .cabinetAndShelves: return "Cabinets and Shelves"
+//        case .dining: return "Dining"
+//        case .others: return "Others"
 //        }
 //    }
 //}
 //
-//class Model {
-//    var name: String
-//    var category: ModelCategory
-//    var thumbnail: UIImage
-//    var modelEntity: ModelEntity?
-//    var scaleCompensation: Float
+//class Model: Codable, ObservableObject {
+//    @Published var name: String
+//    @Published var category: ModelCategory
+//    @Published var thumbnail: String?
+//    @Published var modelEntity: ModelEntity?
+//    @Published var scaleCompensation: Float
 //    
-//    private var cancellables: AnyCancellable?
+//    private var cancellables: Set<AnyCancellable> = []
 //    
-//    init(name: String, category: ModelCategory, scaleCompensation: Float = 1.0){
+//    init(name: String, category: ModelCategory, thumbnail: String? = nil, modelEntity: ModelEntity? = nil, scaleCompensation: Float) {
 //        self.name = name
 //        self.category = category
-//        self.thumbnail = UIImage(named: name) ?? UIImage(systemName : "person.circle")!
+//        self.thumbnail = thumbnail
+//        self.modelEntity = modelEntity
 //        self.scaleCompensation = scaleCompensation
 //    }
 //    
-//    // Helper function to get ModelCategory from model3D filename
-//    static func getCategoryFromModel3D(_ model3D: String) -> ModelCategory {
-//        switch model3D {
-//            case "Table.usdz":
-//                return .tablesAndChairs
-//            case "Chair.usdz":
-//                return .tablesAndChairs
-//            case "Bed.usdz":
-//                return .bed
-//            case "CabinetsAndShelves.usdz":
-//                return .cabinetsAndShelves
-//            case "SeatingFurniture.usdz":
-//                return .seatingFurniture
-//            case "Decoration.usdz":
-//                return .decor
-//            case "Dining.usdz":
-//                return .dining
-//            case "KitchenFurniture.usdz":
-//                return .kitchenFurniture
-//            case "Others.usdz":
-//                return .others
-//            default:
-//                return .others
-//        }
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        name = try container.decode(String.self, forKey: .name)
+//        let categoryString = try container.decode(String.self, forKey: .category)
+//        category = ModelCategory(rawValue: categoryString) ?? .others
+//        thumbnail = try container.decodeIfPresent(String.self, forKey: .thumbnail)
+//        scaleCompensation = try container.decode(Float.self, forKey: .scaleCompensation)
 //    }
 //    
-//    static func getScaleCompensation(_ model3D: String) -> Float {
-//        switch model3D {
-//        case "Table.usdz":
-//            return 9.0
-//        case "SeatingFurniture.usdz":
-//            return 0.40
-//        case "Bed.usdz":
-//            return 0.28
-//        case "CabinetsAndShelves.usdz":
-//            return 0.28
-//        case "Dining.usdz":
-//            return 0.50
-//        default:
-//            return 1.0
-//        }
+//    func encode(to encoder: Encoder) throws {
+//        var container = encoder.container(keyedBy: CodingKeys.self)
+//        try container.encode(name, forKey: .name)
+//        try container.encode(category.rawValue, forKey: .category)
+//        try container.encodeIfPresent(thumbnail, forKey: .thumbnail)
+//        try container.encode(scaleCompensation, forKey: .scaleCompensation)
 //    }
-//    
-//    //TODO: Create a methof to sasync load modelEntity
-//    func asyncLoadModelEntity(){
-//        let filename = self.name + ".usdz"
-//        
-//        self.cancellables = ModelEntity.loadModelAsync(named: filename)
-//            .sink(receiveCompletion: { loadCompletion in
-//                
-//                // Handle Error
-//                switch loadCompletion {
-//                case .failure(let error): print("Unable to load modelEntity for \(filename). Error: \(error.localizedDescription)")
-//                case .finished:
-//                    break
-//                }
-//                
-//            }, receiveValue: { modelEntity in
-//                
+//
+////    @MainActor
+////    func asyncLoadModelEntity(from urlString: String?) async throws {
+////        guard let urlString = urlString, let remoteURL = URL(string: urlString) else {
+////            print("❌ Invalid or missing URL for model \(name)")
+////            throw URLError(.badURL)
+////        }
+////
+////        let fileName = remoteURL.lastPathComponent
+////        let localURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+////        print("📦 Downloading model to: \(localURL.path)")
+////
+////        // Download the .usdz file to local temp if not already cached
+////        if !FileManager.default.fileExists(atPath: localURL.path) {
+////            let (tempURL, _) = try await URLSession.shared.download(from: remoteURL)
+////            try FileManager.default.copyItem(at: tempURL, to: localURL)
+////        }
+////
+////        // Load the modelEntity from the local file
+////        let modelEntity: ModelEntity = try await withCheckedThrowingContinuation { continuation in
+////            var cancellable: AnyCancellable?
+////
+////            cancellable = ModelEntity.loadModelAsync(contentsOf: localURL)
+////                .sink(receiveCompletion: { completion in
+////                    if case let .failure(error) = completion {
+////                        continuation.resume(throwing: error)
+////                        cancellable?.cancel()
+////                    }
+////                }, receiveValue: { entity in
+////                    continuation.resume(returning: entity)
+////                    cancellable?.cancel()
+////                })
+////        }
+////
+////        // Apply scale and collision
+////        modelEntity.scale *= self.scaleCompensation
+////        modelEntity.generateCollisionShapes(recursive: true)
+////        self.modelEntity = modelEntity
+////
+////        print("✅ ModelEntity loaded and scaled: \(name) \(modelEntity.scale)")
+////    }
+//    @MainActor
+//        func asyncLoadModelEntity(from urlString: String?) async throws {
+//            guard let urlString = urlString, let remoteURL = URL(string: urlString) else {
+//                print("❌ Invalid or missing URL for model \(name)")
+//                throw URLError(.badURL)
+//            }
+//
+//            let fileName = remoteURL.lastPathComponent
+//            let cacheURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName)
+//            print("📍 Checking cache for model at: \(cacheURL.path)")
+//
+//            // Check if the model is already cached
+//            if FileManager.default.fileExists(atPath: cacheURL.path) {
+//                print("✅ Model found in cache: \(name)")
+//                // Load the modelEntity from the cached file
+//                let modelEntity = try await loadModelEntity(from: cacheURL)
 //                self.modelEntity = modelEntity
-//                self.modelEntity?.scale *= self.scaleCompensation
-//                self.modelEntity?.generateCollisionShapes(recursive: true)
-//                print("modelEntity for \(self.name) has been loaded.")
-//            })
+//                print("✅ ModelEntity loaded from cache: \(name) \(modelEntity.scale)")
+//                return
+//            }
+//
+//            // Download the .usdz file to cache if not already cached
+//            print("📦 Downloading model to: \(cacheURL.path)")
+//            let (tempURL, _) = try await URLSession.shared.download(from: remoteURL)
+//            try FileManager.default.copyItem(at: tempURL, to: cacheURL)
+//
+//            // Load the modelEntity from the cached file
+//            let modelEntity = try await loadModelEntity(from: cacheURL)
+//            self.modelEntity = modelEntity
+//            print("✅ ModelEntity loaded and scaled: \(name) \(modelEntity.scale)")
+//        }
+//
+//        @MainActor
+//        private func loadModelEntity(from url: URL) async throws -> ModelEntity {
+//            let modelEntity: ModelEntity = try await withCheckedThrowingContinuation { continuation in
+//                var cancellable: AnyCancellable?
+//                cancellable = ModelEntity.loadModelAsync(contentsOf: url)
+//                    .sink(receiveCompletion: { completion in
+//                        if case let .failure(error) = completion {
+//                            continuation.resume(throwing: error)
+//                            cancellable?.cancel()
+//                        }
+//                    }, receiveValue: { entity in
+//                        entity.scale *= self.scaleCompensation
+//                        entity.generateCollisionShapes(recursive: true)
+//                        continuation.resume(returning: entity)
+//                        cancellable?.cancel()
+//                    })
+//            }
+//            return modelEntity
+//        }
+//
+//    //TODO: Create a method to async load modelEntity
+//   ////    func asyncLoadModelEntity(){
+//   ////        let filename = self.name + ".usdz"
+//   ////
+//   ////        self.cancellables = ModelEntity.loadModelAsync(named: filename)
+//   ////            .sink(receiveCompletion: { loadCompletion in
+//   ////
+//   ////                // Handle Error
+//   ////                switch loadCompletion {
+//   ////                case .failure(let error): print("Unable to load modelEntity for \(filename). Error: \(error.localizedDescription)")
+//   ////                case .finished:
+//   ////                    break
+//   ////                }
+//   ////
+//   ////            }, receiveValue: { modelEntity in
+//   ////
+//   ////                self.modelEntity = modelEntity
+//   ////                self.modelEntity?.scale *= self.scaleCompensation
+//   ////                self.modelEntity?.generateCollisionShapes(recursive: true)
+//   ////                print("modelEntity for \(self.name) has been loaded.")
+//   ////            })
+//   ////    }
+//    ///
+//
+//
+//    enum CodingKeys: String, CodingKey {
+//        case name = "name"
+//        case category = "furniture_category"
+//        case thumbnail = "image_url"
+//        case scaleCompensation = "scale_compensation"
 //    }
-//    
 //}
 //
-//struct Models{
+//struct Models {
 //    var all: [Model] = []
-//    
-//    init() {
-//        let table = Model(name: "Table", category: .tablesAndChairs, scaleCompensation: Model.getScaleCompensation("Table.usdz"))
-//        let chair = Model(name: "Chair", category: .tablesAndChairs, scaleCompensation: Model.getScaleCompensation("Chair.usdz"))
-//        let bed = Model(name: "Bed", category: .bed, scaleCompensation: Model.getScaleCompensation("Bed.usdz"))
-//        let cabinetsAndShelves = Model(name: "CabinetsAndShelves", category: .cabinetsAndShelves, scaleCompensation: Model.getScaleCompensation("CabinetsAndShelves.usdz"))
-//        let seatingFurniture = Model(name: "SeatingFurniture", category: .seatingFurniture, scaleCompensation: Model.getScaleCompensation("SeatingFurniture.usdz"))
-//        let decoration = Model(name: "Decoration", category: .decor, scaleCompensation: Model.getScaleCompensation("Decoration.usdz"))
-//        let dining = Model(name: "Dining", category: .dining, scaleCompensation: Model.getScaleCompensation("Dining.usdz"))
-//        let kitchenFurniture = Model(name: "KitchenFurniture", category: .kitchenFurniture, scaleCompensation: Model.getScaleCompensation("KitchenFurniture.usdz"))
-//        let others = Model(name: "Others", category: .others, scaleCompensation: Model.getScaleCompensation("Others.usdz"))
-//        
-//        self.all += [table, chair, bed, seatingFurniture, decoration, cabinetsAndShelves, dining, kitchenFurniture, others]
-//    }
-//    
 //    
 //    func get(category: ModelCategory) -> [Model] {
 //        return all.filter { $0.category == category }
 //    }
 //}
 //
-//  Model.swift
-//  Temp
-//
-//  Created by Bhumi on 07/04/25.
-//
-
 import SwiftUI
 import RealityKit
 import Combine
 
-enum ModelCategory: CaseIterable{
-    case tablesAndChairs
-    case seatingFurniture
-    case kitchenFurniture
-    case bed
-    case decor
-    case cabinetsAndShelves
-    case dining
-    case others
+enum ModelCategory: String, CaseIterable, Codable {
+    case tablesAndChairs = "Tables and Chairs"
+    case seatingFurniture = "Seating Furniture"
+    case kitchenFurniture = "Kitchen Furniture"
+    case bed = "Bed"
+    case decor = "Decor"
+    case cabinetAndShelves = "Cabinet and Shelves"
+    case dining = "Dining"
+    case others = "Others"
     
-    var label: String{
+    var label: String {
         switch self {
-        case .tablesAndChairs:
-            return "Tables and Chairs"
-        case .decor:
-            return "Decoration"
-        case .seatingFurniture:
-            return "Seating Furniture"
-        case .kitchenFurniture:
-            return "Kitchen Furniture"
-        case .bed:
-            return "Bed"
-        case .cabinetsAndShelves:
-            return "Cabinets and Shelves"
-        case .dining:
-            return "Dining"
-        case .others:
-            return "Others"
+        case .tablesAndChairs: return "Tables and Chairs"
+        case .decor: return "Decoration"
+        case .seatingFurniture: return "Seating Furniture"
+        case .kitchenFurniture: return "Kitchen Furniture"
+        case .bed: return "Bed"
+        case .cabinetAndShelves: return "Cabinets and Shelves"
+        case .dining: return "Dining"
+        case .others: return "Others"
         }
     }
 }
 
-class Model {
-    var name: String
-    var category: ModelCategory
-    var thumbnail: UIImage
-    var modelEntity: ModelEntity?
-    var scaleCompensation: Float
+class Model: Codable, ObservableObject {
+    @Published var name: String
+    @Published var category: ModelCategory
+    @Published var thumbnail: String?
+    @Published var modelEntity: ModelEntity?
+    @Published var scaleCompensation: Float
     
-    private var cancellables: AnyCancellable?
+    private var cancellables: Set<AnyCancellable> = []
     
-    init(name: String, category: ModelCategory, scaleCompensation: Float = 1.0){
+    init(name: String, category: ModelCategory, thumbnail: String? = nil, modelEntity: ModelEntity? = nil, scaleCompensation: Float) {
         self.name = name
         self.category = category
-        self.thumbnail = UIImage(named: name+"Img") ?? UIImage(systemName : "person.circle")!
+        self.thumbnail = thumbnail
+        self.modelEntity = modelEntity
         self.scaleCompensation = scaleCompensation
     }
     
-    // Helper function to get ModelCategory from model3D filename
-    static func getCategoryFromModel3D(_ model3D: String) -> ModelCategory {
-        switch model3D {
-            case "Table.usdz":
-                return .tablesAndChairs
-            case "Chair.usdz":
-                return .tablesAndChairs
-            case "Bed.usdz":
-                return .bed
-            case "CabinetsAndShelves.usdz":
-                return .cabinetsAndShelves
-            case "SeatingFurniture.usdz":
-                return .seatingFurniture
-            case "Decoration.usdz":
-                return .decor
-            case "Dining.usdz":
-                return .dining
-            case "KitchenFurniture.usdz":
-                return .kitchenFurniture
-            case "Others.usdz":
-                return .others
-            default:
-                return .others
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        let categoryString = try container.decode(String.self, forKey: .category)
+        category = ModelCategory(rawValue: categoryString) ?? .others
+        thumbnail = try container.decodeIfPresent(String.self, forKey: .thumbnail)
+        scaleCompensation = try container.decode(Float.self, forKey: .scaleCompensation)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(category.rawValue, forKey: .category)
+        try container.encodeIfPresent(thumbnail, forKey: .thumbnail)
+        try container.encode(scaleCompensation, forKey: .scaleCompensation)
+    }
+
+    @MainActor
+    func asyncLoadModelEntity(from urlString: String?) async throws {
+        guard let urlString = urlString, let remoteURL = URL(string: urlString) else {
+            print("❌ Invalid or missing URL for model \(name)")
+            throw URLError(.badURL)
         }
-    }
-    
-    static func getScaleCompensation(_ model3D: String) -> Float {
-        switch model3D {
-        case "Table.usdz":
-            return 8.0
-        case "SeatingFurniture.usdz":
-            return 0.40
-        case "Bed.usdz":
-            return 0.28
-        case "CabinetsAndShelves.usdz":
-            return 0.30
-        case "Dining.usdz":
-            return 0.50
-        default:
-            return 1.0
+
+        let fileName = remoteURL.lastPathComponent
+        let cacheURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName)
+        print("📍 Checking cache for model at: \(cacheURL.path)")
+
+        // Check if the model is already cached
+        if FileManager.default.fileExists(atPath: cacheURL.path) {
+            print("✅ Model found in cache: \(name)")
+            // Load the modelEntity from the cached file
+            let modelEntity = try await loadModelEntity(from: cacheURL)
+            self.modelEntity = modelEntity
+            print("✅ ModelEntity loaded from cache: \(name) \(modelEntity.scale)")
+            return
         }
+
+        // Download the .usdz file to cache if not already cached
+        print("📦 Downloading model to: \(cacheURL.path)")
+        let (tempURL, _) = try await URLSession.shared.download(from: remoteURL)
+        try FileManager.default.copyItem(at: tempURL, to: cacheURL)
+
+        // Load the modelEntity from the cached file
+        let modelEntity = try await loadModelEntity(from: cacheURL)
+        self.modelEntity = modelEntity
+        print("✅ ModelEntity loaded: \(name) \(modelEntity.scale)")
     }
-    
-    //TODO: Create a methof to sasync load modelEntity
-    func asyncLoadModelEntity(){
-        let filename = self.name + ".usdz"
-        
-        self.cancellables = ModelEntity.loadModelAsync(named: filename)
-            .sink(receiveCompletion: { loadCompletion in
-                
-                // Handle Error
-                switch loadCompletion {
-                case .failure(let error): print("Unable to load modelEntity for \(filename). Error: \(error.localizedDescription)")
-                case .finished:
-                    break
-                }
-                
-            }, receiveValue: { modelEntity in
-                
-                self.modelEntity = modelEntity
-                self.modelEntity?.scale *= self.scaleCompensation
-                self.modelEntity?.generateCollisionShapes(recursive: true)
-                print("modelEntity for \(self.name) has been loaded.")
-            })
+
+    @MainActor
+    private func loadModelEntity(from url: URL) async throws -> ModelEntity {
+        let modelEntity: ModelEntity = try await withCheckedThrowingContinuation { continuation in
+            var cancellable: AnyCancellable?
+            cancellable = ModelEntity.loadModelAsync(contentsOf: url)
+                .sink(receiveCompletion: { completion in
+                    if case let .failure(error) = completion {
+                        continuation.resume(throwing: error)
+                        cancellable?.cancel()
+                    }
+                }, receiveValue: { entity in
+                    entity.generateCollisionShapes(recursive: true)
+                    continuation.resume(returning: entity)
+                    cancellable?.cancel()
+                })
+        }
+        return modelEntity
     }
-    
+
+    enum CodingKeys: String, CodingKey {
+        case name = "name"
+        case category = "furniture_category"
+        case thumbnail = "image_url"
+        case scaleCompensation = "scale_compensation"
+    }
 }
 
-struct Models{
+struct Models {
     var all: [Model] = []
-    
-    init() {
-        let table = Model(name: "Table", category: .tablesAndChairs, scaleCompensation: Model.getScaleCompensation("Table.usdz"))
-        let chair = Model(name: "Chair", category: .tablesAndChairs, scaleCompensation: Model.getScaleCompensation("Chair.usdz"))
-        let bed = Model(name: "Bed", category: .bed, scaleCompensation: Model.getScaleCompensation("Bed.usdz"))
-        let cabinetsAndShelves = Model(name: "CabinetsAndShelves", category: .cabinetsAndShelves, scaleCompensation: Model.getScaleCompensation("CabinetsAndShelves.usdz"))
-        let seatingFurniture = Model(name: "SeatingFurniture", category: .seatingFurniture, scaleCompensation: Model.getScaleCompensation("SeatingFurniture.usdz"))
-        let decoration = Model(name: "Decoration", category: .decor, scaleCompensation: Model.getScaleCompensation("Decoration.usdz"))
-        let dining = Model(name: "Dining", category: .dining, scaleCompensation: Model.getScaleCompensation("Dining.usdz"))
-        let kitchenFurniture = Model(name: "KitchenFurniture", category: .kitchenFurniture, scaleCompensation: Model.getScaleCompensation("KitchenFurniture.usdz"))
-        let others = Model(name: "Others", category: .others, scaleCompensation: Model.getScaleCompensation("Others.usdz"))
-        
-        self.all += [table, chair, bed, seatingFurniture, decoration, cabinetsAndShelves, dining, kitchenFurniture, others]
-    }
-    
     
     func get(category: ModelCategory) -> [Model] {
         return all.filter { $0.category == category }
     }
 }
-

@@ -32,6 +32,7 @@ struct FurnitureItem: Codable, Identifiable {
     let name: String?
     let category: FurnitureCategoryType
     let model3D: String?
+    var scaleCompenstation: Double
     var brandName: String?
     var description: String?
     var imageURL: String?
@@ -44,6 +45,7 @@ struct FurnitureItem: Codable, Identifiable {
         case name = "name"
         case category = "furniture_category"
         case model3D = "model3d"
+        case scaleCompenstation = "scale_compensation"
         case brandName = "brand_name"
         case description = "description"
         case imageURL = "image_url"
@@ -57,8 +59,8 @@ struct FurnitureItem: Codable, Identifiable {
 
 // MARK: - FurnitureItemManager
 class FurnitureItemManager {
-    static func createFurnitureItem(id: UUID,name: String,category:FurnitureCategoryType, model3D: String, brandName: String, description: String, imageURL: String, availableColors: [String], dimensions: [Double], providers: [String]) -> FurnitureItem {
-        return FurnitureItem(id: id, name: name,category:category, model3D: model3D, brandName: brandName, description: description, imageURL:imageURL , availableColors: availableColors, dimensions: dimensions, providers: providers)
+    static func createFurnitureItem(id: UUID,name: String,category:FurnitureCategoryType, model3D: String,scaleCompenstation: Double, brandName: String, description: String, imageURL: String, availableColors: [String], dimensions: [Double], providers: [String]) -> FurnitureItem {
+        return FurnitureItem(id: id, name: name,category:category, model3D: model3D,scaleCompenstation: scaleCompenstation, brandName: brandName, description: description, imageURL:imageURL , availableColors: availableColors, dimensions: dimensions, providers: providers)
     }
 }
 

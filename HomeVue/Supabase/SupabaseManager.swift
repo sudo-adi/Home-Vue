@@ -32,5 +32,127 @@ class SupabaseManager{
     print("Fetched \(response.count) items")
     return response
 }
+    func fetchFurnitureItemModel(for category: ModelCategory) async throws -> [Model] {
+        print("📡 Fetching furniture items for category: \(category.rawValue)")
+
+        let response: [FurnitureItem] = try await client
+            .from("furniture_items")
+            .select()
+            .eq("furniture_category", value: category.rawValue)
+            .execute()
+            .value
+
+        var models: [Model] = []
+
+        // Use TaskGroup for parallel model loading
+        try await withThrowingTaskGroup(of: Model?.self) { group in
+            for item in response {
+                guard
+                    let name = item.name,
+                    let modelURL = item.model3D
+                else {
+                    print("⚠️ Skipping invalid item: \(item)")
+                    continue
+                }
+
+                let modelCategory = ModelCategory(rawValue: item.category.rawValue) ?? .others
+                let model = Model(
+                    name: name,
+                    category: modelCategory,
+                    thumbnail: item.imageURL,
+                    scaleCompensation: Float(item.scaleCompenstation)
+                )
+
+                group.addTask {
+                    do {
+                        try await model.asyncLoadModelEntity(from: modelURL)
+                        return model
+                    } catch {
+                        print("❌ Failed to load modelEntity for \(name): \(error.localizedDescription)")
+                        return nil
+                    }
+                }
+            }
+
+            // Collect results
+            for try await model in group {
+                if let model = model {
+                    models.append(model)
+                }
+            }
+        }
+
+        print("✅ Fetched and loaded \(models.count) models for \(category.label)")
+        return models
+    }
+//    func fetchFurnitureItemModel(for category: ModelCategory) async throws -> [Model] {
+//        print("📡 Fetching furniture items for category: \(category.rawValue)")
+//
+//        let response: [FurnitureItem] = try await client
+//            .from("furniture_items")
+//            .select()
+//            .eq("furniture_category", value: category.rawValue)
+//            .execute()
+//            .value
+//
+//        var models: [Model] = []
+//
+//        for item in response {
+//            guard
+//                let name = item.name,
+//                let modelURL = item.model3D
+//            else {
+//                print("⚠️ Skipping invalid item: \(item)")
+//                continue
+//            }
+//
+//            let modelCategory = ModelCategory(rawValue: item.category.rawValue) ?? .others
+//
+//            let model = Model(
+//                name: name,
+//                category: modelCategory,
+//                thumbnail: item.imageURL,
+//                scaleCompensation: Float(item.scaleCompenstation)
+//            )
+//
+//            do {
+//                try await model.asyncLoadModelEntity(from: modelURL)
+//                models.append(model)
+//            } catch {
+//                print("❌ Failed to load modelEntity for \(name): \(error.localizedDescription)")
+//            }
+//        }
+//
+//        print("✅ Fetched and loaded \(models.count) models for \(category.label)")
+//        return models
+//    }
+
+//    func fetchFurnitureItemModel(for category: ModelCategory) async throws -> [Model] {
+//            print("Fetching furniture items for category: \(category.rawValue)")
+//            let response: [FurnitureItem] = try await client
+//                .from("furniture_items")
+//                .select()
+//                .eq("furniture_category", value: category.rawValue)
+//                .execute()
+//                .value
+//            
+//            var models: [Model] = []
+//            for item in response {
+//                let category = Model.getCategoryFromModel3D(item.model3D ?? "Others.usdz")
+//                let scale = Model.getScaleCompensation(item.model3D ?? "Others.usdz")
+//                let model = Model(
+//                    name: item.name ?? "Unnamed",
+//                    category: category,
+//                    thumbnail: item.imageURL,
+//                    scaleCompensation: scale
+//                )
+//                try await model.asyncLoadModelEntity(from: item.model3D!)
+//                models.append(model)
+//            }
+//            
+//            print("Fetched and loaded \(models.count) models")
+//            return models
+//        }
+//
     
 }

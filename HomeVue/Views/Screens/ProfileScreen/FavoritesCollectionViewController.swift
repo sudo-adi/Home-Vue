@@ -118,7 +118,14 @@ class FavoritesCollectionViewController: UICollectionViewController {
         cell.configure(with: item, favoriteToggleAction: { [weak self] furnitureItem in
             self?.toggleFavorite(furnitureItem: furnitureItem)
         }, arButtonAction: { [weak self] furnitureItem in
-            ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self!)
+//            ARViewPresenter.presentARView(for: furnitureItem, allowBrowse: false, from: self!)
+            Task {
+                        await ARViewPresenter.presentARView(
+                            for: furnitureItem,
+                            allowBrowse: false,
+                            from: self!
+                        )
+                    }
         })
         print("Cell for item: \(item.name!), ID: \(item.id!), IsFavorite: \(UserDetails.shared.isFavoriteFurniture(furnitureID: item.id!))")
         return cell

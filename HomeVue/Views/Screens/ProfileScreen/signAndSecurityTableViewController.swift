@@ -206,11 +206,7 @@ class signAndSecurityTableViewController: UITableViewController, EditMailDelegat
                 switch result {
                 case .success:
                     print("User deleted and signed out.")
-                    DispatchQueue.main.async {
-                        // For example: Navigate to login screen
-                        let loginVC = LoginViewController() // Replace with your actual login view controller
-                        self.navigationController?.setViewControllers([loginVC], animated: true)
-                    }
+                    redirectToHome()
                 case .failure(let error):
                     print("Failed to delete user: \(error.localizedDescription)")
                     DispatchQueue.main.async {

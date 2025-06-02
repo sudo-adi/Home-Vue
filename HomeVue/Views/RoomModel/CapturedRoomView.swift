@@ -507,56 +507,84 @@ struct CapturedRoomView: View {
             }
         }
     }
-    
+    @MainActor
     private func addFurnitureItemToScene(_ item: FurnitureItem, at position: SCNVector3) {
-        // Load the 3D model from a remote URL (Supabase)
+        Task {
+            await loadAndAddFurniture(item, at: position)
+        }
+    }
+
+    private func loadAndAddFurniture(_ item: FurnitureItem, at position: SCNVector3) async {
         guard let modelURLString = item.model3D, let modelURL = URL(string: modelURLString) else {
-            print("DEBUG: Invalid or missing model3DURL for item: \(item.name ?? "")")
+            print("❌ Invalid or missing model3D URL for item: \(item.name ?? "")")
             return
         }
-        // Use ModelIO to load remote USDZ/OBJ/GLTF if needed, or download and cache locally
-        let sceneSource: SCNScene?
-        if modelURL.isFileURL {
-            sceneSource = SCNScene(named: modelURL.path)
-        } else {
-            // Download the model data synchronously (for demo; use async in production)
-            if let data = try? Data(contentsOf: modelURL), let tempURL = try? saveTempModel(data: data, fileExtension: modelURL.pathExtension) {
-//                sceneSource = SCNScene(url: tempURL, options: nil)
-                do {
-                    sceneSource = try SCNScene(url: tempURL, options: nil)
-                } catch {
-                    print("❌ Failed to load scene from URL: \(error)")
+        
+        do {
+            let sceneSource: SCNScene
+            
+            if modelURL.isFileURL {
+                guard let scene = SCNScene(named: modelURL.path) else {
+                    print(" Failed to load local scene from: \(modelURL.path)")
                     return
                 }
+                sceneSource = scene
             } else {
-                print("DEBUG: Failed to download or load model from URL: \(modelURL)")
-                return
+                // Load from cache or download from Supabase
+                sceneSource = try await loadRemoteModel(from: modelURL)
             }
+            
+            // Create furniture node and apply scaling
+            await MainActor.run {
+                let furnitureNode = createScaledFurnitureNode(from: sceneSource, item: item, at: position)
+                scene.rootNode.addChildNode(furnitureNode)
+                
+                let furniture = addFurniture(id: UUID(), node: furnitureNode, item: item)
+                addedFurniture.append(furniture)
+            }
+            
+        } catch {
+            print(" Failed to load furniture model: \(error)")
         }
+    }
+
+    private func loadRemoteModel(from modelURL: URL) async throws -> SCNScene {
+        let fileName = modelURL.lastPathComponent
+        let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        let localURL = cacheDirectory.appendingPathComponent(fileName)
+        
+        // Check cache first
+        if !FileManager.default.fileExists(atPath: localURL.path) {
+            print(" Downloading \(fileName) from Supabase...")
+            let (data, _) = try await URLSession.shared.data(from: modelURL)
+            try data.write(to: localURL)
+            print(" Cached \(fileName)")
+        } else {
+            print("Using cached \(fileName)")
+        }
+        
+        return try SCNScene(url: localURL, options: nil)
+    }
+
+    private func createScaledFurnitureNode(from sceneSource: SCNScene, item: FurnitureItem, at position: SCNVector3) -> SCNNode {
         let furnitureNode = SCNNode()
-        for child in sceneSource?.rootNode.childNodes ?? [] {
+        
+        // Add all child nodes from the scene
+        for child in sceneSource.rootNode.childNodes {
             furnitureNode.addChildNode(child)
         }
+        
         furnitureNode.name = "furniture_\(item.name ?? "")"
-        // guard let sceneSource = SCNScene(named: item.model3D) else {
-        //     print("DEBUG: Failed to load furniture model: \(item.model3D)")
-        //     return
-        // }
-        // let furnitureNode = SCNNode()
-        // for child in sceneSource.rootNode.childNodes {
-        //     furnitureNode.addChildNode(child)
-        // }
         
-        // furnitureNode.name = "furniture_\(item.name!)"
-        
+        // Calculate and apply scaling
         let (minVec, maxVec) = furnitureNode.boundingBox
         let modelWidth = CGFloat(abs(maxVec.x - minVec.x))
         let modelHeight = CGFloat(abs(maxVec.y - minVec.y))
         let modelDepth = CGFloat(abs(maxVec.z - minVec.z))
         
-        let itemWidth = CGFloat(item.dimensions[0]) / 100.0
-        let itemHeight = CGFloat(item.dimensions[1]) / 100.0
-        let itemDepth = CGFloat(item.dimensions[2]) / 100.0
+        let itemWidth = CGFloat(item.dimensions[1]) / 100.0
+        let itemHeight = CGFloat(item.dimensions[2]) / 100.0
+        let itemDepth = CGFloat(item.dimensions[0]) / 100.0
         
         let safeModelWidth = modelWidth > 0 ? modelWidth : 0.01
         let safeModelHeight = modelHeight > 0 ? modelHeight : 0.01
@@ -566,19 +594,102 @@ struct CapturedRoomView: View {
         let scaleY = itemHeight / safeModelHeight
         let scaleZ = itemDepth / safeModelDepth
         
-        let uniformScale = [scaleX, scaleY, scaleZ].min() ?? 1.0
+        let uniformScale = [scaleX, scaleY, scaleZ].max() ?? 1.0
+        
+        // Apply scaling
         furnitureNode.scale = SCNVector3(uniformScale, uniformScale, uniformScale)
-
+        
+        // Adjust position to account for model's origin
         for child in furnitureNode.childNodes {
             child.position.y -= minVec.y * Float(uniformScale)
         }
+        
         furnitureNode.position = position
-
-        scene.rootNode.addChildNode(furnitureNode)
-
-        let furniture = addFurniture(id: UUID(), node: furnitureNode, item: item)
-        addedFurniture.append(furniture)
+        
+        return furnitureNode
     }
+
+//    private func addFurnitureItemToScene(_ item: FurnitureItem, at position: SCNVector3) {
+//        // Load the 3D model from a remote URL (Supabase)
+//        guard let modelURLString = item.model3D, let modelURL = URL(string: modelURLString) else {
+//            print("DEBUG: Invalid or missing model3DURL for item: \(item.name ?? "")")
+//            return
+//        }
+//        // Use ModelIO to load remote USDZ/OBJ/GLTF if needed, or download and cache locally
+//        let sceneSource: SCNScene?
+//        if modelURL.isFileURL {
+//            sceneSource = SCNScene(named: modelURL.path)
+//        } else {
+//            // Download the model data synchronously (for demo; use async in production)
+//            if let data = try? Data(contentsOf: modelURL), let tempURL = try? saveTempModel(data: data, fileExtension: modelURL.pathExtension) {
+////                sceneSource = SCNScene(url: tempURL, options: nil)
+//                do {
+//                    sceneSource = try SCNScene(url: tempURL, options: nil)
+//                } catch {
+//                    print("❌ Failed to load scene from URL: \(error)")
+//                    return
+//                }
+//            } else {
+//                print("DEBUG: Failed to download or load model from URL: \(modelURL)")
+//                return
+//            }
+//        }
+//        let furnitureNode = SCNNode()
+//        for child in sceneSource?.rootNode.childNodes ?? [] {
+//            furnitureNode.addChildNode(child)
+//        }
+//        furnitureNode.name = "furniture_\(item.name ?? "")"
+//        // guard let sceneSource = SCNScene(named: item.model3D) else {
+//        //     print("DEBUG: Failed to load furniture model: \(item.model3D)")
+//        //     return
+//        // }
+//        // let furnitureNode = SCNNode()
+//        // for child in sceneSource.rootNode.childNodes {
+//        //     furnitureNode.addChildNode(child)
+//        // }
+//        
+//        // furnitureNode.name = "furniture_\(item.name!)"
+//        
+//        let (minVec, maxVec) = furnitureNode.boundingBox
+//        let modelWidth = CGFloat(abs(maxVec.x - minVec.x))
+//        let modelHeight = CGFloat(abs(maxVec.y - minVec.y))
+//        let modelDepth = CGFloat(abs(maxVec.z - minVec.z))
+//        
+//        let itemWidth = CGFloat(item.dimensions[1]) / 100.0
+//        let itemHeight = CGFloat(item.dimensions[2]) / 100.0
+//        let itemDepth = CGFloat(item.dimensions[0]) / 100.0
+//        
+//        let safeModelWidth = modelWidth > 0 ? modelWidth : 0.01
+//        let safeModelHeight = modelHeight > 0 ? modelHeight : 0.01
+//        let safeModelDepth = modelDepth > 0 ? modelDepth : 0.01
+//        
+//        let scaleX = itemWidth / safeModelWidth
+//        let scaleY = itemHeight / safeModelHeight
+//        let scaleZ = itemDepth / safeModelDepth
+//        
+////        let uniformScale = [scaleX, scaleY, scaleZ].max() ?? 1.0
+////        furnitureNode.scale = SCNVector3(uniformScale, uniformScale, uniformScale)
+////
+////        for child in furnitureNode.childNodes {
+////            child.position.y -= minVec.y * Float(uniformScale)
+////        }
+////
+//        let uniformScale = [scaleX, scaleY, scaleZ].max() ?? 1.0
+//        
+//        // Apply the scale
+//        furnitureNode.scale = SCNVector3(uniformScale, uniformScale, uniformScale)
+//
+//        // Adjust the position to account for the model's origin
+//        for child in furnitureNode.childNodes {
+//            child.position.y -= minVec.y * Float(uniformScale)
+//        }
+//        furnitureNode.position = position
+//
+//        scene.rootNode.addChildNode(furnitureNode)
+//
+//        let furniture = addFurniture(id: UUID(), node: furnitureNode, item: item)
+//        addedFurniture.append(furniture)
+//    }
     private func snapshotScene() -> UIImage? {
         let renderer = SCNRenderer(device: nil, options: nil)
         renderer.scene = scene
@@ -612,7 +723,7 @@ struct CapturedRoomView: View {
         let windowThickness: CGFloat = 0.09
         let windows = createSurfaceNodes(for: room.windows,
                                          length: windowThickness,
-                                         contents: UIColor.clear)
+                                         contents: UIColor.opaqueSeparator)
         windows.forEach { scene.rootNode.addChildNode($0) }
 
         let openingThickness: CGFloat = 0.11

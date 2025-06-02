@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		48A9DABC2D91348B005D013C /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 48A9DABB2D91348B005D013C /* Auth */; };
-		48A9DABE2D91348B005D013C /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = 48A9DABD2D91348B005D013C /* PostgREST */; };
-		48A9DAC02D91348B005D013C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 48A9DABF2D91348B005D013C /* Storage */; };
-		48A9DAC22D91348B005D013C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 48A9DAC12D91348B005D013C /* Supabase */; };
-		DBAFAE2B2DA7D0D7008E309C /* FocusEntity in Frameworks */ = {isa = PBXBuildFile; productRef = DBAFAE2A2DA7D0D7008E309C /* FocusEntity */; };
+		3F4A33142DEE36AD000C4C03 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 3F4A33132DEE36AD000C4C03 /* Auth */; };
+		3F4A33162DEE36B3000C4C03 /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = 3F4A33152DEE36B3000C4C03 /* PostgREST */; };
+		3F4A33182DEE36B6000C4C03 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 3F4A33172DEE36B6000C4C03 /* Storage */; };
+		3F4A331A2DEE36BA000C4C03 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3F4A33192DEE36BA000C4C03 /* Supabase */; };
+		3F4A331D2DEE3716000C4C03 /* FocusEntity in Frameworks */ = {isa = PBXBuildFile; productRef = 3F4A331C2DEE3716000C4C03 /* FocusEntity */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,21 +44,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBAFAE2B2DA7D0D7008E309C /* FocusEntity in Frameworks */,
-				48A9DAC22D91348B005D013C /* Supabase in Frameworks */,
-				48A9DAC02D91348B005D013C /* Storage in Frameworks */,
-				48A9DABE2D91348B005D013C /* PostgREST in Frameworks */,
-				48A9DABC2D91348B005D013C /* Auth in Frameworks */,
+				3F4A331D2DEE3716000C4C03 /* FocusEntity in Frameworks */,
+				3F4A331A2DEE36BA000C4C03 /* Supabase in Frameworks */,
+				3F4A33182DEE36B6000C4C03 /* Storage in Frameworks */,
+				3F4A33162DEE36B3000C4C03 /* PostgREST in Frameworks */,
+				3F4A33142DEE36AD000C4C03 /* Auth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3F4A33122DEE36A3000C4C03 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		4882201F2D367C250024567B = {
 			isa = PBXGroup;
 			children = (
 				4882202A2D367C250024567B /* HomeVue */,
+				3F4A33122DEE36A3000C4C03 /* Frameworks */,
 				488220292D367C250024567B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,11 +99,11 @@
 			);
 			name = HomeVue;
 			packageProductDependencies = (
-				48A9DABB2D91348B005D013C /* Auth */,
-				48A9DABD2D91348B005D013C /* PostgREST */,
-				48A9DABF2D91348B005D013C /* Storage */,
-				48A9DAC12D91348B005D013C /* Supabase */,
-				DBAFAE2A2DA7D0D7008E309C /* FocusEntity */,
+				3F4A33132DEE36AD000C4C03 /* Auth */,
+				3F4A33152DEE36B3000C4C03 /* PostgREST */,
+				3F4A33172DEE36B6000C4C03 /* Storage */,
+				3F4A33192DEE36BA000C4C03 /* Supabase */,
+				3F4A331C2DEE3716000C4C03 /* FocusEntity */,
 			);
 			productName = HomeVue;
 			productReference = 488220282D367C250024567B /* HomeVue.app */;
@@ -127,7 +135,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				48A9DABA2D91348B005D013C /* XCRemoteSwiftPackageReference "supabase-swift" */,
-				DBAFAE292DA7D0D7008E309C /* XCRemoteSwiftPackageReference "FocusEntity" */,
+				3F4A331B2DEE3716000C4C03 /* XCRemoteSwiftPackageReference "FocusEntity" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 488220292D367C250024567B /* Products */;
@@ -182,7 +190,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LoremIpsum.HomeVueee;
+				PRODUCT_BUNDLE_IDENTIFIER = com.LoremIpsum.HomeVueeer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -213,7 +221,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LoremIpsum.HomeVueee;
+				PRODUCT_BUNDLE_IDENTIFIER = com.LoremIpsum.HomeVueeer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -365,6 +373,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3F4A331B2DEE3716000C4C03 /* XCRemoteSwiftPackageReference "FocusEntity" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maxxfrazer/FocusEntity";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
 		48A9DABA2D91348B005D013C /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase/supabase-swift";
@@ -373,40 +389,32 @@
 				minimumVersion = 2.5.1;
 			};
 		};
-		DBAFAE292DA7D0D7008E309C /* XCRemoteSwiftPackageReference "FocusEntity" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/maxxfrazer/FocusEntity";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.5.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		48A9DABB2D91348B005D013C /* Auth */ = {
+		3F4A33132DEE36AD000C4C03 /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 48A9DABA2D91348B005D013C /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Auth;
 		};
-		48A9DABD2D91348B005D013C /* PostgREST */ = {
+		3F4A33152DEE36B3000C4C03 /* PostgREST */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 48A9DABA2D91348B005D013C /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = PostgREST;
 		};
-		48A9DABF2D91348B005D013C /* Storage */ = {
+		3F4A33172DEE36B6000C4C03 /* Storage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 48A9DABA2D91348B005D013C /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Storage;
 		};
-		48A9DAC12D91348B005D013C /* Supabase */ = {
+		3F4A33192DEE36BA000C4C03 /* Supabase */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 48A9DABA2D91348B005D013C /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
 		};
-		DBAFAE2A2DA7D0D7008E309C /* FocusEntity */ = {
+		3F4A331C2DEE3716000C4C03 /* FocusEntity */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DBAFAE292DA7D0D7008E309C /* XCRemoteSwiftPackageReference "FocusEntity" */;
+			package = 3F4A331B2DEE3716000C4C03 /* XCRemoteSwiftPackageReference "FocusEntity" */;
 			productName = FocusEntity;
 		};
 /* End XCSwiftPackageProductDependency section */

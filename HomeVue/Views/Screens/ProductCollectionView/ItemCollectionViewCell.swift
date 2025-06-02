@@ -45,7 +45,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
 //        ProductImg?.image = UIImage(named:item.imageName)x
         ProductName?.text = item.name!
         ProductBrandName?.text = item.brandName!
-        ProductDimension?.text = "\(Int(item.dimensions[0]))W x \(Int(item.dimensions[1]))H x \(Int(item.dimensions[2]))D"
+        ProductDimension?.text = "\(Int(item.dimensions[1]))W x \(Int(item.dimensions[2]))H x \(Int(item.dimensions[0]))D"
         self.favoriteToggleAction = favoriteToggleAction
         self.arButtonAction = arButtonAction
         

@@ -18,11 +18,42 @@ struct SupabaseAuthService {
             supabaseKey: Constants.projectAPIKeyString
         )
     }
+//    func deleteUser() async -> Result<Void, Error> {
+//        do {
+//            let session = try await client.auth.session
+//            let accessToken = session.accessToken
+//
+//            guard let functionUrl = URL(string: "https://idgndjdksopovczqdeby.supabase.co/functions/v1/dynamic-processor") else {
+//                return .failure(NSError(domain: "Invalid URL", code: 400))
+//            }
+//
+//            var request = URLRequest(url: functionUrl)
+//            request.httpMethod = "POST"
+//            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+//            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//            request.httpBody = try JSONSerialization.data(withJSONObject: [:])
+//
+//            let (_, response) = try await URLSession.shared.data(for: request)
+//
+//            guard let httpResponse = response as? HTTPURLResponse,
+//                  httpResponse.statusCode == 200 else {
+//                return .failure(NSError(domain: "Delete failed", code:500))
+//            }
+//
+//            try await client.auth.signOut()
+//            UserDefaults.standard.removeObject(forKey: "supabaseAuthId")
+//            return .success(())
+//
+//        } catch {
+//            return .failure(error)
+//        }
+//    }
     func deleteUser() async -> Result<Void, Error> {
         do {
-            let session = try await client.auth.session
-            let accessToken = session.accessToken
-
+            let supabaseSession = try await client.auth.session
+            let accessToken = supabaseSession.accessToken
+            let userId = supabaseSession.user.id
+            print("Profile \(userId)")
             guard let functionUrl = URL(string: "https://idgndjdksopovczqdeby.supabase.co/functions/v1/dynamic-processor") else {
                 return .failure(NSError(domain: "Invalid URL", code: 400))
             }
@@ -31,20 +62,32 @@ struct SupabaseAuthService {
             request.httpMethod = "POST"
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = try JSONSerialization.data(withJSONObject: [:])
+            
+            let requestBody: [String: Any] = ["user_id": userId.uuidString]
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let config = URLSessionConfiguration.default
+            config.timeoutIntervalForRequest = 4
+            let urlSession = URLSession(configuration: config)
 
-            guard let httpResponse = response as? HTTPURLResponse,
-                  httpResponse.statusCode == 200 else {
-                return .failure(NSError(domain: "Delete failed", code:500))
+            let (data, response) = try await urlSession.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                return .failure(NSError(domain: "Invalid response", code: -1))
+            }
+
+            if httpResponse.statusCode != 200 {
+                let responseBody = String(data: data, encoding: .utf8) ?? "No body"
+                print("Function error response: \(httpResponse.statusCode)\n\(responseBody)")
+                return .failure(NSError(domain: "Function failed", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: responseBody]))
             }
 
             try await client.auth.signOut()
             UserDefaults.standard.removeObject(forKey: "supabaseAuthId")
+            
             return .success(())
 
         } catch {
+            print("Delete user error: \(error.localizedDescription)")
             return .failure(error)
         }
     }
